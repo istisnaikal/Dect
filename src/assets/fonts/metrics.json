@@ -1,0 +1,60 @@
+{
+  "geist.woff2": {
+    "family": "Geist",
+    "kind": "sans",
+    "file": "geist.woff2",
+    "bytes": 25232,
+    "weight": "300 700",
+    "style": "normal",
+    "fallback": {
+      "local": [
+        "Arial",
+        "Helvetica Neue",
+        "Helvetica"
+      ],
+      "sizeAdjust": 105.348,
+      "ascentOverride": 95.398,
+      "descentOverride": 28.002,
+      "lineGapOverride": 0.0
+    }
+  },
+  "geist-mono.woff2": {
+    "family": "Geist Mono",
+    "kind": "mono",
+    "file": "geist-mono.woff2",
+    "bytes": 14620,
+    "weight": "400 600",
+    "style": "normal",
+    "fallback": {
+      "local": [
+        "Courier New",
+        "Menlo",
+        "Consolas"
+      ],
+      "sizeAdjust": 99.984,
+      "ascentOverride": 100.516,
+      "descentOverride": 29.505,
+      "lineGapOverride": 0.0
+    }
+  },
+  "instrument-serif-italic.woff2": {
+    "family": "Instrument Serif",
+    "kind": "serif",
+    "file": "instrument-serif-italic.woff2",
+    "bytes": 15352,
+    "weight": "400",
+    "style": "italic",
+    "fallback": {
+      "local": [
+        "Times New Roman Italic",
+        "TimesNewRomanPS-ItalicMT",
+        "Times New Roman",
+        "Georgia"
+      ],
+      "sizeAdjust": 88.482,
+      "ascentOverride": 111.887,
+      "descentOverride": 35.035,
+      "lineGapOverride": 0.0
+    }
+  }
+}
