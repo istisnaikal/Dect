@@ -349,19 +349,23 @@ From: Türkiye
 Last update: ${site.updated.replaceAll('-', '/')}
 Language: Türkçe / English
 Standards: HTML, CSS, JavaScript (ES2022), WebGL2, Schema.org
-Components: none — zero frameworks, zero trackers, zero cookies
+Components: none — zero frameworks, zero ad trackers, zero cookies
 Fonts: Geist, Geist Mono (Vercel, OFL) · Instrument Serif (OFL)
 `,
   );
 
   // ── Security & caching headers (Netlify / Cloudflare Pages + Apache) ──────
+  const edge = site.edge || {};
+  const insights = edge.cloudflareWebAnalytics ? ' https://static.cloudflareinsights.com' : '';
   const csp = [
     "default-src 'self'",
-    `script-src 'self' ${[...hashes.script].join(' ')}`,
+    // Hashes and 'unsafe-inline' can't coexist (browsers ignore the latter when a hash is present),
+    // so zone-injected bot detection means dropping to 'unsafe-inline'. See site.config.mjs → edge.
+    edge.cloudflareJsDetections ? `script-src 'self' 'unsafe-inline'${insights}` : `script-src 'self' ${[...hashes.script].join(' ')}${insights}`,
     `style-src 'self' ${[...hashes.style].join(' ')}`,
     "img-src 'self' data:",
     "font-src 'self'",
-    "connect-src 'self'",
+    `connect-src 'self'${edge.cloudflareWebAnalytics ? ' https://cloudflareinsights.com' : ''}`,
     "manifest-src 'self'",
     "base-uri 'self'",
     "form-action 'self'",

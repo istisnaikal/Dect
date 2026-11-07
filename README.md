@@ -18,7 +18,9 @@ npm run audit     # Lighthouse, every page, mobile + desktop
 | `/` · `/en/` | 100 · 100 · 100 · 100 | 100 · 100 · 100 · 100 |
 | `/rehber/aeo-geo/` · `/en/guide/aeo-geo/` | 100 · 100 · 100 · 100 | 100 · 100 · 100 · 100 |
 
-Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic browsing* category is 100 too. Mobile: FCP / LCP 0.8 s, CLS 0, TBT 0–50 ms. Home page critical path: **~75 KB total** (HTML + inlined CSS + JS brotli + all three font families). Production scores depend on the host, so run [PageSpeed Insights](https://pagespeed.web.dev/) after deploying.
+Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic browsing* category is 100 too. Mobile: FCP / LCP 0.8 s, CLS 0, TBT 0–70 ms. Home page critical path: **~77 KB total** (HTML + inlined CSS + JS brotli + all three font families). The same 100s were measured on Cloudflare's edge (staging Worker).
+
+**On eyupdevart.com today**, Cloudflare's *Bot Fight Mode* injects a "JavaScript Detections" script into every page. That script alone uses a deprecated browser API (Best Practices → 81) and runs a ~250 ms long task on throttled mobile (Performance → 94–97). Turning Bot Fight Mode off (Security → Bots) restores the 100s; see *Edge features* below.
 
 ## What's inside
 
@@ -44,7 +46,7 @@ Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic 
 - A real, citable knowledge page, the **AEO & GEO guide** (TR + EN), which makes the site a *source* for the exact topic it sells.
 - Social cards rendered from the real WebGL hero (`npm run assets:og`).
 
-**Security.** Strict hash-based CSP (no `unsafe-inline`), HSTS, `nosniff`, `frame-ancestors 'none'`, a locked-down `Permissions-Policy`. All generated into `_headers` (Netlify / Cloudflare Pages) and `.htaccess` (Apache / cPanel) with the hashes computed at build time.
+**Security.** Edge-aware CSP, HSTS, `nosniff`, `frame-ancestors 'none'`, a locked-down `Permissions-Policy`, all generated into `_headers` (Cloudflare / Netlify) and `.htaccess` (Apache / cPanel) at build time. Styles are always locked to a build-time hash. Scripts are locked to `'self'` + hashes, **unless** the Cloudflare zone injects JavaScript Detections: that script changes on every request, so no hash can match it and `script-src` falls back to `'unsafe-inline'` (external script origins stay locked). Toggle in `site.config.mjs → edge`.
 
 ## Editing
 
@@ -77,7 +79,30 @@ npm run build && npm run assets:og && npm run build                          # s
 
 ## Deploy
 
-`dist/` is a static site; any host works.
+Production runs on **Cloudflare Workers (static assets)** as the Worker `eyupdevart`, bound to `eyupdevart.com` and `www.eyupdevart.com` (`wrangler.jsonc`).
+
+```
+export CLOUDFLARE_API_TOKEN=…   CLOUDFLARE_ACCOUNT_ID=…
+npm run deploy:staging          # build → checks → https://eyupdevart-staging.<account>.workers.dev
+npm run deploy                  # build → checks → production
+npx wrangler deployments list --name eyupdevart                  # history
+npx wrangler rollback <version-id> --name eyupdevart -m "why"    # instant rollback
+```
+
+The build also emits `_redirects` (301 for slashless URLs) and `.assetsignore` (keeps `.htaccess` off the edge).
+
+### Edge features (Cloudflare dashboard)
+
+| Zone feature | Effect on this site | CSP flag (`site.config.mjs → edge`) |
+| --- | --- | --- |
+| Web Analytics | Cookieless page analytics; light (~50 ms script) | `cloudflareWebAnalytics` |
+| Bot Fight Mode / JS Detections | Costs Best Practices (deprecated API) and ~200 ms mobile TBT; can challenge AI agents that fetch pages (bad for GEO) | `cloudflareJsDetections` |
+
+If you turn a feature off in the dashboard, set its flag to `false` and redeploy: the CSP tightens back automatically.
+
+### Other hosts
+
+`dist/` is a plain static site:
 
 - **Netlify / Cloudflare Pages**: build `npm run build`, output `dist`. `_headers` is picked up automatically (`netlify.toml` included).
 - **Vercel**: same build and output; add the headers from `dist/_headers` in project settings if you want the CSP.
@@ -88,6 +113,7 @@ After going live:
 2. Validate with the [Rich Results Test](https://search.google.com/test/rich-results) and the [Schema Markup Validator](https://validator.schema.org/).
 3. Make your **Google Business Profile** and social profiles use exactly the same name, phone and URL as the site (entity consistency is a GEO signal).
 4. Re-run PageSpeed Insights on the live URL.
+5. Recommended zone tweaks: a Redirect Rule `www.eyupdevart.com/*` → `https://eyupdevart.com/$1` (301) so www stops serving duplicate pages, and SSL/TLS → Edge Certificates → Minimum TLS **1.2** (currently 1.0).
 
 ## License
 

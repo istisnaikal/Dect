@@ -193,7 +193,7 @@ export default {
     },
     footnote:
       'Eşikler, Google’ın Core Web Vitals sınırlarıdır: LCP ≤ 2,5 sn · INP ≤ 200 ms · CLS ≤ 0,1. Değerler bağlantınıza ve cihazınıza göre değişir — tıpkı gerçek ziyaretçilerinizde olduğu gibi.',
-    claims: ['Framework yok', 'Takip kodu yok', 'Çerez yok', 'Elle yazıldı'],
+    claims: ['Framework yok', 'Reklam takibi yok', 'Çerez yok', 'Elle yazıldı'],
   },
 
   process: {

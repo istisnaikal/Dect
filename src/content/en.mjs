@@ -193,7 +193,7 @@ export default {
     },
     footnote:
       'Thresholds are Google’s Core Web Vitals limits: LCP ≤ 2.5 s · INP ≤ 200 ms · CLS ≤ 0.1. Values vary with your connection and device — exactly as they do for your real visitors.',
-    claims: ['Zero frameworks', 'Zero trackers', 'Zero cookies', 'Hand-written'],
+    claims: ['Zero frameworks', 'Zero ad tracking', 'Zero cookies', 'Hand-written'],
   },
 
   process: {

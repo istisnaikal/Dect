@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-//  DevArt runtime. No framework, no dependencies, no trackers.
+//  DevArt runtime. No framework, no dependencies, no ad trackers.
 //  Every feature here is an enhancement: the HTML is complete without it.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -398,8 +398,8 @@ function hello() {
   );
   console.log(
     lang === 'tr'
-      ? 'Kaynağı okuyorsan aynı dili konuşuyoruz. Framework yok, takip yok, sadece el işçiliği.\n→ https://wa.me/905538115033'
-      : 'If you are reading the source, we speak the same language. No framework, no tracking, just craft.\n→ https://wa.me/905538115033',
+      ? 'Kaynağı okuyorsan aynı dili konuşuyoruz. Framework yok, çerez yok, sadece el işçiliği.\n→ https://wa.me/905538115033'
+      : 'If you are reading the source, we speak the same language. No framework, no cookies, just craft.\n→ https://wa.me/905538115033',
   );
 }
 
