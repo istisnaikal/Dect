@@ -2,10 +2,11 @@
 // Lighthouse every page, mobile + desktop, against a production-like local server.
 // `npm run build && npm run audit` (downloads lighthouse via npx on first run).
 // Needs Chrome/Chromium: set CHROME_PATH if it isn't found automatically.
-import { execFileSync } from 'node:child_process';
+import { execFile } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { promisify } from 'node:util';
 
 process.env.PORT = process.env.AUDIT_PORT || '4398';
 await import('./serve.mjs');
@@ -20,7 +21,11 @@ for (const page of pages) {
     const out = path.join(tmp, 'r.json');
     const args = ['--yes', 'lighthouse@13', base + page, '--output=json', `--output-path=${out}`, '--quiet', '--chrome-flags=--headless=new --no-sandbox'];
     if (preset === 'desktop') args.push('--preset=desktop');
-    execFileSync('npx', args, { stdio: ['ignore', 'ignore', 'inherit'] }); // --quiet: stderr carries only real errors
+    // Async on purpose: the preview server lives in this process and must keep answering.
+    await promisify(execFile)('npx', args).catch((e) => {
+      console.error(e.stderr || e.message);
+      process.exit(1);
+    });
     const r = JSON.parse(fs.readFileSync(out, 'utf8'));
     const scores = Object.values(r.categories).map((c) => {
       const s = Math.round(c.score * 100);
