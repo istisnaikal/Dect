@@ -205,16 +205,20 @@ function short(c) {
 }
 
 function manifesto(c) {
+  // Lines break only where the copy says so (\n); words split on ordinary spaces only,
+  // so a non-breaking space keeps a phrase together.
+  const one = (w) => {
+    const art = w.match(/^\*(.+)\*$/);
+    const dev = w.match(/^`(.+)`$/);
+    if (art) return `<span class="w art">${art[1]}</span>`;
+    if (dev) return `<span class="w dev">${dev[1]}</span>`;
+    return `<span class="w">${w}</span>`;
+  };
+  const word = (w) => w.split('\u00a0').map(one).join('\u00a0');
   const words = c.manifesto.text
-    .split(/\s+/)
-    .map((w) => {
-      const art = w.match(/^\*(.+)\*$/);
-      const dev = w.match(/^`(.+)`$/);
-      if (art) return `<span class="w art">${art[1]}</span>`;
-      if (dev) return `<span class="w dev">${dev[1]}</span>`;
-      return `<span class="w">${w}</span>`;
-    })
-    .join(' ');
+    .split('\n')
+    .map((line) => line.split(/ +/).filter(Boolean).map(word).join(' '))
+    .join('<br>');
   return `<section class="manifesto" aria-labelledby="manifesto-label">
 <div class="wrap">
 <p class="sec-label" id="manifesto-label"><span class="sec-label__n">02</span>${c.manifesto.label}</p>

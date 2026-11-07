@@ -620,6 +620,10 @@ abbr { text-decoration: none; }
   text-wrap: pretty;
 }
 .manifesto__text .art { line-height: 1; }
+/* Small phones: scale with the width so "milisaniyeleri keserim." always shares a line. */
+@media (max-width: 479px) {
+  .manifesto__text { font-size: calc(8.4vw - 2px); }
+}
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
     .manifesto .w {

@@ -15,14 +15,14 @@ export default {
   meta: {
     title: 'Eyüp DevArt — Web Design, Development & SEO · AEO · GEO',
     description:
-      'Developer + artist. Eyüp DevArt designs and engineers websites that load instantly, rank on Google, get cited by AI answer engines and win clients.',
+      'Eyüp DevArt builds websites by hand, made to measure: they open instantly, get found on Google and come up in AI answers. Say hello on WhatsApp.',
     ogAlt: 'Eyüp DevArt — the line where code meets art',
   },
 
   wa: {
-    default: 'Hi Eyüp, I found you on eyupdevart.com and I’d like to talk about a project.',
-    project: 'Hi Eyüp, here’s my project in a nutshell:',
-    audit: 'Hi Eyüp, I’d like a speed, SEO and AI-visibility review of my current website. The URL is:',
+    default: 'Hi Eyüp, I’m writing from eyupdevart.com. I’d love to talk about a project.',
+    project: 'Hi Eyüp, here it is in two sentences:',
+    audit: 'Hi Eyüp, could you take a look at my site’s speed, SEO and AI visibility? Here’s the address:',
   },
 
   nav: [
@@ -39,8 +39,8 @@ export default {
     menu: 'Menu',
     palette: 'Command palette',
     paletteLabel: 'Search commands',
-    palettePlaceholder: 'Where to? Start typing…',
-    paletteEmpty: 'Nothing here. Asking on WhatsApp might be faster.',
+    palettePlaceholder: 'Where to?',
+    paletteEmpty: 'Nothing here. WhatsApp might be quicker.',
     paletteHint: 'navigate · select · close',
     copied: 'Number copied',
     whatsapp: 'Message me on WhatsApp',
@@ -60,7 +60,7 @@ export default {
     whatsapp: 'Message on WhatsApp',
     call: 'Call by phone',
     copy: 'Copy phone number',
-    audit: 'Request a free site review',
+    audit: 'Have me look at your site',
     guide: 'The AEO & GEO guide',
     lang: 'Türkçe sürüm',
     llms: 'llms.txt — the site, summarised for AI',
@@ -71,11 +71,11 @@ export default {
   hero: {
     eyebrow: ['Eyüp', 'DevArt', 'Developer + Artist'],
     h1: 'I design like an *artist* and code like an `engineer`.',
-    lead: 'Websites that open instantly, rank on Google, get cited by AI answer engines — and turn visitors into clients. No templates. Nothing ordinary.',
-    ctaSecondary: 'See the work',
+    lead: 'I build websites by hand, made to measure. They earn trust the moment they open, they’re easy to find on Google, and they come up when people ask ChatGPT.',
+    ctaSecondary: 'See the work first',
     hint: 'Move your cursor — the line is yours',
     hintTouch: 'Drag it — the line is yours',
-    chip: 'Loaded in {t} s on your device',
+    chip: 'Opened in {t} seconds on your device',
     chipIdle: 'Measuring on your device…',
     scroll: 'Scroll',
   },
@@ -84,85 +84,84 @@ export default {
     id: 'in-short',
     label: 'In short',
     q: 'Who is Eyüp DevArt?',
-    a: 'Eyüp DevArt — stage name DevArt — is a developer and digital artist who unites web design and software engineering in a single pair of hands. Eyüp designs and builds websites for businesses and brands that load instantly, are accessible, and are easy for Google and AI assistants to understand and cite.',
+    a: 'Eyüp DevArt is a developer and digital artist who both designs and builds websites; DevArt is Eyüp’s stage name. Working with brands and businesses, Eyüp keeps design, code, speed and search visibility in a single pair of hands, so visitors, Google and AI assistants all understand the result at first glance.',
     facts: [
       ['Name', 'Eyüp · stage name DevArt'],
       ['Expertise', 'Web design · Web development · SEO, AEO, GEO · Performance'],
-      ['Approach', 'No templates. Hand-coded. Measurable.'],
-      ['Based', 'Türkiye · working worldwide, remotely'],
+      ['Approach', 'No templates; every site written from scratch, by hand'],
+      ['Based', 'Türkiye, working with clients anywhere, remotely'],
       ['Languages', 'Turkish · English'],
-      ['Contact', 'WhatsApp & phone: <a href="{wa}">{phone}</a>'],
+      ['Contact', 'WhatsApp or phone: <a href="{wa}">{phone}</a>'],
     ],
   },
 
   manifesto: {
     label: 'Manifesto',
-    text: 'Most websites are built to exist. Mine are built to *win.* Every pixel is a decision, every `millisecond` a rival. `Code` is my brush, the browser my *canvas* — and there is no room on it for ordinary.',
+    text: 'A template fits everyone, which is exactly why it *suits* no one. I make websites the way a tailor makes a suit: measurements, fittings, every spare `millisecond`\u00a0trimmed.\nSlow to make. *Quick*\u00a0to\u00a0open.',
   },
 
   work: {
     id: 'work',
     label: 'Selected work',
-    title: 'Work that *speaks.*',
-    lead: 'Live, for real businesses. Each one built to raise the bar in its own industry.',
+    title: 'Work, not *words.*',
+    lead: 'All live, all for real businesses. The addresses are right there on the cards; go and look for yourself.',
     visit: 'Visit site',
     items: {
       aksu: {
         kind: 'Local service · Company site',
         summary:
-          'Local-SEO-first website for a 24/7 tow and roadside-assistance company based in Maltepe, Istanbul — district landing pages, WhatsApp-first conversion and a marble-and-serif art direction.',
+          'A tow company in Maltepe, Istanbul, that works around the clock. Built so that someone stranded by the roadside can reach them in a single tap: a short path to WhatsApp, a page for every district, and the calm trust of marble textures and serif type.',
         tags: ['Local SEO', 'Schema.org', 'Next.js', 'AVIF'],
         alt: 'Home page of the Aksu Oto Çekici website: marble texture background, serif headline and a photo of the tow-truck fleet',
       },
       marchetti: {
         kind: 'Brand · Web experience',
-        summary:
-          'A DevArt-signed brand website: an original visual language built around the brand’s character, carefully engineered.',
+        summary: 'A DevArt-signed brand site. Its visual language and its code were both cut from scratch, to the brand’s own measure.',
         tags: ['Brand', 'Design', 'Engineering'],
       },
     },
     next: {
       label: 'Next',
-      title: 'The next one is *yours.*',
-      text: 'Tell me about your project in two sentences — we’ll shape the rest together.',
-      cta: 'Tell me about it',
+      title: 'The next one could be *yours.*',
+      text: 'Tell me what you do and what you’re after, in two sentences. We’ll think the rest through together.',
+      cta: 'Send two sentences',
     },
   },
 
   services: {
     id: 'services',
     label: 'Services',
-    title: 'From design to code, from code to the *top.*',
-    lead: 'Strategy, design, engineering and visibility — one pair of hands, one signature.',
+    title: 'All of it, at *one* desk.',
+    lead: 'Design, code, speed and visibility usually live with four different teams. Here they share one desk and one head, so nothing gets lost in the hand-offs.',
     items: [
       {
         title: 'Web design & art direction',
-        text: 'A visual language, typography, motion and interaction made for your brand. Not a template — a signature.',
+        text: 'I turn your brand’s voice into something you can see: type, colour, motion, white space. Whoever opens the page should know who you are before they spot the logo.',
         tags: ['UI/UX', 'Art direction', 'Motion'],
       },
       {
         title: 'Web development',
-        text: 'Hand-written, lightweight, secure and accessible code. From brochure sites to web apps, from WebGL experiences to admin panels.',
+        text: 'The code nobody sees deserves as much care as the parts everyone does. Brochure sites, web apps, WebGL pieces or admin panels; all of them light, secure and usable by anyone.',
         tags: ['TypeScript', 'Next.js', 'WebGL', 'Vanilla JS'],
       },
       {
         title: 'SEO · AEO · GEO',
-        text: 'Top positions on Google, and a brand that ChatGPT, Perplexity, Gemini and Google AI Overviews cite as a source. Technical SEO, Schema.org, llms.txt and content architecture.',
+        text: 'Ranking on Google is good. Being the name that comes up when someone asks ChatGPT, Perplexity or Gemini is better. With technical SEO, structured data, llms.txt and well-built content, I aim for both.',
         tags: ['Technical SEO', 'Schema.org', 'llms.txt'],
       },
       {
         title: 'Performance engineering',
-        text: 'Optimisation that turns Core Web Vitals green and pushes Lighthouse to the top. Speed is conversion’s silent partner.',
+        text: 'A slow site loses customers before it has even appeared. I get Core Web Vitals green and Lighthouse to the top, so the page is ready before you’ve had time to blink.',
         tags: ['Core Web Vitals', 'Lighthouse', 'CDN'],
       },
       {
         title: 'Local business & conversion',
-        text: 'The shortest path to a call or a WhatsApp message: service-area pages, Google Business Profile alignment, one-tap contact.',
+        text: 'A tow truck, a dentist, a restaurant: customers look you up on their phones, and they’re in a hurry. I draw them the shortest route, with area pages, Google Business Profile alignment, and one-tap calls and WhatsApp.',
         tags: ['Local SEO', 'WhatsApp', 'Conversion'],
       },
       {
         title: 'Care & growth',
-        text: 'I stay after launch: measurement, updates, security and continuous improvement.',
+        text: 'My job doesn’t end on launch day. I measure, update and keep an eye on security, so the site keeps growing as you do.',
         tags: ['Analytics', 'Security', 'Support'],
       },
     ],
@@ -172,7 +171,7 @@ export default {
     id: 'proof',
     label: 'Proof',
     title: 'This page is its *own proof.*',
-    lead: 'These numbers aren’t claims. They were measured just now, on your device, by your own browser’s performance APIs.',
+    lead: 'I didn’t write these numbers. Your browser measured them while this page was opening, just now, on your own device.',
     metrics: {
       ttfb: 'Time to first byte',
       fcp: 'First contentful paint',
@@ -192,30 +191,30 @@ export default {
       na: 'Not supported',
     },
     footnote:
-      'Thresholds are Google’s Core Web Vitals limits: LCP ≤ 2.5 s · INP ≤ 200 ms · CLS ≤ 0.1. Values vary with your connection and device — exactly as they do for your real visitors.',
-    claims: ['Zero frameworks', 'Zero ad tracking', 'Zero cookies', 'Hand-written'],
+      'Thresholds are Google’s Core Web Vitals limits: LCP ≤ 2.5 s · INP ≤ 200 ms · CLS ≤ 0.1. Results shift with your connection and device, just as they do for your real visitors.',
+    claims: ['Zero frameworks', 'Zero ad tracking', 'Zero cookies', 'Every line by hand'],
   },
 
   process: {
     id: 'process',
     label: 'Process',
-    title: 'Four steps from idea to *launch.*',
+    title: 'Four steps, no *surprises.*',
     steps: [
       {
         title: 'Discovery',
-        text: 'You message me on WhatsApp; we talk goals, audience and competitors, then start with a clear scope and timeline.',
+        text: 'You message me and we talk: what you do, who it’s for, who you’re up against. You come away with a clear scope and a timeline.',
       },
       {
         title: 'Strategy & design',
-        text: 'Content architecture and a search-and-question map, then a design and interaction prototype made for your brand.',
+        text: 'How do people search for you, and what do they ask? I map that first. The design is built on top of the map, and you click through it as a prototype.',
       },
       {
         title: 'Engineering',
-        text: 'Hand-written code, a performance budget, accessibility and structured data. Every line is there for a reason.',
+        text: 'Everything is written by hand, against a performance budget. Accessibility and structured data aren’t bolted on at the end; they’re there from the first line.',
       },
       {
         title: 'Launch & growth',
-        text: 'Search Console, analytics and AI-visibility tracking. We measure, learn and keep improving.',
+        text: 'After launch I watch Search Console, analytics and how you show up in AI answers. We see what works, and sharpen it.',
       },
     ],
   },
@@ -223,43 +222,43 @@ export default {
   faq: {
     id: 'faq',
     label: 'FAQ',
-    title: 'Frequently asked *questions.*',
+    title: 'Fair *questions.*',
     items: [
       {
         q: 'Who is Eyüp DevArt?',
-        a: 'Eyüp DevArt is a developer and digital artist whose stage name is DevArt. Uniting web design and software engineering, Eyüp builds fast, accessible websites for businesses and brands that search engines and AI assistants can easily understand.',
+        a: 'Eyüp DevArt is a developer and digital artist who both designs and builds websites; DevArt is Eyüp’s stage name. For businesses and brands, that means fast, accessible sites that search engines and AI assistants understand without effort.',
       },
       {
         q: 'What services do you offer?',
-        a: 'Web design and art direction, web development, technical SEO together with AEO and GEO, performance optimisation, conversion-focused sites for local businesses, and post-launch care and growth.',
+        a: 'Web design and art direction, web development, technical SEO together with AEO and GEO, performance work, conversion-focused sites for local businesses, and care after launch. In short, everything a website needs, from the first sketch to long after go-live.',
       },
       {
         q: 'What are AEO and GEO?',
-        a: 'AEO (Answer Engine Optimization) is optimising your content so search engines and voice assistants pick it as the direct answer. GEO (Generative Engine Optimization) aims to get your brand cited as a source in answers generated by AI systems such as ChatGPT, Perplexity, Gemini and Google AI Overviews. Read the <a href="{guide}">AEO & GEO guide</a> for the details.',
+        a: 'AEO (Answer Engine Optimization) makes your content the answer that search engines and voice assistants pick. GEO (Generative Engine Optimization) gets your brand cited inside answers written by AI systems such as ChatGPT, Perplexity, Gemini and Google AI Overviews. The <a href="{guide}">AEO & GEO guide</a> goes into the details.',
       },
       {
         q: 'How long does a website take?',
-        a: 'It depends on scope. I share a clear timeline in our first conversation and we approve every stage together — no surprises.',
+        a: 'It depends on the scope; a one-page site and a full web app don’t keep the same calendar. You get a clear timeline in our first conversation, and we sign off every stage together. I don’t like surprises.',
       },
       {
         q: 'How does pricing work?',
-        a: 'Every project is priced on its own scope; I don’t sell packages. Describe your project briefly on WhatsApp and I’ll prepare a clear quote.',
+        a: 'Every project is priced on its own scope. I don’t sell packages, because no two businesses are alike. Tell me about yours on WhatsApp and I’ll send you a clear quote.',
       },
       {
         q: 'Can you speed up my current site or fix its SEO?',
-        a: 'Yes. I measure first — Core Web Vitals, crawlability, indexing and structured data — then build a roadmap ranked by impact and start with the most critical issues.',
+        a: 'Yes. I measure first: Core Web Vitals, crawlability, indexing and structured data. Then I rank the problems by impact and start with whatever will win you the most.',
       },
       {
         q: 'Why don’t you use templates?',
-        a: 'Templates ship code nobody uses so they can fit everyone, which means slowness and a look that’s seen everywhere. A hand-coded site carries only what you need: it loads faster, is more secure and is entirely yours.',
+        a: 'Templates are built to fit everyone, so they ship with code nobody uses. That means slowness, and a look you’ve already seen on a hundred other sites. A hand-written site carries only what you need: it opens faster, it’s more secure, and it’s entirely yours.',
       },
       {
         q: 'Do you work with clients outside Türkiye?',
-        a: 'Absolutely. The whole process runs remotely, in English or Turkish.',
+        a: 'Of course. Everything runs remotely, in English or Turkish, whichever suits you.',
       },
       {
         q: 'How do I get in touch?',
-        a: 'The fastest way is WhatsApp: <a href="{wa}">{phone}</a>. You can also <a href="{tel}">call</a> the same number.',
+        a: 'WhatsApp is quickest: <a href="{wa}">{phone}</a>. You can also <a href="{tel}">call</a> the same number.',
       },
     ],
   },
@@ -267,16 +266,16 @@ export default {
   contact: {
     id: 'contact',
     label: 'Contact',
-    title: 'Let’s *talk.*',
-    lead: 'One message, one idea, one goal. We build the rest together.',
-    prefilled: 'The message is pre-written — just hit send.',
-    qr: 'Scan with your phone to open the chat instantly.',
+    title: 'A *hello* will do.',
+    lead: 'Tell me what you do and where you’d like to get to. We’ll find the rest by talking it through.',
+    prefilled: 'I’ve written the first line for you. The rest is yours.',
+    qr: 'Point your phone’s camera here and the chat opens there.',
     clock: 'Local time in Türkiye',
   },
 
   footer: {
     tagline: 'Developer + Artist.',
-    built: 'This site was hand-written without a single framework.',
+    built: 'Written by hand, line by line. No framework was used, and none was needed.',
     guide: 'AEO & GEO guide',
     llms: 'llms.txt',
     sitemap: 'Sitemap',
@@ -287,7 +286,7 @@ export default {
   notFound: {
     title: 'Page not found — Eyüp DevArt',
     h1: 'This page fell to the *other side* of the line.',
-    text: 'The address may have moved, or never existed. But you’re in the right place.',
+    text: 'That address has moved, or never existed. You’re on the right site, though.',
     home: 'Back to the home page',
   },
 

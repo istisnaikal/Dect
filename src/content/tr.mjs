@@ -15,14 +15,14 @@ export default {
   meta: {
     title: 'Eyüp DevArt — Web Tasarım, Yazılım ve SEO · AEO · GEO',
     description:
-      'Geliştirici + sanatçı. Eyüp DevArt; anında açılan, Google’da ve yapay zekâ cevaplarında öne çıkan, müşteri kazandıran web siteleri tasarlar ve kodlar.',
-    ogAlt: 'Eyüp DevArt — kod ile sanatın kesiştiği çizgi',
+      'Eyüp DevArt, web sitelerini elle ve ölçüye göre yapar: anında açılır, Google’da bulunur, yapay zekâ cevaplarında adı geçer. WhatsApp’tan yazın.',
+    ogAlt: 'Eyüp DevArt — kod ile sanatın buluştuğu çizgi',
   },
 
   wa: {
-    default: 'Merhaba Eyüp, eyupdevart.com üzerinden yazıyorum. Bir proje hakkında konuşmak istiyorum.',
-    project: 'Merhaba Eyüp, projemi kısaca anlatmak istiyorum:',
-    audit: 'Merhaba Eyüp, mevcut sitemin hız, SEO ve yapay zekâ görünürlüğünü değerlendirmenizi istiyorum. Site adresim:',
+    default: 'Merhaba Eyüp, eyupdevart.com’dan yazıyorum. Bir proje için konuşmak isterim.',
+    project: 'Merhaba Eyüp, iki cümleyle anlatayım:',
+    audit: 'Merhaba Eyüp, sitemin hızına, SEO’suna ve yapay zekâ görünürlüğüne bir göz atar mısınız? Adresi:',
   },
 
   nav: [
@@ -39,8 +39,8 @@ export default {
     menu: 'Menü',
     palette: 'Komut paleti',
     paletteLabel: 'Komut ara',
-    palettePlaceholder: 'Nereye gidelim? Yazın…',
-    paletteEmpty: 'Sonuç yok. Belki WhatsApp’tan sormak daha hızlı olur.',
+    palettePlaceholder: 'Nereye gidelim?',
+    paletteEmpty: 'Burada yok. WhatsApp’tan sormak daha çabuk olabilir.',
     paletteHint: 'gezin · seç · kapat',
     copied: 'Numara kopyalandı',
     whatsapp: 'WhatsApp’tan yazın',
@@ -60,7 +60,7 @@ export default {
     whatsapp: 'WhatsApp’tan yazın',
     call: 'Telefonla arayın',
     copy: 'Numarayı kopyalayın',
-    audit: 'Ücretsiz site değerlendirmesi isteyin',
+    audit: 'Sitenize bir göz atayım',
     guide: 'AEO ve GEO rehberi',
     lang: 'English version',
     llms: 'llms.txt — yapay zekâ için site özeti',
@@ -71,11 +71,11 @@ export default {
   hero: {
     eyebrow: ['Eyüp', 'DevArt', 'Geliştirici + Sanatçı'],
     h1: '*Sanatçı* gibi tasarlar, `mühendis` gibi kodlarım.',
-    lead: 'Anında açılan, Google’da ve yapay zekâ cevaplarında öne çıkan, ziyaretçiyi müşteriye çeviren web siteleri. Hazır şablon yok. Sıradanlık yok.',
-    ctaSecondary: 'İşleri görün',
+    lead: 'Web sitelerini elle, ölçüye göre yapıyorum: açıldığı anda güven veren, Google’da kolayca bulunan, ChatGPT’nin bile adını andığı siteler.',
+    ctaSecondary: 'Önce işlere bakın',
     hint: 'İmleci gezdirin — çizgi sizin elinizde',
     hintTouch: 'Sürükleyin — çizgi sizin elinizde',
-    chip: 'Bu sayfa cihazınızda {t} sn’de açıldı',
+    chip: 'Bu sayfa cihazınızda {t} saniyede açıldı',
     chipIdle: 'Cihazınızda ölçülüyor…',
     scroll: 'Kaydırın',
   },
@@ -84,85 +84,85 @@ export default {
     id: 'kisaca',
     label: 'Kısaca',
     q: 'Eyüp DevArt kimdir?',
-    a: 'Eyüp DevArt; sahne adı DevArt olan, web tasarımını ve yazılım geliştirmeyi tek elde birleştiren bir geliştirici ve dijital sanatçıdır. İşletmeler ve markalar için anında açılan, erişilebilir, Google’ın ve yapay zekâ asistanlarının kolayca anlayıp kaynak gösterebileceği web siteleri tasarlar ve kodlar.',
+    a: 'Eyüp DevArt, web sitelerini hem tasarlayan hem de kodlayan bir geliştirici ve dijital sanatçıdır; DevArt, Eyüp’ün sahne adı. Markalar ve işletmeler için çalışır; tasarımı, kodu, hızı ve arama görünürlüğünü tek elde toplar. Ortaya çıkan siteyi ziyaretçi de, Google da, yapay zekâ asistanları da ilk bakışta anlar.',
     facts: [
       ['Ad', 'Eyüp · sahne adı DevArt'],
       ['Uzmanlık', 'Web tasarım · Web geliştirme · SEO, AEO, GEO · Performans'],
-      ['Yaklaşım', 'Şablonsuz. Elle kodlanmış. Ölçülebilir.'],
-      ['Hizmet alanı', 'Türkiye merkezli · uzaktan dünya çapında'],
+      ['Yaklaşım', 'Hazır şablon yok; her site sıfırdan, elle yazılır'],
+      ['Hizmet alanı', 'Türkiye’den dünyanın her yerine, uzaktan'],
       ['Dil', 'Türkçe · İngilizce'],
-      ['İletişim', 'WhatsApp ve telefon: <a href="{wa}">{phone}</a>'],
+      ['İletişim', 'WhatsApp ya da telefon: <a href="{wa}">{phone}</a>'],
     ],
   },
 
   manifesto: {
     label: 'Manifesto',
-    text: 'Çoğu web sitesi var olmak için yapılır. Benimkiler *kazanmak* için. Her piksel bir karar, her `milisaniye` bir rakip. `Kod` fırçam, tarayıcı *tuvalim* — ve o tuvalde sıradanlığa yer yok.',
+    // \n → a deliberate line break · \u00a0 → words that must never be parted
+    text: 'Hazır şablon herkese uyar; o\u00a0yüzden kimseye *yakışmaz.* Ben siteleri terzi gibi yaparım: ölçü alırım, prova ederim, fazla `milisaniyeleri` keserim.\nYavaş dikilir, *çabuk*\u00a0açılır.',
   },
 
   work: {
     id: 'isler',
     label: 'Seçilmiş işler',
-    title: 'Konuşan *işler.*',
-    lead: 'Yayında, gerçek işletmeler için. Her biri kendi sektöründe çıtayı yükseltmek için tasarlandı.',
+    title: 'Laf değil, *iş.*',
+    lead: 'Hepsi yayında, hepsi gerçek işletmeler için. Adresler kartların üstünde; tıklayıp kendiniz bakın.',
     visit: 'Siteyi ziyaret edin',
     items: {
       aksu: {
         kind: 'Yerel hizmet · Kurumsal site',
         summary:
-          'Maltepe merkezli 7/24 oto çekici firması için yerel SEO odaklı, WhatsApp’a dönüşen kurumsal site. İlçe bazlı bölge sayfaları; mermer dokulu, serif tipografili premium sanat yönetimi.',
+          'Maltepe’de gece gündüz çalışan bir oto çekici firması. Yolda kalan biri onlara tek dokunuşla ulaşabilsin diye tasarlandı: WhatsApp’a giden kısa bir yol, her ilçe için ayrı bir sayfa ve mermer dokusuyla, serif harfleriyle sakin bir güven.',
         tags: ['Yerel SEO', 'Schema.org', 'Next.js', 'AVIF'],
         alt: 'Aksu Oto Çekici web sitesinin ana sayfası: mermer dokulu arka plan, serif başlık ve çekici filosu fotoğrafı',
       },
       marchetti: {
         kind: 'Marka · Web deneyimi',
-        summary:
-          'DevArt imzalı marka sitesi: markanın karakterini taşıyan özgün bir görsel dil ve özenle kodlanmış bir deneyim.',
+        summary: 'DevArt imzalı bir marka sitesi. Görsel dili de kodu da markanın karakterine göre, sıfırdan biçildi.',
         tags: ['Marka', 'Tasarım', 'Geliştirme'],
       },
     },
     next: {
       label: 'Sıradaki',
       title: 'Sıradaki iş *sizinki.*',
-      text: 'Projenizi iki cümleyle anlatın; gerisini birlikte kurgulayalım.',
-      cta: 'Projenizi anlatın',
+      text: 'Ne yaptığınızı ve ne istediğinizi iki cümleyle yazın; gerisini birlikte düşünürüz.',
+      cta: 'İki cümle yazın',
     },
   },
 
   services: {
     id: 'hizmetler',
     label: 'Hizmetler',
-    title: 'Tasarımdan koda, koddan *zirveye.*',
-    lead: 'Strateji, tasarım, geliştirme ve görünürlük — tek elden, tek imzayla.',
+    title: 'Her şey *tek* masada.',
+    lead: 'Tasarım, kod, hız ve görünürlük çoğu zaman dört ayrı ekibe dağılır. Burada aynı masada, aynı kafada buluşur; el değiştirirken hiçbir şey kaybolmaz.',
     items: [
       {
         title: 'Web tasarım & sanat yönetimi',
-        text: 'Markanıza özel görsel dil, tipografi, hareket ve etkileşim. Şablon değil, imza.',
+        text: 'Markanızın sesini görsele çeviririm: tipografi, renk, hareket, boşluk. Sayfayı açan kişi, logoyu görmeden kim olduğunuzu anlamalı.',
         tags: ['UI/UX', 'Sanat yönetimi', 'Hareket'],
       },
       {
         title: 'Web geliştirme',
-        text: 'Elle yazılmış, hafif, güvenli ve erişilebilir kod. Tanıtım sitesinden web uygulamasına, WebGL deneyimlerinden yönetim panellerine.',
+        text: 'Kodun görünmeyen tarafı da görünen tarafı kadar özen ister. Tanıtım sitesi, web uygulaması, WebGL deneyimi ya da yönetim paneli; hepsi hafif, güvenli ve herkesin kullanabileceği biçimde.',
         tags: ['TypeScript', 'Next.js', 'WebGL', 'Vanilla JS'],
       },
       {
         title: 'SEO · AEO · GEO',
-        text: 'Google’da üst sıralar; ChatGPT, Perplexity, Gemini ve Google AI Overviews cevaplarında kaynak gösterilen bir marka. Teknik SEO, Schema.org, llms.txt ve içerik mimarisi.',
+        text: 'Google’da üst sıralarda olmak iyidir. ChatGPT’ye, Perplexity’ye ya da Gemini’ye sorulduğunda adınızın geçmesi daha iyi. Teknik SEO, yapılandırılmış veri, llms.txt ve sağlam kurulmuş içerikle ikisini birden hedeflerim.',
         tags: ['Teknik SEO', 'Schema.org', 'llms.txt'],
       },
       {
         title: 'Performans mühendisliği',
-        text: 'Core Web Vitals’ı yeşile, Lighthouse skorlarını zirveye taşıyan optimizasyon. Hız, dönüşümün sessiz ortağıdır.',
+        text: 'Yavaş bir site, daha açılmadan müşteri kaybeder. Core Web Vitals’ı yeşile, Lighthouse’u zirveye taşırım; sayfa, siz göz kırpmadan hazır olur.',
         tags: ['Core Web Vitals', 'Lighthouse', 'CDN'],
       },
       {
         title: 'Yerel işletme & dönüşüm',
-        text: 'Telefona ve WhatsApp’a giden en kısa yol: hizmet bölgesi sayfaları, Google İşletme Profili uyumu, tek dokunuşla iletişim.',
+        text: 'Bir çekici, bir diş hekimi, bir restoran: müşteri sizi telefonundan arar ve acelesi vardır. Ona en kısa yolu çizerim; bölge sayfaları, Google İşletme Profili uyumu, tek dokunuşla arama ve WhatsApp.',
         tags: ['Yerel SEO', 'WhatsApp', 'Dönüşüm'],
       },
       {
         title: 'Bakım & büyüme',
-        text: 'Yayından sonra da yanınızdayım: ölçüm, güncelleme, güvenlik ve sürekli iyileştirme.',
+        text: 'Site yayına girdiği gün işim bitmez. Ölçerim, güncellerim, güvenliğini takip ederim; siz büyüdükçe site de sizinle büyür.',
         tags: ['Analitik', 'Güvenlik', 'Destek'],
       },
     ],
@@ -172,7 +172,7 @@ export default {
     id: 'kanit',
     label: 'Kanıt',
     title: 'Bu sayfa, *kendi kanıtı.*',
-    lead: 'Aşağıdaki değerler iddia değil. Şu anda, sizin cihazınızda, tarayıcınızın kendi ölçüm API’leriyle hesaplandı.',
+    lead: 'Bu rakamları ben yazmadım. Sayfa açılırken tarayıcınız ölçtü; şu\u00a0an, sizin cihazınızda.',
     metrics: {
       ttfb: 'İlk bayt',
       fcp: 'İlk içerik',
@@ -192,30 +192,30 @@ export default {
       na: 'Desteklenmiyor',
     },
     footnote:
-      'Eşikler, Google’ın Core Web Vitals sınırlarıdır: LCP ≤ 2,5 sn · INP ≤ 200 ms · CLS ≤ 0,1. Değerler bağlantınıza ve cihazınıza göre değişir — tıpkı gerçek ziyaretçilerinizde olduğu gibi.',
-    claims: ['Framework yok', 'Reklam takibi yok', 'Çerez yok', 'Elle yazıldı'],
+      'Eşikler, Google’ın Core Web Vitals sınırlarıdır: LCP ≤ 2,5 sn · INP ≤ 200 ms · CLS ≤ 0,1. Bağlantınız ve cihazınız değiştikçe sonuçlar da değişir; gerçek ziyaretçilerinizde olduğu gibi.',
+    claims: ['Framework yok', 'Reklam takibi yok', 'Çerez yok', 'Her satırı elle'],
   },
 
   process: {
     id: 'surec',
     label: 'Süreç',
-    title: 'Fikirden *yayına* dört adım.',
+    title: 'Dört adım, *sürpriz* yok.',
     steps: [
       {
         title: 'Keşif',
-        text: 'WhatsApp’tan yazarsınız; hedefi, kitleyi ve rakipleri konuşuruz. Net bir kapsam ve takvimle başlarız.',
+        text: 'WhatsApp’tan yazarsınız, konuşuruz: ne yapıyorsunuz, kime yapıyorsunuz, kimlerle yarışıyorsunuz. Görüşmeden net bir kapsam ve takvimle çıkarsınız.',
       },
       {
         title: 'Strateji & tasarım',
-        text: 'İçerik mimarisi, arama ve soru haritası; ardından markanıza özel tasarım ve etkileşim prototipi.',
+        text: 'İnsanlar sizi nasıl arıyor, neyi soruyor? Önce bunun haritasını çıkarırım. Tasarım bu haritanın üstüne kurulur; siz onu tıklanabilir bir prototip olarak görürsünüz.',
       },
       {
         title: 'Geliştirme',
-        text: 'Elle kodlama, performans bütçesi, erişilebilirlik ve yapılandırılmış veri. Her satır bir sebeple orada.',
+        text: 'Her şey elle yazılır, bir performans bütçesine sadık kalarak. Erişilebilirlik ve yapılandırılmış veri sona eklenen birer süs değildir; ilk satırdan oradadır.',
       },
       {
         title: 'Yayın & büyüme',
-        text: 'Search Console, analitik ve yapay zekâ görünürlüğü takibi. Ölçer, öğrenir, iyileştiririz.',
+        text: 'Yayından sonra Search Console’u, analitiği ve yapay zekâ cevaplarındaki görünürlüğünüzü izlerim. Neyin işe yaradığını görür, onu keskinleştiririz.',
       },
     ],
   },
@@ -223,43 +223,43 @@ export default {
   faq: {
     id: 'sss',
     label: 'SSS',
-    title: 'Sık sorulan *sorular.*',
+    title: 'Merak *edilenler.*',
     items: [
       {
         q: 'Eyüp DevArt kimdir?',
-        a: 'Eyüp DevArt, sahne adı DevArt olan bir geliştirici ve dijital sanatçıdır. Web tasarımını ve yazılım geliştirmeyi tek elde birleştirerek işletmeler ve markalar için hızlı, erişilebilir ve arama motorlarıyla yapay zekâ asistanlarının kolayca anlayabildiği web siteleri üretir.',
+        a: 'Eyüp DevArt, web sitelerini hem tasarlayan hem de kodlayan bir geliştirici ve dijital sanatçıdır; DevArt, Eyüp’ün sahne adı. İşletmeler ve markalar için hızlı, erişilebilir ve hem arama motorlarının hem de yapay zekâ asistanlarının zahmetsizce anladığı siteler yapar.',
       },
       {
         q: 'Hangi hizmetleri veriyorsunuz?',
-        a: 'Web tasarım ve sanat yönetimi, web geliştirme, teknik SEO ile AEO ve GEO çalışmaları, performans optimizasyonu, yerel işletmeler için dönüşüm odaklı siteler ile yayın sonrası bakım ve büyüme desteği.',
+        a: 'Web tasarım ve sanat yönetimi, web geliştirme, teknik SEO ile birlikte AEO ve GEO, performans çalışması, yerel işletmeler için dönüşüm odaklı siteler ve yayından sonraki bakım. Kısacası bir web sitesinin ilk eskizden yayından çok sonrasına kadar ihtiyaç duyduğu her şey.',
       },
       {
         q: 'AEO ve GEO nedir?',
-        a: 'AEO (Answer Engine Optimization, cevap motoru optimizasyonu), içeriğinizin arama motorlarında ve sesli asistanlarda doğrudan cevap olarak seçilmesi için yapılan optimizasyondur. GEO (Generative Engine Optimization, üretken motor optimizasyonu) ise ChatGPT, Perplexity, Gemini ve Google AI Overviews gibi yapay zekâ sistemlerinin cevaplarında markanızın kaynak olarak gösterilmesini hedefler. Ayrıntılar için <a href="{guide}">AEO ve GEO rehberine</a> göz atın.',
+        a: 'AEO (Answer Engine Optimization, cevap motoru optimizasyonu), arama motorlarının ve sesli asistanların doğrudan cevap olarak sizin içeriğinizi seçmesini sağlar. GEO (Generative Engine Optimization, üretken motor optimizasyonu) ise ChatGPT, Perplexity, Gemini ve Google AI Overviews gibi yapay zekâ sistemlerinin yazdığı cevaplarda markanızın kaynak olarak geçmesini hedefler. Ayrıntılar <a href="{guide}">AEO ve GEO rehberinde</a>.',
       },
       {
         q: 'Bir web sitesi ne kadar sürede hazır olur?',
-        a: 'Kapsama göre değişir. İlk görüşmede net bir takvim paylaşırım ve her aşamayı birlikte onaylayarak ilerleriz; sürpriz yok.',
+        a: 'Kapsama göre değişir; tek sayfalık bir siteyle kapsamlı bir web uygulaması aynı takvimde bitmez. İlk görüşmede net bir takvim paylaşırım, her aşamayı birlikte onaylarız. Sürprizi sevmem.',
       },
       {
         q: 'Fiyatlandırma nasıl?',
-        a: 'Her proje kendi kapsamına göre fiyatlandırılır; hazır paket satmıyorum. Projenizi WhatsApp’tan kısaca anlatın, size net bir teklif hazırlayayım.',
+        a: 'Her proje kendi kapsamına göre fiyatlanır. Paket satmıyorum, çünkü iki işletme birbirine benzemez. Sizinkini WhatsApp’tan kısaca anlatın, size net bir teklif hazırlayayım.',
       },
       {
         q: 'Mevcut sitemi hızlandırabilir ya da SEO’sunu düzeltebilir misiniz?',
-        a: 'Evet. Önce ölçerim: Core Web Vitals, taranabilirlik, indeksleme ve yapılandırılmış veri. Ardından etkisine göre sıralanmış bir yol haritası çıkarır, en kritik sorunlardan başlarız.',
+        a: 'Evet. Önce ölçerim: Core Web Vitals, taranabilirlik, dizine eklenme, yapılandırılmış veri. Sonra sorunları etkisine göre sıralar, size en çok kazandıracak olandan başlarım.',
       },
       {
         q: 'Neden hazır şablon kullanmıyorsunuz?',
-        a: 'Şablonlar herkese uyabilmek için kullanılmayan kodla gelir; bu da yavaşlık ve sıradan bir görünüm demektir. Elle kodlanan bir site yalnızca ihtiyacınız olanı taşır: daha hızlı açılır, daha güvenlidir ve tamamen size aittir.',
+        a: 'Şablonlar herkese uysun diye yapılır; bu yüzden kimsenin kullanmadığı kodlarla gelir. Sonuç, yavaşlık ve yüz başka sitede görmüş olduğunuz bir görünümdür. Elle yazılan bir site yalnızca size gerekeni taşır: daha hızlı açılır, daha güvenlidir ve tamamen sizindir.',
       },
       {
         q: 'Türkiye dışından çalışabilir miyiz?',
-        a: 'Elbette. Süreç tamamen uzaktan yürür; Türkçe veya İngilizce iletişim kurabiliriz.',
+        a: 'Elbette. Her şey uzaktan yürür; Türkçe ya da İngilizce, hangisi size rahatsa.',
       },
       {
         q: 'Nasıl iletişime geçebilirim?',
-        a: 'En hızlı yol WhatsApp: <a href="{wa}">{phone}</a>. Aynı numaradan <a href="{tel}">arayabilirsiniz</a> de.',
+        a: 'En hızlısı WhatsApp: <a href="{wa}">{phone}</a>. İsterseniz aynı numaradan <a href="{tel}">arayın</a>.',
       },
     ],
   },
@@ -267,16 +267,16 @@ export default {
   contact: {
     id: 'iletisim',
     label: 'İletişim',
-    title: 'Hadi *konuşalım.*',
-    lead: 'Bir mesaj, bir fikir, bir hedef. Gerisini birlikte inşa ederiz.',
-    prefilled: 'Mesaj hazır — yalnızca gönder’e basın.',
-    qr: 'Telefonunuzla okutun; sohbet doğrudan açılsın.',
+    title: 'Bir *merhaba* yeter.',
+    lead: 'Ne yaptığınızı ve nereye varmak istediğinizi yazın. Gerisini konuşa konuşa buluruz.',
+    prefilled: 'Mesajın ilk cümlesini ben yazdım; gerisi sizde.',
+    qr: 'Kameranızı buraya tutun, sohbet telefonunuzda açılsın.',
     clock: 'Türkiye’de saat',
   },
 
   footer: {
     tagline: 'Geliştirici + Sanatçı.',
-    built: 'Bu site hiçbir framework kullanılmadan, elle yazıldı.',
+    built: 'Bu site satır satır, elle yazıldı. Framework kullanılmadı; gerek de olmadı.',
     guide: 'AEO & GEO rehberi',
     llms: 'llms.txt',
     sitemap: 'Site haritası',
@@ -287,7 +287,7 @@ export default {
   notFound: {
     title: 'Sayfa bulunamadı — Eyüp DevArt',
     h1: 'Bu sayfa, çizginin *öbür tarafında* kaldı.',
-    text: 'Aradığınız adres taşınmış ya da hiç var olmamış olabilir. Ama doğru yerdesiniz.',
+    text: 'Bu adres taşınmış ya da hiç var olmamış. Ama siz doğru siteye geldiniz.',
     home: 'Ana sayfaya dönün',
   },
 
