@@ -20,7 +20,7 @@ for (const page of pages) {
     const out = path.join(tmp, 'r.json');
     const args = ['--yes', 'lighthouse@13', base + page, '--output=json', `--output-path=${out}`, '--quiet', '--chrome-flags=--headless=new --no-sandbox'];
     if (preset === 'desktop') args.push('--preset=desktop');
-    execFileSync('npx', args, { stdio: 'ignore' });
+    execFileSync('npx', args, { stdio: ['ignore', 'ignore', 'inherit'] }); // --quiet: stderr carries only real errors
     const r = JSON.parse(fs.readFileSync(out, 'utf8'));
     const scores = Object.values(r.categories).map((c) => {
       const s = Math.round(c.score * 100);
