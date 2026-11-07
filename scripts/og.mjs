@@ -30,13 +30,13 @@ for (const card of cards) {
   // bypassCSP: the preview server enforces the production CSP, which (rightly) blocks injected styles.
   const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1, bypassCSP: true });
   // Layout for the card goes in before the page's own scripts, so the shader lays out the wordmark for it.
-  const css = `.hdr,.hero__eyebrow,.hero__bottom,.marquee,.dock{display:none!important}
+  const css = `.hdr,.hero__eyebrow,.hero__bottom,.hero__hint,.thread,.marquee,.dock{display:none!important}
       .hero__in{grid-template-rows:1fr!important;padding-bottom:120px!important}
-      .og{position:fixed;inset:0;padding:44px 56px;display:flex;flex-direction:column;justify-content:space-between;z-index:9;font-family:Geist,sans-serif;color:#ece8df}
+      .og{position:fixed;inset:0;padding:44px 56px;display:flex;flex-direction:column;justify-content:space-between;z-index:9;font-family:Geist,sans-serif;color:#141317}
       .og__top{display:flex;justify-content:space-between;align-items:center;font:500 18px/1 "Geist Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
       .og__top b{color:#ff5b22;font-weight:500}
       .og__title{font-size:${card.file.includes('guide') ? 46 : 40}px;line-height:1.05;letter-spacing:-.04em;font-weight:500;max-width:1000px;text-wrap:balance}
-      .og__kicker{display:block;margin-bottom:12px;font:italic 400 34px/1 "Instrument Serif",serif;letter-spacing:0;color:#ff7a45}`;
+      .og__kicker{display:block;margin-bottom:12px;font:italic 400 34px/1 "Instrument Serif",serif;letter-spacing:0;color:#b73d0b}`;
   await page.addInitScript((css) => {
     document.addEventListener('DOMContentLoaded', () => {
       const s = document.createElement('style');

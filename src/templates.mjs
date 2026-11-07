@@ -153,6 +153,9 @@ function dock(c) {
 </div>`;
 }
 
+const hook = (h, href) =>
+  h ? `<p class="hook">${h.text} <a href="${esc(href)}" target="_blank" rel="noopener" data-wa>${h.link}<span class="hook__arrow" aria-hidden="true">→</span></a></p>` : '';
+
 const secHead = (s, n, extra = '') => `<header class="sec-head">
 <p class="sec-label"><span class="sec-label__n">${pad(n)}</span>${s.label}</p>
 <h2 class="sec-title" id="${s.id}-title">${rich(s.title)}</h2>
@@ -331,6 +334,7 @@ ${row('ttfb', 'TTFB', 'ms')}
 <p class="proof__note">${p.footnote}</p>
 </div>
 </div>
+${hook(p.hook, wa(c.wa.audit))}
 </div>
 </section>`;
 }
@@ -362,6 +366,7 @@ function faq(c) {
 ${secHead(f, 7)}
 <div class="faq__list">
 ${faqList(f.items, c, 'faq')}
+${hook(f.hook, wa(c.wa.default))}
 </div>
 </section>`;
 }
@@ -389,6 +394,7 @@ function contact(c, qr) {
 export function homeBody(c, { qr }) {
   return `${header(c, { home: true })}
 <main id="main">
+<div class="thread" aria-hidden="true" data-thread><svg class="thread__route"><path/></svg><svg class="thread__stitch"><path/></svg><span class="thread__knot"></span></div>
 ${hero(c)}
 ${marquee(c)}
 ${short(c)}

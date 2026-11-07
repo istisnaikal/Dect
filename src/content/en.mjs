@@ -193,6 +193,7 @@ export default {
     footnote:
       'Thresholds are Google’s Core Web Vitals limits: LCP ≤ 2.5 s · INP ≤ 200 ms · CLS ≤ 0.1. Results shift with your connection and device, just as they do for your real visitors.',
     claims: ['Zero frameworks', 'Zero ad tracking', 'Zero cookies', 'Every line by hand'],
+    hook: { text: 'Curious about your own site’s numbers?', link: 'Send the address and I’ll measure it the same way' },
   },
 
   process: {
@@ -223,6 +224,7 @@ export default {
     id: 'faq',
     label: 'FAQ',
     title: 'Fair *questions.*',
+    hook: { text: 'Your question isn’t here?', link: 'Just ask' },
     items: [
       {
         q: 'Who is Eyüp DevArt?',

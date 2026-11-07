@@ -193,7 +193,7 @@ ${alternates}
 <meta name="robots" content="${p.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}">
 <meta name="author" content="${esc(site.name)}">
 <meta name="theme-color" content="${site.themeColor}">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="only light">
 <meta name="format-detection" content="telephone=no">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">

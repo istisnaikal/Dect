@@ -3,7 +3,8 @@
 //
 //  One living field, rendered twice. Left of the seam the developer sees it as
 //  code: ASCII glyphs on a grid. Right of the seam the artist sees it as fire:
-//  molten, lit, iridescent metal. The DevArt wordmark is embossed into both.
+//  liquid mother-of-pearl in morning light. The DevArt wordmark is set into both:
+//  ember LED blocks on the code side, ink lacquer on the art side.
 //  Drag the seam and the word itself changes hands.
 //
 //  Budget-aware: adaptive resolution, pauses off-screen / in background tabs,
@@ -32,9 +33,13 @@ uniform float uScrim;
 uniform sampler2D uText;
 out vec4 outColor;
 
-const vec3 BG = vec3(0.0235, 0.0235, 0.031);
-const vec3 EMBER = vec3(1.0, 0.357, 0.133);
-const vec3 BONE = vec3(0.925, 0.91, 0.875);
+const vec3 BG = vec3(0.965, 0.957, 0.937);     // paper  #f6f4ef
+const vec3 INK = vec3(0.078, 0.075, 0.09);      // ink    #141317
+const vec3 EMBER = vec3(1.0, 0.357, 0.133);     // ember  #ff5b22
+const vec3 PEARL = vec3(0.995, 0.985, 0.965);
+const vec3 LILAC = vec3(0.86, 0.84, 0.93);
+const vec3 SKY = vec3(0.84, 0.89, 0.96);
+const vec3 PEACH = vec3(1.0, 0.82, 0.72);
 const mat2 ROT = mat2(1.6, 1.2, -1.2, 1.6);
 
 float h21(vec2 p) {
@@ -101,24 +106,28 @@ void main() {
 
   vec4 tx = textAt(sp);
 
-  // ── ART: molten, lit metal ──
-  float h = f * 1.25 + tx.b * 0.85;
+  // ── ART: liquid mother-of-pearl in morning light ──
+  float lm = smoothstep(0.3, 0.7, tx.g);
+  // The field ripples around the letters but lies still inside them: lacquer is smooth.
+  float h = f * 1.25 * (1.0 - 0.92 * lm) + tx.b * 0.85;
   vec3 n = normalize(vec3(-dFdx(h), -dFdy(h), 7.0 / uRes.y));
   vec3 L = normalize(vec3(uLight, 0.8));
   float dif = clamp(dot(n, L), 0.0, 1.0);
-  float spec = pow(clamp(dot(reflect(-L, n), vec3(0.0, 0.0, 1.0)), 0.0, 1.0), 36.0);
-  float fres = pow(1.0 - clamp(n.z, 0.0, 1.0), 2.5);
+  float spec = pow(clamp(dot(reflect(-L, n), vec3(0.0, 0.0, 1.0)), 0.0, 1.0), 40.0);
+  float fres = pow(1.0 - clamp(n.z, 0.0, 1.0), 2.2);
   float heat = smoothstep(0.62, 0.95, f + 0.3 * r.x - 0.12);
-  vec3 base = mix(vec3(0.02, 0.018, 0.035), vec3(0.15, 0.08, 0.3) * 0.6, smoothstep(0.25, 0.75, f));
-  base = mix(base, EMBER * 0.8, heat * 0.7);
-  vec3 iri = 0.55 + 0.45 * cos(6.2831 * (vec3(0.0, 0.33, 0.67) + f * 1.3 + n.x * 0.7 + n.y * 0.3));
-  vec3 art = base * (0.35 + 0.85 * dif) + spec * vec3(1.0, 0.88, 0.78) * 0.75 + fres * iri * 0.22;
-  float lm = smoothstep(0.3, 0.7, tx.g);
-  float env = smoothstep(-0.5, 0.9, n.y * 0.8 + n.x * 0.35 + (f - 0.5) * 0.9);
-  vec3 chrome = mix(vec3(0.16, 0.14, 0.15), BONE, env) + spec * 1.4 + EMBER * fres * 1.6;
-  art = mix(art, chrome, lm);
+  // Valleys cool to lilac and sky, crests stay pearl-white, warm currents blush peach.
+  vec3 base = mix(PEARL, mix(LILAC, SKY, q.x), smoothstep(0.3, 0.85, f) * 0.75);
+  base = mix(base, PEACH, heat * 0.55);
+  vec3 iri = 0.6 + 0.4 * cos(6.2831 * (vec3(0.0, 0.33, 0.67) + f * 1.4 + n.x * 0.8 + n.y * 0.35));
+  vec3 art = base * (0.86 + 0.2 * dif) + spec * 0.28 + fres * (mix(iri, PEARL, 0.35) - 0.5) * 0.32;
+  // The word itself: ink lacquer, a sliver of sky in its gloss, an ember rim where it turns away.
+  float env = smoothstep(-0.5, 0.9, n.y * 0.8 + n.x * 0.35);
+  vec3 lacquer = mix(INK, vec3(0.3, 0.29, 0.35), env * 0.55) + spec * vec3(1.0, 0.97, 0.94) * 0.85;
+  lacquer = mix(lacquer, EMBER, fres * 0.32);
+  art = mix(art, lacquer, lm);
 
-  // ── DEV: the same field, as code ──
+  // ── DEV: the same field, printed as code on paper ──
   float g = clamp(f * 1.35 - 0.22, 0.0, 1.0);
   float letter = tx.r;
   float lvl = max(g * 0.62, letter * 0.95);
@@ -133,23 +142,25 @@ void main() {
   if (letter > 0.5) ch = 33554431; // solid LED block: letters stay legible at any cell count
   vec2 lp = mod(fc / (uCell * 0.5), 2.0) - 1.0;
   float gch = glyph(ch, lp);
-  vec3 devc = mix(BONE * (0.07 + 0.3 * g), mix(EMBER, BONE, 0.35 + 0.4 * g), letter) * gch;
   float typed = step(h21(cell) * 0.3 + (seamX - cc.x) / uRes.x * 0.9, uIntro * 1.35);
-  devc *= typed;
+  float ink = gch * typed * mix(0.1 + 0.32 * g, 1.0, letter);
+  vec3 devc = mix(BG, mix(INK, EMBER, letter), ink);
 
-  vec3 col = dev ? devc : art * smoothstep(0.0, 0.12, uIntro * 1.25 - (fc.x - seamX) / uRes.x);
+  float reveal = smoothstep(0.0, 0.12, uIntro * 1.25 - (fc.x - seamX) / uRes.x);
+  vec3 col = dev ? devc : mix(BG, art, reveal);
 
-  // ── The seam itself ──
+  // ── The seam: an ember thread with a warm haze (mixed, not added — light can't glow on light) ──
   float dx = abs(fc.x - seamX) / uPx;
-  col += EMBER * (exp(-dx * 0.5) * 0.95 + exp(-dx * 0.05) * 0.16) * uIntro;
-  col += vec3(1.0, 0.86, 0.76) * exp(-dx * 1.4) * 0.85 * uIntro;
+  col = mix(col, mix(EMBER, PEACH, 0.35), exp(-dx * 0.06) * 0.14 * uIntro);
+  col = mix(col, EMBER, (exp(-dx * 0.55) * 0.95) * uIntro);
+  col = mix(col, vec3(1.0, 0.93, 0.88), exp(-dx * 2.2) * 0.7 * uIntro);
 
-  // Vignette, scrim for the copy below, film grain.
+  // Edges dissolve into paper, the copy below sits on a clean scrim, a whisper of grain.
   vec2 uv = fc / uRes;
-  col *= smoothstep(1.4, 0.3, length((uv - vec2(0.5, 0.56)) * vec2(1.05, 1.35)));
-  col = mix(col, BG, smoothstep(uScrim + 0.1 * uRes.y, uScrim - 0.1 * uRes.y, fc.y) * 0.86);
+  col = mix(BG, col, smoothstep(1.4, 0.35, length((uv - vec2(0.5, 0.56)) * vec2(1.05, 1.35))));
+  col = mix(col, BG, smoothstep(uScrim + 0.1 * uRes.y, uScrim - 0.1 * uRes.y, fc.y) * 0.9);
   col = mix(BG, col, uIntro);
-  col += (h21(fc + fract(t * 7.13) * 91.0) - 0.5) * 0.028;
+  col += (h21(fc + fract(t * 7.13) * 91.0) - 0.5) * 0.018;
   outColor = vec4(col, 1.0);
 }`;
 

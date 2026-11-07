@@ -376,6 +376,104 @@ function clock() {
   setInterval(tick, 10_000);
 }
 
+/* ── The thread: a stitch down the margin that ends tied to the CTA ─────────
+   Built from section boxes + computed padding only (never the inside of a
+   content-visibility-skipped section), rebuilt whenever anything resizes. */
+function thread() {
+  const el = $('[data-thread]');
+  const main = $('main');
+  const hero = $('[data-hero]');
+  if (!el || !main || !hero || !('ResizeObserver' in window)) return;
+  const [route, stitch] = $$('path', el);
+  const knot = $('.thread__knot', el);
+  const contact = $('#iletisim, #contact');
+  const cta = contact && $('.btn--primary', contact);
+  const sections = $$('main > section').filter((s) => s !== hero && $('.sec-label', s));
+  let samples = [];
+  let endY = Infinity;
+  let mainTop = 0;
+  let contactNear = false;
+  let tied = false;
+
+  const build = () => {
+    const mr = main.getBoundingClientRect();
+    mainTop = mr.top + scrollY;
+    const edge = $('.hero__in', hero).getBoundingClientRect().left - mr.left;
+    const amp = Math.max(4, Math.min(30, edge * 0.55));
+    const x = edge - Math.min(14, edge * 0.45);
+    const inward = Math.max(0, Math.min(amp * 0.55, edge - 4 - x));
+    const pts = [{ x, y: hero.getBoundingClientRect().bottom - mr.top - 36 }];
+    for (const s of sections) {
+      const r = s.getBoundingClientRect();
+      pts.push({ x, y: r.top - mr.top + parseFloat(getComputedStyle(s).paddingTop) + 6 });
+    }
+    let end = null;
+    if (cta && contactNear) {
+      const b = cta.getBoundingClientRect();
+      end = { x: b.left - mr.left - 2, y: b.top - mr.top + b.height / 2 };
+    }
+    let d = `M${pts[0].x} ${pts[0].y}`;
+    for (let i = 1; i < pts.length; i++) {
+      const a = pts[i - 1];
+      const b = pts[i];
+      const dy = b.y - a.y;
+      // Weave: out into the margin, then back towards the text, never touching it.
+      const off = i % 2 ? -amp : inward;
+      d += ` C${a.x + off} ${a.y + dy * 0.38} ${b.x + off} ${b.y - dy * 0.38} ${b.x} ${b.y}`;
+    }
+    if (end) {
+      const a = pts[pts.length - 1];
+      d += ` C${a.x - amp * 0.6} ${a.y + (end.y - a.y) * 0.6} ${end.x - 70} ${end.y} ${end.x} ${end.y}`;
+    }
+    route.setAttribute('d', d);
+    stitch.setAttribute('d', d);
+    // Sample the path once so the knot can follow the reading position cheaply.
+    const len = stitch.getTotalLength();
+    samples = [];
+    for (let l = 0; l <= len; l += 10) {
+      const pt = stitch.getPointAtLength(l);
+      samples.push([pt.x, pt.y]);
+    }
+    endY = end ? end.y : Infinity;
+    el.classList.add('is-ready');
+    update();
+  };
+
+  const update = () => {
+    const head = scrollY + innerHeight * 0.62 - mainTop;
+    el.style.setProperty('--head', `${Math.round(head)}px`);
+    let i = 0;
+    while (i < samples.length - 1 && samples[i][1] < head) i++;
+    const [kx, ky] = samples[i] || [-99, -99];
+    el.style.setProperty('--kx', `${kx.toFixed(1)}px`);
+    el.style.setProperty('--ky', `${ky.toFixed(1)}px`);
+    const now = head >= endY;
+    if (now !== tied) {
+      tied = now;
+      el.classList.toggle('is-tied', tied);
+      if (tied) cta.classList.add('is-caught'); // one breath; the class stays so it never repeats
+    }
+  };
+
+  let rt = 0;
+  const later = () => {
+    clearTimeout(rt);
+    rt = setTimeout(build, 120);
+  };
+  new ResizeObserver(later).observe(main);
+  if (contact && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting !== contactNear) {
+        contactNear = e.isIntersecting;
+        later();
+      }
+    }, { rootMargin: '50% 0px' }).observe(contact);
+  }
+  let ticking = false;
+  addEventListener('scroll', () => ticking || ((ticking = true), requestAnimationFrame(() => ((ticking = false), update()))), { passive: true });
+  build();
+}
+
 /* ── The Seam: WebGL hero, loaded only when the main thread is idle ───────── */
 function seam() {
   const canvas = $('[data-seam]');
@@ -409,4 +507,4 @@ header();
 palette();
 vitals();
 seam();
-for (const fn of [dock, pointer, clock, hello]) idle(fn);
+for (const fn of [dock, pointer, clock, thread, hello]) idle(fn);

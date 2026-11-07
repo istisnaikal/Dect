@@ -194,6 +194,7 @@ export default {
     footnote:
       'Eşikler, Google’ın Core Web Vitals sınırlarıdır: LCP ≤ 2,5 sn · INP ≤ 200 ms · CLS ≤ 0,1. Bağlantınız ve cihazınız değiştikçe sonuçlar da değişir; gerçek ziyaretçilerinizde olduğu gibi.',
     claims: ['Framework yok', 'Reklam takibi yok', 'Çerez yok', 'Her satırı elle'],
+    hook: { text: 'Kendi sitenizin rakamlarını merak ediyor musunuz?', link: 'Adresini gönderin, aynı ölçümü yapayım' },
   },
 
   process: {
@@ -224,6 +225,7 @@ export default {
     id: 'sss',
     label: 'SSS',
     title: 'Merak *edilenler.*',
+    hook: { text: 'Sorunuz burada yok mu?', link: 'Doğrudan sorun' },
     items: [
       {
         q: 'Eyüp DevArt kimdir?',

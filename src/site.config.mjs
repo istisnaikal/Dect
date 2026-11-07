@@ -26,7 +26,7 @@ export const site = {
   // Bump when content changes meaningfully — feeds sitemap <lastmod> and dateModified.
   updated: '2026-11-07',
   published: '2026-11-07',
-  themeColor: '#060608',
+  themeColor: '#f6f4ef',
   // What the Cloudflare zone injects into every HTML response at the edge. The CSP is
   // generated to match: with both off, script-src is locked to 'self' + build-time hashes.
   edge: {
