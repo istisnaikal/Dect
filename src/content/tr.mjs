@@ -49,6 +49,9 @@ export default {
     langSwitch: 'Switch to English',
     external: '(yeni sekmede açılır)',
     backTop: 'Başa dön',
+    copyNumber: 'Numarayı kopyala',
+    close: 'Kapat',
+    rail: 'İşler — kaydırarak gezin',
   },
 
   commands: {
@@ -62,6 +65,7 @@ export default {
     lang: 'English version',
     llms: 'llms.txt — yapay zekâ için site özeti',
     top: 'Başa dön',
+    share: 'Bu sayfayı paylaşın',
   },
 
   hero: {
@@ -69,8 +73,8 @@ export default {
     h1: '*Sanatçı* gibi tasarlar, `mühendis` gibi kodlarım.',
     lead: 'Anında açılan, Google’da ve yapay zekâ cevaplarında öne çıkan, ziyaretçiyi müşteriye çeviren web siteleri. Hazır şablon yok. Sıradanlık yok.',
     ctaSecondary: 'İşleri görün',
-    hint: 'İmleci gezdirin: kod ile sanat arasındaki çizgi sizin elinizde.',
-    hintTouch: 'Dokunup sürükleyin: kod ile sanat arasındaki çizgi sizin elinizde.',
+    hint: 'İmleci gezdirin — çizgi sizin elinizde',
+    hintTouch: 'Sürükleyin — çizgi sizin elinizde',
     chip: 'Bu sayfa cihazınızda {t} sn’de açıldı',
     chipIdle: 'Cihazınızda ölçülüyor…',
     scroll: 'Kaydırın',
@@ -277,6 +281,7 @@ export default {
     llms: 'llms.txt',
     sitemap: 'Site haritası',
     palette: 'Komut paleti',
+    menu: 'Menü',
   },
 
   notFound: {

@@ -17,31 +17,45 @@ const nf = (n, digits = 0) => {
 };
 const idle = (fn) => (window.requestIdleCallback ? requestIdleCallback(fn, { timeout: 2000 }) : setTimeout(fn, 60));
 
-/* ── Header: solid after the first scroll ─────────────────────────────────── */
-// An IntersectionObserver on a 24px sentinel: async, so it can never force layout.
+/* ── Header: solid after the first scroll; on phones it glides away ─────────
+   while you read down and returns the instant you scroll up. ─────────────── */
 function header() {
   const hdr = $('[data-hdr]');
   if (!hdr || !('IntersectionObserver' in window)) return;
+  // A 24px sentinel + IntersectionObserver: async, so it can never force layout.
   const s = d.createElement('div');
   s.setAttribute('aria-hidden', 'true');
   s.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:24px;pointer-events:none';
   d.body.prepend(s);
   new IntersectionObserver(([e]) => hdr.classList.toggle('is-solid', !e.isIntersecting)).observe(s);
+
+  const phone = matchMedia('(max-width: 899px)');
+  let lastY = 0;
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const y = scrollY;
+    const dy = y - lastY;
+    if (Math.abs(dy) < 6) return;
+    hdr.classList.toggle('is-hidden', phone.matches && dy > 0 && y > innerHeight * 0.75 && !hdr.contains(d.activeElement));
+    lastY = y;
+  };
+  addEventListener('scroll', () => ticking || ((ticking = true), requestAnimationFrame(update)), { passive: true });
+  hdr.addEventListener('focusin', () => hdr.classList.remove('is-hidden'));
 }
 
-/* ── Mobile dock: appears after the hero, steps aside at the contact block ── */
+/* ── Mobile dock: after the hero, out of the way of the contact block & footer ── */
 function dock() {
   const el = $('[data-dock]');
   const hero = $('[data-hero]') || $('.guide__head');
-  const contact = $('#iletisim, #contact, .cta-box');
+  const away = $$('#iletisim, #contact, .cta-box, .ftr');
   if (!el || !hero || !('IntersectionObserver' in window)) return;
   const seen = new Map();
   const io = new IntersectionObserver((entries) => {
     entries.forEach((e) => seen.set(e.target, e.isIntersecting));
-    el.classList.toggle('is-on', !seen.get(hero) && !seen.get(contact));
+    el.classList.toggle('is-on', !seen.get(hero) && !away.some((a) => seen.get(a)));
   });
-  io.observe(hero);
-  if (contact) io.observe(contact);
+  [hero, ...away].forEach((t) => io.observe(t));
 }
 
 /* ── Toast + copy ─────────────────────────────────────────────────────────── */
@@ -59,34 +73,40 @@ async function copyPhone() {
   const phone = t?.dataset.phone || '';
   try {
     await navigator.clipboard.writeText(phone);
+    navigator.vibrate?.(12); // a single haptic tick where supported
     toast(`${t.dataset.msg} — ${phone}`);
   } catch {
     location.href = `tel:${phone.replace(/\s/g, '')}`;
   }
 }
 
-/* ── Command palette (⌘K / Ctrl K / "/") ──────────────────────────────────── */
+/* ── Command palette (⌘K / Ctrl K / "/"); on phones it is the menu: a sheet ──
+   that rises from the bottom, keeps the keyboard down, and swipes away. ──── */
 function palette() {
   const dlg = $('[data-palette]');
   if (!dlg || typeof dlg.showModal !== 'function') return;
+  const box = $('.palette__box', dlg);
   const input = $('[data-palette-input]', dlg);
-  const opts = $$('.palette__opt', dlg);
+  const canShare = typeof navigator.share === 'function';
+  const opts = $$('.palette__opt', dlg).filter((o) => !o.hasAttribute('data-optional') || canShare);
   const groups = $$('.palette__group', dlg);
   const empty = $('[data-palette-empty]', dlg);
+  const touch = () => !finePointer.matches;
   let visible = opts;
   let active = 0;
+  let closing = 0;
 
   const norm = (s) =>
     s.toLocaleLowerCase(lang).replace(/ı/g, 'i').normalize('NFD').replace(/[̀-ͯ]/g, '');
 
-  const select = (i) => {
+  const select = (i, scroll = true) => {
     opts.forEach((o) => o.setAttribute('aria-selected', 'false'));
     if (!visible.length) return input.removeAttribute('aria-activedescendant');
     active = (i + visible.length) % visible.length;
     const o = visible[active];
     o.setAttribute('aria-selected', 'true');
     input.setAttribute('aria-activedescendant', o.id);
-    o.scrollIntoView({ block: 'nearest' });
+    if (scroll) o.scrollIntoView({ block: 'nearest' });
   };
 
   const filter = () => {
@@ -98,39 +118,67 @@ function palette() {
     });
     groups.forEach((g) => (g.hidden = !!q));
     empty.hidden = visible.length > 0;
-    select(0);
+    select(0, !touch());
   };
 
   const open = () => {
     if (dlg.open) return;
+    clearTimeout(closing);
+    dlg.classList.remove('is-closing');
+    box.style.transform = '';
     input.value = '';
     filter();
+    // Thumbs get a menu, not a keyboard: the field only becomes editable when tapped.
+    input.readOnly = touch();
+    dlg.toggleAttribute('autofocus', touch());
     dlg.showModal();
-    input.focus();
+    if (!touch()) input.focus();
+  };
+
+  const close = () => {
+    if (!dlg.open || dlg.classList.contains('is-closing')) return;
+    const done = () => {
+      dlg.classList.remove('is-closing');
+      box.style.transform = '';
+      dlg.close();
+    };
+    if (reduced.matches) return done();
+    box.style.transform = '';
+    dlg.classList.add('is-closing');
+    closing = setTimeout(done, 340);
   };
 
   const run = (o) => {
     if (!o) return;
-    dlg.close();
     const href = o.dataset.href;
+    const action = o.dataset.action;
     if (href) {
       const external = /^https?:/.test(href) && !href.startsWith(location.origin);
-      external ? window.open(href, '_blank', 'noopener') : (location.href = href);
-    } else if (o.dataset.action === 'copy') copyPhone();
-    else if (o.dataset.action === 'top') scrollTo({ top: 0, behavior: reduced.matches ? 'auto' : 'smooth' });
+      if (external) window.open(href, '_blank', 'noopener');
+      else location.href = href;
+    } else if (action === 'copy') copyPhone();
+    else if (action === 'share') navigator.share({ title: d.title, url: location.href.split('#')[0] }).catch(() => {});
+    else if (action === 'top') scrollTo({ top: 0, behavior: reduced.matches ? 'auto' : 'smooth' });
+    close();
   };
 
   $$('[data-palette-open]').forEach((b) => b.addEventListener('click', open));
+  $('[data-palette-close]', dlg)?.addEventListener('click', close);
+  dlg.addEventListener('cancel', (e) => {
+    e.preventDefault(); // Escape: leave with the same grace as everything else
+    close();
+  });
   addEventListener('keydown', (e) => {
     const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName) || e.target.isContentEditable;
     if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
-      dlg.open ? dlg.close() : open();
+      dlg.open ? close() : open();
     } else if (e.key === '/' && !dlg.open && !typing) {
       e.preventDefault();
       open();
     }
   });
+  input.addEventListener('pointerdown', () => (input.readOnly = false));
   input.addEventListener('input', filter);
   input.addEventListener('keydown', (e) => {
     const keys = { ArrowDown: active + 1, ArrowUp: active - 1, Home: 0, End: visible.length - 1 };
@@ -144,12 +192,45 @@ function palette() {
   });
   opts.forEach((o) => {
     o.addEventListener('click', () => run(o));
-    o.addEventListener('pointermove', () => {
+    o.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
       const i = visible.indexOf(o);
-      if (i !== active) select(i);
+      if (i !== active) select(i, false);
     });
   });
-  dlg.addEventListener('click', (e) => e.target === dlg && dlg.close());
+  dlg.addEventListener('click', (e) => e.target === dlg && close());
+
+  // Swipe the sheet down to dismiss: it follows the finger 1:1, then either
+  // springs home or falls away depending on distance and flick velocity.
+  let drag = null;
+  $$('[data-grab], [data-grab-zone]', dlg).forEach((zone) =>
+    zone.addEventListener('pointerdown', (e) => {
+      if (!touch() || e.button > 0 || e.target.closest('input, button')) return;
+      drag = { y: e.clientY, t: e.timeStamp, dy: 0, v: 0, id: e.pointerId };
+      zone.setPointerCapture(e.pointerId);
+      dlg.classList.add('is-dragging');
+    }),
+  );
+  dlg.addEventListener('pointermove', (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const dy = Math.max(0, e.clientY - drag.y);
+    drag.v = (dy - drag.dy) / Math.max(1, e.timeStamp - drag.t);
+    drag.t = e.timeStamp;
+    drag.dy = dy;
+    box.style.transform = `translate3d(0, ${dy}px, 0)`;
+  });
+  const release = (e) => {
+    if (!drag || e.pointerId !== drag.id) return;
+    const { dy, v } = drag;
+    drag = null;
+    dlg.classList.remove('is-dragging');
+    if (dy > box.offsetHeight * 0.28 || v > 0.55) close();
+    else box.style.transform = '';
+  };
+  dlg.addEventListener('pointerup', release);
+  dlg.addEventListener('pointercancel', release);
+
+  $$('[data-copy]').forEach((b) => b.addEventListener('click', copyPhone));
 
   // Show the right shortcut for the platform.
   const mac = /Mac|iPhone|iPad/.test(navigator.userAgentData?.platform || navigator.platform || '');

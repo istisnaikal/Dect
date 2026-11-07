@@ -49,6 +49,9 @@ export default {
     langSwitch: 'Türkçeye geç',
     external: '(opens in a new tab)',
     backTop: 'Back to top',
+    copyNumber: 'Copy number',
+    close: 'Close',
+    rail: 'Work — swipe to browse',
   },
 
   commands: {
@@ -62,6 +65,7 @@ export default {
     lang: 'Türkçe sürüm',
     llms: 'llms.txt — the site, summarised for AI',
     top: 'Back to top',
+    share: 'Share this page',
   },
 
   hero: {
@@ -69,8 +73,8 @@ export default {
     h1: 'I design like an *artist* and code like an `engineer`.',
     lead: 'Websites that open instantly, rank on Google, get cited by AI answer engines — and turn visitors into clients. No templates. Nothing ordinary.',
     ctaSecondary: 'See the work',
-    hint: 'Move your cursor: the line between code and art is yours.',
-    hintTouch: 'Touch and drag: the line between code and art is yours.',
+    hint: 'Move your cursor — the line is yours',
+    hintTouch: 'Drag it — the line is yours',
     chip: 'Loaded in {t} s on your device',
     chipIdle: 'Measuring on your device…',
     scroll: 'Scroll',
@@ -277,6 +281,7 @@ export default {
     llms: 'llms.txt',
     sitemap: 'Sitemap',
     palette: 'Command palette',
+    menu: 'Menu',
   },
 
   notFound: {

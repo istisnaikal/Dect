@@ -243,7 +243,7 @@ export function start(canvas) {
     const maxBudget = innerWidth < 700 ? 9e5 : 2.4e6;
     let W = 0, H = 0, scale = 1, cssW = 0, cssH = 0;
     let rest = 0, seam = 0, target = 0;
-    let mouse = [0, 0], light = [0.35, 0.45], lastMove = -1e9, still = 0;
+    let mouse = [0, 0], light = [0.35, 0.45], lastMove = -1e9, still = 0, played = false;
 
     function layoutText() {
       const cr = canvas.getBoundingClientRect();
@@ -356,6 +356,11 @@ export function start(canvas) {
         mouse = [x, y];
         light = [clamp(((x / W) - 0.5) * 2.4, -1.4, 1.4), clamp(((y / H) - 0.5) * 2.4, -1.4, 1.4)];
         lastMove = performance.now();
+        // Once the visitor has clearly moved the seam, the hint has done its job.
+        if (!played && Math.abs(x - rest) > W * 0.06) {
+          played = true;
+          hero.classList.add('has-played');
+        }
         if (!animate && !still) still = requestAnimationFrame(() => ((still = 0), draw(performance.now())));
       },
       { passive: true },

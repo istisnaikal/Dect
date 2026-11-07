@@ -33,6 +33,12 @@ export const fill = (s, c) =>
 
 const pad = (n) => String(n).padStart(2, '0');
 
+/** "a · b · c" → each item unbreakable, and a separator can never start a line. Plain text stays fluid. */
+const listy = (v) => {
+  const parts = v.split(' · ');
+  return parts.length > 1 ? parts.map((x) => `<span class="nw">${x}</span>`).join('&nbsp;· ') : v;
+};
+
 // ── Icons (inline SVG, currentColor) ──────────────────────────────────────────
 export const icon = {
   wa: `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M12 2.75a9.25 9.25 0 0 0-8 13.9L2.75 21.25l4.75-1.25A9.25 9.25 0 1 0 12 2.75Z"/><path fill="currentColor" d="M8.7 7.3c.2-.35.5-.4.8-.4h.55c.22 0 .43.1.52.35l.8 1.9c.1.24.05.5-.12.7l-.62.72a.45.45 0 0 0-.05.53 7.4 7.4 0 0 0 2.92 2.92c.18.1.39.08.53-.05l.72-.62c.2-.17.46-.22.7-.12l1.9.8c.25.1.35.3.35.52v.55c0 .3-.05.6-.4.8-.62.4-1.38.6-2.2.48-3.3-.48-6-3.18-6.48-6.48-.12-.82.08-1.58.48-2.2Z"/></svg>`,
@@ -96,7 +102,7 @@ function footer(c) {
 </ul></nav>
 <div class="ftr__contact">
 <a class="ftr__phone" href="tel:${site.phone.e164}">${phoneFor(c)}</a>
-<button class="ftr__palette" type="button" data-palette-open aria-haspopup="dialog"><kbd class="kbd" data-kbd>⌘K</kbd> ${c.footer.palette}</button>
+<button class="ftr__palette" type="button" data-palette-open aria-haspopup="dialog"><kbd class="kbd only-fine" data-kbd>⌘K</kbd> <span class="only-fine">${c.footer.palette}</span><span class="only-touch">${c.footer.menu}</span></button>
 </div>
 <p class="ftr__built">${c.footer.built}</p>
 <p class="ftr__copy">© ${year} ${esc(site.name)}</p>
@@ -118,13 +124,15 @@ function palette(c) {
     { id: 'guide', label: k.guide, href: c.guidePath, ic: icon.book, kw: 'aeo geo seo rehber guide' },
     { id: 'lang', label: k.lang, href: c.altPath, ic: icon.globe, kw: 'english türkçe language dil' },
     { id: 'llms', label: k.llms, href: '/llms.txt', ic: icon.file, kw: 'ai llm yapay zeka' },
+    { id: 'share', label: k.share, action: 'share', ic: icon.arrowOut, kw: 'share paylaş gönder', hidden: true },
     { id: 'top', label: k.top, action: 'top', ic: icon.up, kw: 'top başa yukarı' },
   ];
   const opt = (o) =>
-    `<li role="option" id="cmd-${o.id}" class="palette__opt" aria-selected="false" ${o.href ? `data-href="${esc(o.href)}"` : `data-action="${o.action}"`} data-kw="${esc(o.kw)}">${o.ic}<span>${esc(o.label)}</span></li>`;
+    `<li role="option" id="cmd-${o.id}" class="palette__opt" aria-selected="false"${o.hidden ? ' hidden data-optional' : ''} ${o.href ? `data-href="${esc(o.href)}"` : `data-action="${o.action}"`} data-kw="${esc(o.kw)}">${o.ic}<span>${esc(o.label)}</span></li>`;
   return `<dialog class="palette" data-palette aria-label="${esc(c.ui.palette)}">
 <div class="palette__box">
-<div class="palette__search">${icon.search}<input type="text" data-palette-input role="combobox" aria-expanded="true" aria-controls="palette-list" aria-autocomplete="list" aria-label="${esc(c.ui.paletteLabel)}" placeholder="${esc(c.ui.palettePlaceholder)}" autocomplete="off" spellcheck="false"><kbd class="kbd">esc</kbd></div>
+<div class="palette__grab" data-grab aria-hidden="true"><i></i></div>
+<div class="palette__search" data-grab-zone>${icon.search}<input type="text" data-palette-input role="combobox" aria-expanded="true" aria-controls="palette-list" aria-autocomplete="list" aria-label="${esc(c.ui.paletteLabel)}" placeholder="${esc(c.ui.palettePlaceholder)}" autocomplete="off" spellcheck="false" enterkeyhint="go"><kbd class="kbd only-fine">esc</kbd><button class="icon-btn palette__close only-touch" type="button" data-palette-close aria-label="${esc(c.ui.close)}"><svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="m6.5 6.5 11 11m0-11-11 11"/></svg></button></div>
 <ul id="palette-list" class="palette__list" role="listbox" aria-label="${esc(c.ui.palette)}">
 <li role="presentation" class="palette__group">${k.groupActions}</li>
 ${actions.map(opt).join('')}
@@ -158,7 +166,7 @@ function hero(c) {
 <div class="hero__bg" aria-hidden="true"><canvas class="hero__canvas" data-seam></canvas></div>
 <div class="hero__in">
 <p class="hero__eyebrow">${h.eyebrow.map((e) => `<span>${e}</span>`).join('<span class="hero__sep" aria-hidden="true">/</span>')}</p>
-<div class="hero__stage" aria-hidden="true" data-stage><p class="wm"><span class="wm__dev" data-wm-dev>Dev</span><span class="wm__plus" data-wm-plus>+</span><span class="wm__art" data-wm-art>Art</span></p></div>
+<div class="hero__stage" aria-hidden="true" data-stage><p class="wm"><span class="wm__dev" data-wm-dev>Dev</span><span class="wm__plus" data-wm-plus>+</span><span class="wm__art" data-wm-art>Art</span></p><p class="hero__hint" data-touch="${esc(h.hintTouch)}">${h.hint}</p></div>
 <div class="hero__bottom">
 <div class="hero__copy">
 <h1 class="hero__title" id="hero-title">${rich(h.h1)}</h1>
@@ -169,7 +177,6 @@ function hero(c) {
 </div>
 </div>
 <div class="hero__meta">
-<p class="hero__hint" data-hint data-touch="${esc(h.hintTouch)}">${h.hint}</p>
 <p class="chip" data-load-chip data-tpl="${esc(h.chip)}"><span class="chip__dot" aria-hidden="true"></span><span data-load-text>${h.chipIdle}</span></p>
 </div>
 </div>
@@ -192,7 +199,7 @@ function short(c) {
 <h2 class="short__q" id="${s.id}-q">${s.q}</h2>
 <p class="short__a" id="${s.id}-answer">${s.a}</p>
 </div>
-<dl class="facts">${s.facts.map(([k, v]) => `<div class="facts__row"><dt>${k}</dt><dd>${fill(v, c)}</dd></div>`).join('')}</dl>
+<dl class="facts">${s.facts.map(([k, v]) => `<div class="facts__row"><dt>${k}</dt><dd>${listy(fill(v, c))}</dd></div>`).join('')}</dl>
 </div>
 </section>`;
 }
@@ -248,7 +255,7 @@ function workCard(p, c, i) {
 <div class="browser__view">${media}</div></div>
 </div>
 <div class="work-card__body">
-<p class="work-card__kind"><span class="work-card__n">${pad(i + 1)}</span>${t.kind}</p>
+<p class="work-card__kind"><span class="work-card__n">${pad(i + 1)}</span><span>${listy(t.kind)}</span></p>
 <h3 class="work-card__title"><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}${icon.arrowOut}<span class="sr-only"> ${c.ui.external}</span></a></h3>
 <p class="work-card__text">${t.summary}</p>
 <ul class="tags" aria-label="${c.lang === 'tr' ? 'Kullanılanlar' : 'Built with'}">${t.tags.map((x) => `<li>${x}</li>`).join('')}</ul>
@@ -260,7 +267,7 @@ function workSection(c) {
   const n = c.work.next;
   return `<section class="work wrap" id="${c.work.id}" aria-labelledby="${c.work.id}-title">
 ${secHead(c.work, 3)}
-<ol class="work__list">
+<ol class="work__list" aria-label="${esc(c.ui.rail)}">
 ${work.map((p, i) => workCard(p, c, i)).join('\n')}
 <li class="work-card work-card--next card" data-spot>
 <p class="work-card__kind"><span class="work-card__n">${pad(work.length + 1)}</span>${n.label}</p>
@@ -269,6 +276,7 @@ ${work.map((p, i) => workCard(p, c, i)).join('\n')}
 <a class="btn btn--primary btn--lg" href="${esc(wa(c.wa.project))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${n.cta}</span></a>
 </li>
 </ol>
+<div class="rail-progress" aria-hidden="true"><i></i></div>
 </section>`;
 }
 
@@ -363,7 +371,7 @@ function contact(c, qr) {
 <p class="contact__lead">${k.lead}</p>
 <div class="contact__actions">
 <a class="btn btn--primary btn--xl" href="${esc(wa(c.wa.default))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${c.ui.whatsapp}</span></a>
-<a class="contact__phone" href="tel:${site.phone.e164}">${icon.phone}<span>${phoneFor(c)}</span></a>
+<span class="contact__phone-row"><a class="contact__phone" href="tel:${site.phone.e164}">${icon.phone}<span>${phoneFor(c)}</span></a><button class="icon-btn" type="button" data-copy aria-label="${esc(c.ui.copyNumber)}">${icon.copy}</button></span>
 </div>
 <p class="contact__note">${k.prefilled}</p>
 <div class="contact__aside">
