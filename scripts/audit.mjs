@@ -10,7 +10,7 @@ import path from 'node:path';
 process.env.PORT = process.env.AUDIT_PORT || '4398';
 await import('./serve.mjs');
 const base = `http://localhost:${process.env.PORT}`;
-const pages = ['/', '/en/', '/rehber/aeo-geo/', '/en/guide/aeo-geo/'];
+const pages = ['/', '/en/', '/rehber/aeo-geo/', '/en/guide/aeo-geo/', '/sozluk/', '/en/glossary/'];
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'devart-lh-'));
 const short = { performance: 'perf', accessibility: 'a11y', 'best-practices': 'bp', seo: 'seo', 'agentic-browsing': 'agent' };
 let worst = 100;

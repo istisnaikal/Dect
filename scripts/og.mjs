@@ -23,6 +23,8 @@ const cards = [
   { file: 'og-en.jpg', c: en, kicker: 'Developer + Artist', title: 'Web design · Engineering · SEO · AEO · GEO' },
   { file: 'og-tr-guide.jpg', c: tr, kicker: 'Rehber', title: plain(tr.guide.h1) },
   { file: 'og-en-guide.jpg', c: en, kicker: 'Guide', title: plain(en.guide.h1) },
+  { file: 'og-tr-glossary.jpg', c: tr, kicker: 'Sözlük', title: 'Bulunmanın sözlüğü: SEO, AEO, GEO ve 19 terim daha' },
+  { file: 'og-en-glossary.jpg', c: en, kicker: 'Glossary', title: 'A glossary of being found: SEO, AEO, GEO and 19 more' },
 ];
 
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
@@ -35,7 +37,7 @@ for (const card of cards) {
       .og{position:fixed;inset:0;padding:44px 56px;display:flex;flex-direction:column;justify-content:space-between;z-index:9;font-family:Geist,sans-serif;color:#141317}
       .og__top{display:flex;justify-content:space-between;align-items:center;font:500 18px/1 "Geist Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
       .og__top b{color:#ff5b22;font-weight:500}
-      .og__title{font-size:${card.file.includes('guide') ? 46 : 40}px;line-height:1.05;letter-spacing:-.04em;font-weight:500;max-width:1000px;text-wrap:balance}
+      .og__title{font-size:${/guide|glossary/.test(card.file) ? 46 : 40}px;line-height:1.05;letter-spacing:-.04em;font-weight:500;max-width:1000px;text-wrap:balance}
       .og__kicker{display:block;margin-bottom:12px;font:italic 400 34px/1 "Instrument Serif",serif;letter-spacing:0;color:#b73d0b}`;
   await page.addInitScript((css) => {
     document.addEventListener('DOMContentLoaded', () => {

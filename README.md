@@ -9,7 +9,10 @@ npm run preview   # http://localhost:4321  (brotli, real 404, real CSP — like 
 npm run dev       # rebuild on save + preview
 npm run check     # links, fragments, JSON-LD graph, hreflang, sitemap, llms.txt
 npm run audit     # Lighthouse, every page, mobile + desktop
+npm run indexnow  # tell Bing / Copilot, Yandex, Naver… that the sitemap is fresh
 ```
+
+Every push runs `build` + `check` on GitHub Actions (`.github/workflows/ci.yml`), so a broken link, a dangling `@id` or a one-sided `hreflang` never reaches production unnoticed.
 
 ## The numbers (local, Lighthouse 13, simulated throttling)
 
@@ -17,6 +20,7 @@ npm run audit     # Lighthouse, every page, mobile + desktop
 | --- | --- | --- |
 | `/` · `/en/` | 100 · 100 · 100 · 100 | 100 · 100 · 100 · 100 |
 | `/rehber/aeo-geo/` · `/en/guide/aeo-geo/` | 100 · 100 · 100 · 100 | 100 · 100 · 100 · 100 |
+| `/sozluk/` · `/en/glossary/` | 100 · 100 · 100 · 100 | 100 · 100 · 100 · 100 |
 
 Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic browsing* category is 100 too. Mobile: FCP / LCP 0.8 s, CLS 0, TBT 0–70 ms. Home page critical path: **~77 KB total** (HTML + inlined CSS + JS brotli + all three font families). The same 100s were measured on Cloudflare's edge (staging Worker).
 
@@ -29,6 +33,10 @@ Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic 
 **Morning light.** Paper (`#f6f4ef`), ink and a single ember, over a faint dot grid like a tailor's pattern paper. Ember is a *fill* colour only (2.8:1 on paper); every ember word uses `--ember-text` (`#b73d0b`, ≥ 4.8:1 on every surface). Verified with axe-core on fully revealed pages: zero contrast issues.
 
 **The thread.** A tailor's stitch drawn down the left margin as you read: a faint dotted route shows where it will go, the ember thread follows the reading position, passing each section marker, and ends tied to the WhatsApp button, which answers with a single pulse. Built from section boxes only (never forcing layout inside `content-visibility`-skipped sections), static for reduced motion, absent without JS. Two quiet invitations sit where the thought naturally occurs: after the measured numbers, and at the end of the FAQ.
+
+**The signature.** The footer ends in *DevArt*, written as an outline that a pen traces as you arrive at the end of the page, and the ink settles once it's complete (a scroll-driven `stroke-dashoffset`, no JavaScript). The path is real type: Geist Mono *Dev* and Instrument Serif *Art*, converted to one 2 KB SVG path by `scripts/signature.py`. Reduced motion shows it already signed. View the source and there's a note at the very top for whoever reads it.
+
+**Grace.** Motion that persuades without pressure. The hero exhales into place (transform-only, so LCP and CLS never notice), section titles rise from behind a line as you reach them, the primary button catches the light as your cursor reaches for it, and portfolio cards lift a few pixels under the hand. Next to the WhatsApp button, one sentence takes the weight off the decision: *a message commits you to nothing.*
 
 **Proof, not claims.** The "Kanıt / Proof" section measures *this* page on the visitor's own device with the browser's performance APIs (LCP, INP, CLS, FCP, TTFB, bytes, requests) and grades them against Google's Core Web Vitals thresholds, live.
 
@@ -48,7 +56,12 @@ Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic 
 - `robots.txt` explicitly welcomes search and AI crawlers (GPTBot, OAI-SearchBot, PerplexityBot, ClaudeBot, Google-Extended…).
 - Sitemap with `hreflang` alternates; reciprocal `hreflang` + `x-default` in every page head.
 - A real, citable knowledge page, the **AEO & GEO guide** (TR + EN), which makes the site a *source* for the exact topic it sells.
+- **The glossary** (`/sozluk/` · `/en/glossary/`): 22 terms of being found (SEO, AEO, GEO, RAG, E-E-A-T, JSON-LD, llms.txt, IndexNow, Core Web Vitals…), each opening with a one-sentence definition built to be quoted. It's a `DefinedTermSet` of `DefinedTerm`s, every term addressable by the same anchor in both languages (`#lcp`, `#geo`), and the guide's `about` points at these terms, so the two pages reinforce each other as one knowledge graph.
+- **Entity clarity.** `Person` with `hasOccupation` (O*NET 15-1254.00, Web Developers), `knowsAbout`, and a contact point; translations declared both ways with `workTranslation` / `translationOfWork`; social cards carry `creditText` and `copyrightNotice`.
+- **Crawl architecture.** Every page is one click from its home page and links to its twin in the other language (header, footer, palette, contextual links): no orphans, nothing deeper than two clicks. The sitemap carries `hreflang` alternates *and* `image:image` entries, and `robots.txt` adds Cloudflare's `Content-Signal` (`search=yes, ai-input=yes, ai-train=yes`: a portfolio *wants* to be known by models). On deploy, every URL is pushed to **IndexNow** (key file served at `/<key>.txt`).
 - Social cards rendered from the real WebGL hero (`npm run assets:og`).
+
+**Semantic HTML.** One `<h1>` per page, no skipped heading levels (enforced by `npm run check`), landmarks, `<address>` for contact, `<dl>` for definitions, and `<time>` for dates.
 
 **Security.** Edge-aware CSP, HSTS, `nosniff`, `frame-ancestors 'none'`, a locked-down `Permissions-Policy`, all generated into `_headers` (Cloudflare / Netlify) and `.htaccess` (Apache / cPanel) at build time. Styles are always locked to a build-time hash. Scripts are locked to `'self'` + hashes, **unless** the Cloudflare zone injects JavaScript Detections: that script changes on every request, so no hash can match it and `script-src` falls back to `'unsafe-inline'` (external script origins stay locked). Toggle in `site.config.mjs → edge`.
 
@@ -59,6 +72,7 @@ Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic 
 | Phone, WhatsApp, domain, social profiles, dates | `src/site.config.mjs` |
 | Every Turkish word | `src/content/tr.mjs` |
 | Every English word | `src/content/en.mjs` |
+| Glossary terms (TR + EN) | `src/content/glossary.mjs` |
 | Portfolio projects | `work` in `src/site.config.mjs` + `work.items` in both content files |
 | Design system | `src/styles/main.css` |
 | Markup | `src/templates.mjs` |
@@ -79,6 +93,7 @@ pip install fonttools brotli && npm run assets:fonts -- <dir-with-source-ttfs>  
 npm run assets:icons                                                         # favicon.svg/.ico, PWA icons
 npm run assets:shots -- [slug] # portfolio scroll-previews (needs Playwright + Chromium)
 npm run build && npm run assets:og && npm run build                          # social cards from the live hero
+npm run assets:signature                                                     # the footer signature path (fontTools)
 ```
 
 ## Deploy
@@ -88,7 +103,7 @@ Production runs on **Cloudflare Workers (static assets)** as the Worker `eyupdev
 ```
 export CLOUDFLARE_API_TOKEN=…   CLOUDFLARE_ACCOUNT_ID=…
 npm run deploy:staging          # build → checks → https://eyupdevart-staging.<account>.workers.dev
-npm run deploy                  # build → checks → production
+npm run deploy                  # build → checks → production → IndexNow ping
 npx wrangler deployments list --name eyupdevart                  # history
 npx wrangler rollback <version-id> --name eyupdevart -m "why"    # instant rollback
 ```

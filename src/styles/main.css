@@ -94,6 +94,7 @@ h1, h2, h3 { font-weight: 500; text-wrap: balance; }
 p { text-wrap: pretty; }
 button { font: inherit; color: inherit; cursor: pointer; }
 abbr { text-decoration: none; }
+address { font-style: normal; }
 
 .i { width: 1.25em; height: 1.25em; flex: none; }
 
@@ -1296,6 +1297,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   .contact .clock time { font-size: 1.6rem; }
 }
 .contact__note { margin-top: 18px; color: var(--fg-3); font: 400 12px/1.5 var(--mono); }
+.contact__assure { max-width: 46ch; margin-top: 14px; color: var(--fg-2); font-size: 1rem; }
 .contact__aside {
   display: flex;
   flex-wrap: wrap;
@@ -1335,38 +1337,51 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   transition: color 0.25s;
 }
 @media (hover: hover) { .ftr__nav a:hover, .ftr__phone:hover { color: var(--fg); } }
-.ftr__contact { display: grid; justify-items: start; align-content: start; gap: 8px; }
+.ftr__contact { display: grid; justify-items: start; align-content: start; gap: 4px; }
+.ftr__contact address { display: grid; justify-items: start; }
 .ftr__phone { color: var(--fg); font-family: var(--mono); letter-spacing: -0.03em; }
 .ftr__palette {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   min-height: 44px;
+  margin-block: -4px; /* keeps the 40px rhythm of the nav while the touch target stays 44px */
   padding: 0;
   border: 0;
   background: none;
   color: var(--fg-2);
-  font-size: 14px;
+  font-size: inherit;
 }
 @media (hover: hover) { .ftr__palette:hover { color: var(--fg); } }
 .ftr__built, .ftr__copy { color: var(--fg-3); font-size: 13px; }
 .ftr__built { grid-column: 1 / 3; }
 .ftr__copy { text-align: right; }
-.ftr__giant {
-  margin: 48px 0 -0.24em;
-  font-size: 26.5vw;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  text-align: center;
-  white-space: nowrap;
-  color: transparent;
-  background: linear-gradient(180deg, rgb(20 19 23 / 0.09), rgb(20 19 23 / 0) 74%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  user-select: none;
+.ftr__sign {
+  width: min(100% - 2 * var(--gutter), var(--max));
+  height: auto;
+  margin: clamp(48px, 7vw, 96px) auto clamp(28px, 4vw, 56px);
+  overflow: visible;
 }
-.ftr__giant .dev { font-size: 0.86em; letter-spacing: -0.08em; }
-.ftr__giant .art { line-height: 1; }
+.ftr__sign path {
+  fill: rgb(20 19 23 / 0.07);
+  stroke: rgb(20 19 23 / 0.32);
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+/* A pen traces every outline as the footer comes into view; the ink settles at the end. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ftr__sign path {
+      stroke-dasharray: 1;
+      animation: sign linear both, ink linear both;
+      animation-timeline: view(), view();
+      animation-range: entry 0% entry 100%, entry 80% entry 100%;
+    }
+  }
+}
+@keyframes sign { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes ink { from { fill: rgb(20 19 23 / 0); } to { fill: rgb(20 19 23 / 0.07); } }
 @media (max-width: 899px) {
   .ftr__in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .ftr__brand { grid-column: 1 / -1; }
@@ -1718,6 +1733,90 @@ main > section, main > .marquee { position: relative; z-index: 1; }
 .nf__en { color: var(--fg-3) !important; }
 .nf__en .art, .nf__en .dev { font-size: 1em; }
 .nf__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+
+
+/* ── Grace ───────────────────────────────────────────────────────────────
+   Motion that persuades without pressure: transform-only on load (so LCP
+   and CLS are untouched), scroll-driven reveals, never on reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  /* The hero exhales into place. Text is painted from the first frame. */
+  .hero__eyebrow, .hero__title, .hero__lead, .hero__ctas, .hero__meta {
+    animation: exhale 1.2s var(--ease-out) both;
+  }
+  .hero__title { animation-delay: 60ms; }
+  .hero__lead { animation-delay: 140ms; }
+  .hero__ctas { animation-delay: 220ms; }
+  .hero__meta { animation-delay: 300ms; }
+
+  /* The primary button catches the light as you reach for it. */
+  .btn--primary { overflow: hidden; isolation: isolate; }
+  .btn--primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / 0.45) 50%, transparent 70%);
+    transform: translateX(-120%);
+    pointer-events: none;
+  }
+  @media (hover: hover) {
+    .btn--primary:hover::before { transform: translateX(120%); transition: transform 0.9s var(--ease-out); }
+    .work-card:not(.work-card--next) { transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out); }
+    .work-card:not(.work-card--next):hover { transform: translateY(-6px); box-shadow: 0 1px 2px rgb(20 19 23 / 0.05), 0 34px 60px -32px rgb(20 19 23 / 0.32); }
+  }
+}
+@keyframes exhale { from { translate: 0 16px; } }
+
+/* Section titles rise from behind a line as you reach them. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .sec-title, .contact__title, .gloss__group > h2 {
+      animation: unveil linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 90%;
+    }
+  }
+}
+@keyframes unveil {
+  from { clip-path: inset(0 0 100% 0); translate: 0 0.35em; }
+  to { clip-path: inset(-0.3em -0.3em -0.4em -0.3em); translate: 0 0; }
+}
+
+/* ── The glossary ─────────────────────────────────────────────────────── */
+.gloss__intro { max-width: 52ch; margin-top: 24px; color: var(--fg-2); font-size: clamp(1.05rem, 1rem + 0.35vw, 1.3rem); }
+.gloss__group + .gloss__group { margin-top: 80px; }
+.gterms { margin: 8px 0 0; border-top: 1px solid var(--line); }
+.gterm {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.6fr);
+  gap: 8px 40px;
+  padding: 26px 0 28px;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: calc(var(--hdr-h) + 24px);
+}
+.gterm dt { display: grid; align-content: start; gap: 6px; }
+.gterm__name {
+  justify-self: start;
+  color: var(--fg) !important;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  text-decoration: none !important;
+}
+.gterm__name::after { content: ' #'; color: var(--ember-text); opacity: 0; transition: opacity 0.25s; }
+@media (hover: hover) { .gterm:hover .gterm__name::after { opacity: 1; } }
+.gterm__name:focus-visible::after { opacity: 1; }
+.gterm__aka { color: var(--fg-3); font: 400 12px/1.5 var(--mono); letter-spacing: 0.02em; }
+.gterm dd { margin: 0; }
+.gterm__short { color: var(--fg); font-size: 1.08rem; line-height: 1.6; }
+.gterm__body { margin-top: 10px; color: var(--fg-2); }
+.gterm:target { background: linear-gradient(90deg, rgb(255 150 100 / 0.12), transparent 70%); box-shadow: -20px 0 0 rgb(255 150 100 / 0.12); }
+.gterm:target .gterm__name::after { opacity: 1; }
+.toc__out { color: var(--ember-text) !important; }
+@media (max-width: 699px) {
+  .gterm { grid-template-columns: minmax(0, 1fr); padding: 22px 0 24px; }
+}
 
 /* ── Cross-document view transitions ────────────────────────────────────── */
 @view-transition { navigation: auto; }

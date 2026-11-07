@@ -22,10 +22,11 @@ import QRCode from 'qrcode';
 
 import tr from '../src/content/tr.mjs';
 import en from '../src/content/en.mjs';
-import { guideMd, homeMd, llmsTxt } from '../src/markdown.mjs';
-import { guideGraph, homeGraph } from '../src/schema.mjs';
-import { site, wa } from '../src/site.config.mjs';
-import { esc, guideBody, homeBody, notFoundBody, plain } from '../src/templates.mjs';
+import { en as glossEn, terms as glossTerms, tr as glossTr } from '../src/content/glossary.mjs';
+import { glossaryMd, guideMd, homeMd, llmsTxt } from '../src/markdown.mjs';
+import { glossaryGraph, guideGraph, homeGraph } from '../src/schema.mjs';
+import { site, wa, work } from '../src/site.config.mjs';
+import { esc, glossaryBody, guideBody, homeBody, notFoundBody, plain } from '../src/templates.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'src');
@@ -149,6 +150,25 @@ async function build() {
       md: guideMd(guide, dateLabel),
       priority: '0.8',
     });
+    const g = c0 === tr ? glossTr : glossEn;
+    const gOther = c0 === tr ? glossEn : glossTr;
+    const gloss = { ...c0, altPath: gOther.path };
+    pages.push({
+      file: `${g.path}index.html`,
+      url: O + g.path,
+      lang: c0,
+      alt: { [c0.lang]: O + g.path, [other.lang]: O + gOther.path, 'x-default': O + glossTr.path },
+      title: g.meta.title,
+      description: g.meta.description,
+      ogType: 'article',
+      ogImage: `${O}/og/og-${c0.lang}-glossary.jpg`,
+      ogAlt: g.meta.ogAlt,
+      jsonld: glossaryGraph(gloss, g, O + g.path, { terms: glossTerms, homeUrl: O + c0.path }),
+      body: glossaryBody(gloss, g, { terms: glossTerms, dateLabel }),
+      bodyClass: 'is-guide is-glossary',
+      md: glossaryMd(gloss, g, glossTerms, dateLabel),
+      priority: '0.7',
+    });
   }
 
   const speculation = JSON.stringify({
@@ -180,6 +200,7 @@ async function build() {
         ? `<meta property="article:published_time" content="${site.published}"><meta property="article:modified_time" content="${site.updated}"><meta property="article:author" content="${O}/">`
         : '';
     return `<!doctype html>
+<!--! Eyüp · DevArt — written by hand, line by line. If you are reading this, we speak the same language: https://wa.me/${site.whatsapp} -->
 <html lang="${c.htmlLang}" dir="ltr">
 <head>
 <meta charset="utf-8">
@@ -192,6 +213,7 @@ ${preloads}
 ${alternates}
 <meta name="robots" content="${p.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}">
 <meta name="author" content="${esc(site.name)}">
+<meta name="apple-mobile-web-app-title" content="DevArt">
 <meta name="theme-color" content="${site.themeColor}">
 <meta name="color-scheme" content="only light">
 <meta name="format-detection" content="telephone=no">
@@ -283,11 +305,14 @@ ${p.body}
     `# ${site.origin} — humans, search engines and AI answer engines are all welcome.
 # Content summary for LLMs: ${O}/llms.txt
 
+# Content signals (contentsignals.org): search, AI answers and AI training are all welcome.
 User-agent: *
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 # AI & answer engines — explicitly invited (GEO)
 ${aiBots.map((b) => `User-agent: ${b}`).join('\n')}
+Content-Signal: search=yes, ai-input=yes, ai-train=yes
 Allow: /
 
 Sitemap: ${O}/sitemap.xml
@@ -295,7 +320,7 @@ Sitemap: ${O}/sitemap.xml
   );
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${pages
   .map(
     (p) => `  <url>
@@ -304,6 +329,9 @@ ${pages
     <priority>${p.priority}</priority>
 ${Object.entries(p.alt)
   .map(([l, u]) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${u}"/>`)
+  .join('\n')}
+${[p.ogImage, ...(p.bodyClass === 'is-home' ? work.filter((w) => w.shot).map((w) => `${O}/assets/work/${w.shot}-1280.webp`) : [])]
+  .map((src) => `    <image:image><image:loc>${src}</image:loc></image:image>`)
   .join('\n')}
   </url>`,
   )
@@ -450,6 +478,9 @@ ${Object.entries(security).map(([k, v]) => `  Header always set ${k} "${v}"`).jo
     [...pages.map((p) => p.url.slice(O.length)).filter((u) => u !== '/').map((u) => `${u.slice(0, -1)} ${u} 301`), '/index.html / 301']
       .join('\n') + '\n',
   );
+
+  // IndexNow ownership key (scripts/indexnow.mjs pings after each deploy).
+  if (site.indexNowKey) await write(`${site.indexNowKey}.txt`, site.indexNowKey);
 
   // Apache-only config must not be served as a public file from the Cloudflare edge.
   await write('.assetsignore', '.htaccess\n');

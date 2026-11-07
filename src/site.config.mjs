@@ -27,6 +27,8 @@ export const site = {
   updated: '2026-11-07',
   published: '2026-11-07',
   themeColor: '#f6f4ef',
+  // IndexNow (Bing, Yandex, Seznam, Naver…): public key served at /<key>.txt — not a secret.
+  indexNowKey: '50f258180a9f275078f9ae8594d9fc73',
   // What the Cloudflare zone injects into every HTML response at the edge. The CSP is
   // generated to match: with both off, script-src is locked to 'self' + build-time hashes.
   edge: {

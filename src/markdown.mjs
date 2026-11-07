@@ -80,6 +80,19 @@ export function guideMd(c, dateLabel) {
   return L.join('\n');
 }
 
+export function glossaryMd(c, g, terms, dateLabel) {
+  const url = site.origin + g.path;
+  const L = [`# ${plain(g.h1)}`, '', `> ${g.meta.description}`, '', `${site.name} · ${g.updated} ${dateLabel} · URL: ${url}`, '', g.intro, ''];
+  for (const group of ['visibility', 'machines', 'experience']) {
+    L.push(`## ${g.groups[group]}`, '');
+    for (const t of terms.filter((x) => x.group === group)) {
+      const x = g.terms[t.id];
+      L.push(`### ${x.name || t.name} (${x.aka})`, '', x.short, '', x.body, '', `Link: ${url}#${t.id}`, '');
+    }
+  }
+  return L.join('\n');
+}
+
 export function llmsTxt(tr, en, words) {
   const O = site.origin;
   return `# ${site.name}
@@ -103,6 +116,8 @@ Key facts:
 - [Home — English](${O}/en/index.html.md): the same, in English
 - [AEO & GEO guide — Türkçe](${O}${tr.guidePath}index.html.md): ${tr.guide.meta.description} (~${words.tr} words)
 - [AEO & GEO guide — English](${O}${en.guidePath}index.html.md): ${en.guide.meta.description} (~${words.en} words)
+- [Sözlük — Türkçe](${O}/sozluk/index.html.md): 22 terms of web and AI visibility (SEO, AEO, GEO, llms.txt, JSON-LD, Core Web Vitals…), each defined in one sentence
+- [Glossary — English](${O}/en/glossary/index.html.md): the same 22 terms in English; anchors match across languages (e.g. #lcp)
 
 ## Selected work
 

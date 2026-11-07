@@ -61,6 +61,12 @@ function core(c) {
       url: `${O}/`,
       image: { '@id': ID.logo },
       jobTitle: c.lang === 'tr' ? 'Web Geliştirici ve Dijital Sanatçı' : 'Web Developer & Digital Artist',
+      hasOccupation: {
+        '@type': 'Occupation',
+        name: c.lang === 'tr' ? 'Web geliştirici ve tasarımcı' : 'Web developer and designer',
+        occupationalCategory: '15-1254.00 Web Developers',
+        skills: 'Web design, web development, SEO, AEO, GEO, web performance, WebGL',
+      },
       description: c.short.a,
       telephone: site.phone.e164,
       knowsAbout: KNOWS,
@@ -112,14 +118,31 @@ function core(c) {
   ];
 }
 
-const image = (url, c, alt) => ({
+const image = (url, c, alt, kind = '') => ({
   '@type': 'ImageObject',
   '@id': `${url}#primaryimage`,
-  url: `${O}/og/og-${c.lang}${alt ? '-guide' : ''}.jpg`,
-  contentUrl: `${O}/og/og-${c.lang}${alt ? '-guide' : ''}.jpg`,
+  url: `${O}/og/og-${c.lang}${kind ? `-${kind}` : ''}.jpg`,
+  contentUrl: `${O}/og/og-${c.lang}${kind ? `-${kind}` : ''}.jpg`,
   width: 1200,
   height: 630,
   caption: alt || c.meta.ogAlt,
+  creditText: site.name,
+  copyrightNotice: `© ${site.updated.slice(0, 4)} ${site.name}`,
+});
+
+// The other-language twin of a page, declared as a translation (TR is the original).
+const twin = (c, type, trUrl, enUrl, frag) =>
+  c.lang === 'tr'
+    ? { workTranslation: { '@type': type, '@id': `${enUrl}${frag}`, url: enUrl, inLanguage: 'en' } }
+    : { translationOfWork: { '@type': type, '@id': `${trUrl}${frag}`, url: trUrl, inLanguage: 'tr-TR' } };
+
+const GLOSSARY = { tr: `${O}/sozluk/`, en: `${O}/en/glossary/` };
+const glossaryTerm = (c, id, name) => ({
+  '@type': 'DefinedTerm',
+  '@id': `${GLOSSARY[c.lang]}#${id}`,
+  name,
+  url: `${GLOSSARY[c.lang]}#${id}`,
+  inDefinedTermSet: { '@id': `${GLOSSARY[c.lang]}#terms` },
 });
 
 const faqNode = (url, items, c, inLanguage) => ({
@@ -140,7 +163,7 @@ export function homeGraph(c, url) {
     '@context': 'https://schema.org',
     '@graph': [
       ...core(c),
-      image(url, c),
+      image(url, c, '', ''),
       {
         '@type': 'ProfilePage',
         '@id': `${url}#webpage`,
@@ -159,6 +182,8 @@ export function homeGraph(c, url) {
           cssSelector: [`#${c.short.id}-q`, `#${c.short.id}-answer`],
         },
         hasPart: [{ '@id': `${url}#faq` }, { '@id': `${url}#work` }],
+        significantLink: [`${O}${c.guidePath}`, `${O}${c.glossaryPath}`],
+        ...twin(c, 'ProfilePage', `${O}/`, `${O}/en/`, '#webpage'),
       },
       {
         '@type': 'ItemList',
@@ -185,17 +210,17 @@ export function homeGraph(c, url) {
 export function guideGraph(c, url, { words, homeUrl }) {
   const g = c.guide;
   const terms = [
-    ['Search Engine Optimization', 'SEO'],
-    ['Answer Engine Optimization', 'AEO'],
-    ['Generative Engine Optimization', 'GEO'],
-    ['llms.txt', 'llms.txt'],
-    ['Core Web Vitals', 'CWV'],
+    ['seo', 'SEO'],
+    ['aeo', 'AEO'],
+    ['geo', 'GEO'],
+    ['llms-txt', 'llms.txt'],
+    ['core-web-vitals', 'Core Web Vitals'],
   ];
   return {
     '@context': 'https://schema.org',
     '@graph': [
       ...core(c),
-      image(url, c, g.meta.ogAlt),
+      image(url, c, g.meta.ogAlt, 'guide'),
       {
         '@type': 'WebPage',
         '@id': `${url}#webpage`,
@@ -236,7 +261,8 @@ export function guideGraph(c, url, { words, homeUrl }) {
         wordCount: words,
         isAccessibleForFree: true,
         proficiencyLevel: 'Beginner',
-        about: terms.map(([name]) => ({ '@id': `${url}#term-${name.toLowerCase().replace(/[^a-z]+/g, '-')}` })),
+        about: terms.map(([id, name]) => glossaryTerm(c, id, name)),
+        ...twin(c, 'TechArticle', `${O}/rehber/aeo-geo/`, `${O}/en/guide/aeo-geo/`, '#article'),
         citation: [
           {
             '@type': 'ScholarlyArticle',
@@ -251,17 +277,66 @@ export function guideGraph(c, url, { words, homeUrl }) {
       },
       {
         '@type': 'DefinedTermSet',
+        '@id': `${GLOSSARY[c.lang]}#terms`,
+        url: GLOSSARY[c.lang],
+        name: c.lang === 'tr' ? 'Bulunmanın sözlüğü' : 'A glossary of being found',
+      },
+      faqNode(url, g.faq, c, c.inLanguage),
+    ],
+  };
+}
+
+export function glossaryGraph(c, g, url, { terms, homeUrl }) {
+  const nameOf = (t) => g.terms[t.id].name || t.name;
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      ...core(c),
+      image(url, c, g.meta.ogAlt, 'glossary'),
+      {
+        '@type': 'CollectionPage',
+        '@id': `${url}#webpage`,
+        url,
+        name: g.meta.title,
+        description: g.meta.description,
+        inLanguage: c.inLanguage,
+        isPartOf: { '@id': ID.website },
+        primaryImageOfPage: { '@id': `${url}#primaryimage` },
+        breadcrumb: { '@id': `${url}#breadcrumb` },
+        mainEntity: { '@id': `${url}#terms` },
+        author: { '@id': ID.person },
+        datePublished: site.updated,
+        dateModified: site.updated,
+        speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.gterm__short'] },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${url}#breadcrumb`,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: c.ui.home, item: homeUrl },
+          { '@type': 'ListItem', position: 2, name: g.crumb, item: url },
+        ],
+      },
+      {
+        '@type': 'DefinedTermSet',
         '@id': `${url}#terms`,
-        name: c.lang === 'tr' ? 'Arama ve yapay zekâ görünürlüğü terimleri' : 'Search & AI visibility terms',
-        hasDefinedTerm: terms.map(([name, code]) => ({
+        url,
+        name: plain(g.h1),
+        description: g.meta.description,
+        inLanguage: c.inLanguage,
+        creator: { '@id': ID.person },
+        publisher: { '@id': ID.org },
+        ...twin(c, 'DefinedTermSet', GLOSSARY.tr, GLOSSARY.en, '#terms'),
+        hasDefinedTerm: terms.map((t) => ({
           '@type': 'DefinedTerm',
-          '@id': `${url}#term-${name.toLowerCase().replace(/[^a-z]+/g, '-')}`,
-          name,
-          termCode: code,
+          '@id': `${url}#${t.id}`,
+          name: nameOf(t),
+          alternateName: g.terms[t.id].aka,
+          description: plain(g.terms[t.id].short),
+          url: `${url}#${t.id}`,
           inDefinedTermSet: { '@id': `${url}#terms` },
         })),
       },
-      faqNode(url, g.faq, c, c.inLanguage),
     ],
   };
 }

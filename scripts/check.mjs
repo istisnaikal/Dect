@@ -119,7 +119,7 @@ for (const m of llms.matchAll(/\]\((https:\/\/eyupdevart\.com[^)]*)\)/g)) if (!e
 if (!/Sitemap: https:\/\/eyupdevart\.com\/sitemap\.xml/.test(fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8'))) fail('robots.txt', 'no Sitemap line');
 const manifest = JSON.parse(fs.readFileSync(path.join(DIST, 'manifest.webmanifest'), 'utf8'));
 for (const i of manifest.icons) if (!exists(i.src)) fail('manifest', `missing icon ${i.src}`);
-for (const og of ['og-tr.jpg', 'og-en.jpg', 'og-tr-guide.jpg', 'og-en-guide.jpg']) if (!exists(`/og/${og}`)) fail('og', `missing /og/${og}`);
+for (const og of ['og-tr.jpg', 'og-en.jpg', 'og-tr-guide.jpg', 'og-en-guide.jpg', 'og-tr-glossary.jpg', 'og-en-glossary.jpg']) if (!exists(`/og/${og}`)) fail('og', `missing /og/${og}`);
 
 warn.forEach((w) => console.log(`  ⚠ ${w}`));
 if (errors.length) {

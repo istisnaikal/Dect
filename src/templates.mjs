@@ -2,6 +2,7 @@
 // Everything a crawler or an AI agent needs is in the HTML; JavaScript only adds.
 
 import { site, work, wa } from './site.config.mjs';
+import signature from './assets/signature.json' with { type: 'json' };
 
 export const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -96,18 +97,19 @@ function footer(c) {
 </div>
 <nav class="ftr__nav" aria-label="${c.lang === 'tr' ? 'Alt menü' : 'Footer'}"><ul>
 <li><a href="${c.guidePath}">${c.footer.guide}</a></li>
+<li><a href="${c.glossaryPath}">${c.footer.glossary}</a></li>
 <li><a href="/llms.txt">${c.footer.llms}</a></li>
 <li><a href="/sitemap.xml">${c.footer.sitemap}</a></li>
 <li><a href="${c.altPath}" hreflang="${c.alt.lang}" lang="${c.alt.lang}">${c.alt.label}</a></li>
 </ul></nav>
 <div class="ftr__contact">
-<a class="ftr__phone" href="tel:${site.phone.e164}">${phoneFor(c)}</a>
+<address><a class="ftr__phone" href="tel:${site.phone.e164}">${phoneFor(c)}</a></address>
 <button class="ftr__palette" type="button" data-palette-open aria-haspopup="dialog"><kbd class="kbd only-fine" data-kbd>⌘K</kbd> <span class="only-fine">${c.footer.palette}</span><span class="only-touch">${c.footer.menu}</span></button>
 </div>
 <p class="ftr__built">${c.footer.built}</p>
 <p class="ftr__copy">© ${year} ${esc(site.name)}</p>
 </div>
-<p class="ftr__giant" aria-hidden="true"><span class="dev">Dev</span><span class="art">Art</span></p>
+<svg class="ftr__sign" viewBox="${signature.viewBox}" aria-hidden="true" focusable="false"><path pathLength="1" d="${signature.d}"/></svg>
 </footer>`;
 }
 
@@ -122,6 +124,7 @@ function palette(c) {
   ];
   const more = [
     { id: 'guide', label: k.guide, href: c.guidePath, ic: icon.book, kw: 'aeo geo seo rehber guide' },
+    { id: 'glossary', label: k.glossary, href: c.glossaryPath, ic: icon.file, kw: 'sözlük glossary terim term lcp inp cls schema' },
     { id: 'lang', label: k.lang, href: c.altPath, ic: icon.globe, kw: 'english türkçe language dil' },
     { id: 'llms', label: k.llms, href: '/llms.txt', ic: icon.file, kw: 'ai llm yapay zeka' },
     { id: 'share', label: k.share, action: 'share', ic: icon.arrowOut, kw: 'share paylaş gönder', hidden: true },
@@ -378,11 +381,12 @@ function contact(c, qr) {
 <p class="sec-label"><span class="sec-label__n">08</span>${k.label}</p>
 <h2 class="contact__title" id="${k.id}-title">${rich(k.title)}</h2>
 <p class="contact__lead">${k.lead}</p>
-<div class="contact__actions">
+<address class="contact__actions">
 <a class="btn btn--primary btn--xl" href="${esc(wa(c.wa.default))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${c.ui.whatsapp}</span></a>
 <span class="contact__phone-row"><a class="contact__phone" href="tel:${site.phone.e164}">${icon.phone}<span>${phoneFor(c)}</span></a><button class="icon-btn" type="button" data-copy aria-label="${esc(c.ui.copyNumber)}">${icon.copy}</button></span>
-</div>
+</address>
 <p class="contact__note">${k.prefilled}</p>
+<p class="contact__assure">${k.assure}</p>
 <div class="contact__aside">
 <figure class="qr"><div class="qr__code">${qr}</div><figcaption>${k.qr}</figcaption></figure>
 <p class="clock"><span>${k.clock}</span><time data-clock>--:--</time></p>
@@ -427,13 +431,63 @@ export function guideBody(c, { readMinutes, dateLabel }) {
 <p class="byline">${g.byline} <a href="${c.path}" rel="author">${esc(site.name)}</a><span aria-hidden="true"> · </span>${g.updated} <time datetime="${site.updated}">${dateLabel}</time><span aria-hidden="true"> · </span>${readMinutes} ${g.minutes}</p>
 </header>
 <div class="guide__layout wrap">
-<aside class="toc" aria-labelledby="toc-title"><h2 class="toc__title" id="toc-title">${g.tocLabel}</h2><ol>${toc}</ol></aside>
+<aside class="toc" aria-labelledby="toc-title"><h2 class="toc__title" id="toc-title">${g.tocLabel}</h2><ol>${toc}<li><a class="toc__out" href="${c.glossaryPath}">${g.glossaryLink} →</a></li></ol></aside>
 <div class="prose">
 <section class="tldr" aria-labelledby="tldr-title"><h2 id="tldr-title">${g.tldrLabel}</h2><p id="tldr-answer">${g.tldr}</p></section>
 ${g.sections.map((s) => `<section id="${s.id}" aria-labelledby="${s.id}-h"><h2 id="${s.id}-h">${s.h2}</h2>\n${s.html}\n</section>`).join('\n')}
 <section id="${c.lang === 'tr' ? 'sss' : 'faq'}" aria-labelledby="guide-faq-h"><h2 id="guide-faq-h">${g.faqTitle}</h2>
 <div class="faq__list">${faqList(g.faq, c, 'gfaq')}</div>
 </section>
+<aside class="cta-box card" aria-labelledby="cta-box-title">
+<h2 class="cta-box__title" id="cta-box-title">${rich(g.cta.title)}</h2>
+<p>${g.cta.text}</p>
+<a class="btn btn--primary btn--lg" href="${esc(wa(c.wa.audit))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${g.cta.button}</span></a>
+</aside>
+</div>
+</div>
+</article>
+</main>
+${footer(c)}
+${dock(c)}
+${palette(c)}`;
+}
+
+// ── Glossary ─────────────────────────────────────────────────────────────────
+export function glossaryBody(c, g, { terms, dateLabel }) {
+  const groups = ['visibility', 'machines', 'experience'];
+  const nameOf = (t) => g.terms[t.id].name || t.name;
+  const toc = groups.map((k) => `<li><a href="#${k}">${g.groups[k]}</a></li>`).join('');
+  const sections = groups
+    .map(
+      (k) => `<section class="gloss__group" id="${k}" aria-labelledby="${k}-h">
+<h2 id="${k}-h">${g.groups[k]}</h2>
+<dl class="gterms">
+${terms
+  .filter((t) => t.group === k)
+  .map((t) => {
+    const x = g.terms[t.id];
+    return `<div class="gterm" id="${t.id}"><dt><a class="gterm__name" href="#${t.id}">${esc(nameOf(t))}</a><span class="gterm__aka">${esc(x.aka)}</span></dt><dd><p class="gterm__short">${x.short}</p><p class="gterm__body">${x.body}</p></dd></div>`;
+  })
+  .join('\n')}
+</dl>
+</section>`,
+    )
+    .join('\n');
+  return `${header(c, { home: false })}
+<div class="progress" aria-hidden="true"></div>
+<main id="main">
+<article class="guide gloss">
+<header class="guide__head wrap">
+<nav class="crumbs" aria-label="${c.lang === 'tr' ? 'Sayfa yolu' : 'Breadcrumb'}"><ol><li><a href="${c.path}">${c.ui.home}</a></li><li><span aria-current="page">${g.crumb}</span></li></ol></nav>
+<p class="sec-label"><span class="sec-label__n">${terms.length}</span>${g.label}</p>
+<h1 class="guide__title">${rich(g.h1)}</h1>
+<p class="gloss__intro">${g.intro}</p>
+<p class="byline">${c.guide.byline} <a href="${c.path}" rel="author">${esc(site.name)}</a><span aria-hidden="true"> · </span>${g.updated} <time datetime="${site.updated}">${dateLabel}</time><span aria-hidden="true"> · </span>${terms.length} ${g.count}</p>
+</header>
+<div class="guide__layout wrap">
+<aside class="toc" aria-labelledby="toc-title"><h2 class="toc__title" id="toc-title">${c.lang === 'tr' ? 'Bu sözlükte' : 'In this glossary'}</h2><ol>${toc}<li><a class="toc__out" href="${c.guidePath}">${c.guide.crumb} →</a></li></ol></aside>
+<div class="prose">
+${sections}
 <aside class="cta-box card" aria-labelledby="cta-box-title">
 <h2 class="cta-box__title" id="cta-box-title">${rich(g.cta.title)}</h2>
 <p>${g.cta.text}</p>

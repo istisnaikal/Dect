@@ -9,6 +9,7 @@ export default {
   inLanguage: 'tr-TR',
   path: '/',
   guidePath: '/rehber/aeo-geo/',
+  glossaryPath: '/sozluk/',
   alt: { lang: 'en', label: 'English', short: 'EN' },
   dateLocale: 'tr-TR',
 
@@ -62,6 +63,7 @@ export default {
     copy: 'Numarayı kopyalayın',
     audit: 'Sitenize bir göz atayım',
     guide: 'AEO ve GEO rehberi',
+    glossary: 'Sözlük: SEO, AEO, GEO terimleri',
     lang: 'English version',
     llms: 'llms.txt — yapay zekâ için site özeti',
     top: 'Başa dön',
@@ -272,6 +274,7 @@ export default {
     title: 'Bir *merhaba* yeter.',
     lead: 'Ne yaptığınızı ve nereye varmak istediğinizi yazın. Gerisini konuşa konuşa buluruz.',
     prefilled: 'Mesajın ilk cümlesini ben yazdım; gerisi sizde.',
+    assure: 'Bir mesaj sizi hiçbir şeye bağlamaz. Önce dinlerim; birbirimize uygun olup olmadığımıza birlikte karar veririz.',
     qr: 'Kameranızı buraya tutun, sohbet telefonunuzda açılsın.',
     clock: 'Türkiye’de saat',
   },
@@ -280,6 +283,7 @@ export default {
     tagline: 'Geliştirici + Sanatçı.',
     built: 'Bu site satır satır, elle yazıldı. Framework kullanılmadı; gerek de olmadı.',
     guide: 'AEO & GEO rehberi',
+    glossary: 'Sözlük',
     llms: 'llms.txt',
     sitemap: 'Site haritası',
     palette: 'Komut paleti',
@@ -309,6 +313,7 @@ export default {
     tldrLabel: 'Kısa cevap',
     tldr: 'AEO (Answer Engine Optimization), içeriğinizin arama motorlarında ve asistanlarda doğrudan cevap olarak seçilmesini; GEO (Generative Engine Optimization) ise ChatGPT, Perplexity, Gemini ve Google AI Overviews gibi üretken yapay zekâ sistemlerinin cevaplarında kaynak olarak gösterilmenizi hedefler. İkisi de sağlam bir SEO temeli üzerine kurulur: hızlı, taranabilir, yapılandırılmış ve güvenilir içerik.',
     tocLabel: 'Bu rehberde',
+    glossaryLink: 'Terimler sözlüğü',
     sections: [
       {
         id: 'fark',
