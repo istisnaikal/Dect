@@ -27,7 +27,8 @@ const cards = [
 
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
 for (const card of cards) {
-  const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1 });
+  // bypassCSP: the preview server enforces the production CSP, which (rightly) blocks injected styles.
+  const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1, bypassCSP: true });
   // Layout for the card goes in before the page's own scripts, so the shader lays out the wordmark for it.
   const css = `.hdr,.hero__eyebrow,.hero__bottom,.marquee,.dock{display:none!important}
       .hero__in{grid-template-rows:1fr!important;padding-bottom:120px!important}
