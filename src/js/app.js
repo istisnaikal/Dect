@@ -30,6 +30,15 @@ function header() {
   new IntersectionObserver(([e]) => hdr.classList.toggle('is-solid', !e.isIntersecting)).observe(s);
 
   const phone = matchMedia('(max-width: 899px)');
+  // Stay put for keyboard focus only: after a tap on Menu, the dialog hands focus back
+  // to the button, and that alone should not pin the header over the text.
+  const keyboardInside = () => {
+    try {
+      return !!hdr.querySelector(':focus-visible');
+    } catch {
+      return hdr.contains(d.activeElement);
+    }
+  };
   let lastY = 0;
   let ticking = false;
   const update = () => {
@@ -37,7 +46,7 @@ function header() {
     const y = scrollY;
     const dy = y - lastY;
     if (Math.abs(dy) < 6) return;
-    hdr.classList.toggle('is-hidden', phone.matches && dy > 0 && y > innerHeight * 0.75 && !hdr.contains(d.activeElement));
+    hdr.classList.toggle('is-hidden', phone.matches && dy > 0 && y > innerHeight * 0.75 && !keyboardInside());
     lastY = y;
   };
   addEventListener('scroll', () => ticking || ((ticking = true), requestAnimationFrame(update)), { passive: true });

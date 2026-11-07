@@ -1363,25 +1363,35 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   overflow: visible;
 }
 .ftr__sign path {
-  fill: rgb(20 19 23 / 0.07);
-  stroke: rgb(20 19 23 / 0.32);
+  fill: none;
+  stroke: rgb(20 19 23 / 0.34);
   stroke-width: 1.25;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
-/* A pen traces every outline as the footer comes into view; the ink settles at the end. */
+/* The page signs itself: a pen writes each stroke of DevArt in turn, left to right,
+   as the footer comes into view, and lifts as it is fully seen. The <svg> box is the
+   timeline's subject (an SVG <path> would be measured in viewBox units). */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
+    .ftr__sign { view-timeline: --sign block; }
     .ftr__sign path {
       stroke-dasharray: 1;
-      animation: sign linear both, ink linear both;
-      animation-timeline: view(), view();
-      animation-range: entry 0% entry 100%, entry 80% entry 100%;
+      animation: sign linear both;
+      animation-timeline: --sign;
+      animation-range: entry 20% entry 44%;
     }
+    .ftr__sign path:nth-child(2) { animation-range: entry 27% entry 51%; }
+    .ftr__sign path:nth-child(3) { animation-range: entry 34% entry 58%; }
+    .ftr__sign path:nth-child(4) { animation-range: entry 41% entry 65%; }
+    .ftr__sign path:nth-child(5) { animation-range: entry 48% entry 72%; }
+    .ftr__sign path:nth-child(6) { animation-range: entry 55% entry 79%; }
+    .ftr__sign path:nth-child(7) { animation-range: entry 62% entry 86%; }
+    .ftr__sign path:nth-child(8) { animation-range: entry 69% entry 93%; }
+    .ftr__sign path:nth-child(9) { animation-range: entry 76% entry 100%; }
   }
 }
 @keyframes sign { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-@keyframes ink { from { fill: rgb(20 19 23 / 0); } to { fill: rgb(20 19 23 / 0.07); } }
 @media (max-width: 899px) {
   .ftr__in { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
   .ftr__brand { grid-column: 1 / -1; }

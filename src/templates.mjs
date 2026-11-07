@@ -3,6 +3,8 @@
 
 import { site, work, wa } from './site.config.mjs';
 import signature from './assets/signature.json' with { type: 'json' };
+// One path per contour, so each stroke can be drawn in turn (a compound path restarts its dash pattern per contour).
+const strokes = signature.d.split(/(?=M)/).map((d) => `<path pathLength="1" d="${d.trim()}"/>`).join('');
 
 export const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -109,7 +111,7 @@ function footer(c) {
 <p class="ftr__built">${c.footer.built}</p>
 <p class="ftr__copy">© ${year} ${esc(site.name)}</p>
 </div>
-<svg class="ftr__sign" viewBox="${signature.viewBox}" aria-hidden="true" focusable="false"><path pathLength="1" d="${signature.d}"/></svg>
+<svg class="ftr__sign" viewBox="${signature.viewBox}" aria-hidden="true" focusable="false">${strokes}</svg>
 </footer>`;
 }
 

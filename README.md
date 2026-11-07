@@ -8,7 +8,7 @@ npm run build     # src/ → dist/
 npm run preview   # http://localhost:4321  (brotli, real 404, real CSP — like production)
 npm run dev       # rebuild on save + preview
 npm run check     # links, fragments, JSON-LD graph, hreflang, sitemap, llms.txt
-npm run audit     # Lighthouse, every page, mobile + desktop
+npm run audit     # Lighthouse, every page, mobile + desktop (or: npm run audit -- /sozluk/)
 npm run indexnow  # tell Bing / Copilot, Yandex, Naver… that the sitemap is fresh
 ```
 
@@ -34,7 +34,7 @@ Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic 
 
 **The thread.** A tailor's stitch drawn down the left margin as you read: a faint dotted route shows where it will go, the ember thread follows the reading position, passing each section marker, and ends tied to the WhatsApp button, which answers with a single pulse. Built from section boxes only (never forcing layout inside `content-visibility`-skipped sections), static for reduced motion, absent without JS. Two quiet invitations sit where the thought naturally occurs: after the measured numbers, and at the end of the FAQ.
 
-**The signature.** The footer ends in *DevArt*, written as an outline that a pen traces as you arrive at the end of the page, and the ink settles once it's complete (a scroll-driven `stroke-dashoffset`, no JavaScript). The path is real type: Geist Mono *Dev* and Instrument Serif *Art*, converted to one 2 KB SVG path by `scripts/signature.py`. Reduced motion shows it already signed. View the source and there's a note at the very top for whoever reads it.
+**The signature.** The page signs itself. As the footer comes into view, a pen writes *DevArt* stroke by stroke, left to right, and lifts the moment the word is fully seen: nine contours, each on its own slice of a scroll-driven `view-timeline` (no JavaScript). The strokes are real type, Geist Mono *Dev* and Instrument Serif *Art*, converted to 2 KB of SVG by `scripts/signature.py`. Reduced motion shows it already signed. View the source and there's a note at the very top for whoever reads it.
 
 **Grace.** Motion that persuades without pressure. The hero exhales into place (transform-only, so LCP and CLS never notice), section titles rise from behind a line as you reach them, the primary button catches the light as your cursor reaches for it, and portfolio cards lift a few pixels under the hand. Next to the WhatsApp button, one sentence takes the weight off the decision: *a message commits you to nothing.*
 
