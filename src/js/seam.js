@@ -130,6 +130,7 @@ void main() {
   if (lvl > 0.6) ch = 15252014;
   if (lvl > 0.7) ch = 13199452;
   if (lvl > 0.8) ch = 11512810;
+  if (letter > 0.5) ch = 33554431; // solid LED block: letters stay legible at any cell count
   vec2 lp = mod(fc / (uCell * 0.5), 2.0) - 1.0;
   float gch = glyph(ch, lp);
   vec3 devc = mix(BONE * (0.07 + 0.3 * g), mix(EMBER, BONE, 0.35 + 0.4 * g), letter) * gch;
@@ -286,7 +287,7 @@ export function start(canvas) {
       // Mono layer, dilated so every ASCII cell that touches a stroke lights up.
       ctx.font = monoFont;
       ctx.fillStyle = ctx.strokeStyle = '#f00';
-      ctx.lineWidth = monoPx * 0.05;
+      ctx.lineWidth = monoPx * 0.03;
       ctx.lineJoin = 'round';
       for (const [w, x] of [['Dev', monoDevX], ['Art', serifArtX]]) {
         ctx.fillText(w, x, monoBase);
