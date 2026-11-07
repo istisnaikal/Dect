@@ -440,6 +440,16 @@ ${Object.entries(security).map(([k, v]) => `  Header always set ${k} "${v}"`).jo
 `,
   );
 
+  // Permanent (301) redirects for slashless URLs — the edge's default is a temporary 307.
+  await write(
+    '_redirects',
+    [...pages.map((p) => p.url.slice(O.length)).filter((u) => u !== '/').map((u) => `${u.slice(0, -1)} ${u} 301`), '/index.html / 301']
+      .join('\n') + '\n',
+  );
+
+  // Apache-only config must not be served as a public file from the Cloudflare edge.
+  await write('.assetsignore', '.htaccess\n');
+
   // ── Report ────────────────────────────────────────────────────────────────
   const size = (buf) => ({
     raw: buf.length,
