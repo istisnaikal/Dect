@@ -23,10 +23,22 @@ import QRCode from 'qrcode';
 import tr from '../src/content/tr.mjs';
 import en from '../src/content/en.mjs';
 import { en as glossEn, terms as glossTerms, tr as glossTr } from '../src/content/glossary.mjs';
-import { glossaryMd, guideMd, homeMd, llmsTxt } from '../src/markdown.mjs';
-import { glossaryGraph, guideGraph, homeGraph } from '../src/schema.mjs';
+import { services } from '../src/content/services.mjs';
+import { glossaryMd, guideMd, homeMd, llmsTxt, serviceMd, servicesHubMd } from '../src/markdown.mjs';
+import { glossaryGraph, guideGraph, homeGraph, serviceGraph, servicesHubGraph } from '../src/schema.mjs';
 import { site, wa, work } from '../src/site.config.mjs';
-import { esc, glossaryBody, guideBody, homeBody, notFoundBody, plain } from '../src/templates.mjs';
+import {
+  esc,
+  glossaryBody,
+  guideBody,
+  homeBody,
+  notFoundBody,
+  plain,
+  serviceBody,
+  servicesHubBody,
+  svcContent,
+  svcPath,
+} from '../src/templates.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(ROOT, 'src');
@@ -82,6 +94,12 @@ async function build() {
     logLevel: 'warning',
   });
   const appOut = Object.entries(js.metafile.outputs).find(([, o]) => o.entryPoint?.endsWith('app.js'))[0];
+  // The copy quotes the site's own JavaScript weight; it is measured here, never typed by hand.
+  let jsBr = 0;
+  for (const out of Object.keys(js.metafile.outputs))
+    jsBr += zlib.brotliCompressSync(await fs.readFile(path.resolve(ROOT, out)), { params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 11 } }).length;
+  const measured = (s, c) =>
+    s.replaceAll('{jsKB}', new Intl.NumberFormat(c.dateLocale, { maximumFractionDigits: 1 }).format(jsBr / 1024));
   const appUrl = `/${path.relative(DIST, path.resolve(ROOT, appOut)).split(path.sep).join('/')}`;
 
   // ── CSS: font faces + design system, minified and inlined ─────────────────
@@ -116,7 +134,7 @@ async function build() {
     words[c0.lang] = guideText.split(/\s+/).length;
     const readMinutes = Math.max(1, Math.round(words[c0.lang] / 200));
 
-    const home = { ...c0, altPath: other.path };
+    const home = { ...c0, altPath: other.path, selfPath: c0.path };
     pages.push({
       file: `${c0.path}index.html`,
       url: O + c0.path,
@@ -133,7 +151,7 @@ async function build() {
       md: homeMd(home),
       priority: c0 === tr ? '1.0' : '0.9',
     });
-    const guide = { ...c0, altPath: other.guidePath };
+    const guide = { ...c0, altPath: other.guidePath, selfPath: c0.guidePath };
     pages.push({
       file: `${c0.guidePath}index.html`,
       url: O + c0.guidePath,
@@ -152,7 +170,7 @@ async function build() {
     });
     const g = c0 === tr ? glossTr : glossEn;
     const gOther = c0 === tr ? glossEn : glossTr;
-    const gloss = { ...c0, altPath: gOther.path };
+    const gloss = { ...c0, altPath: gOther.path, selfPath: g.path };
     pages.push({
       file: `${g.path}index.html`,
       url: O + g.path,
@@ -169,6 +187,48 @@ async function build() {
       md: glossaryMd(gloss, g, glossTerms, dateLabel),
       priority: '0.7',
     });
+
+    // Services: a hub, then one page per service. Home → hub → service, and home → service directly.
+    const sv = svcContent(c0.lang);
+    const hub = { ...c0, altPath: other.servicesPath, selfPath: c0.servicesPath };
+    pages.push({
+      file: `${c0.servicesPath}index.html`,
+      url: O + c0.servicesPath,
+      lang: c0,
+      alt: { [c0.lang]: O + c0.servicesPath, [other.lang]: O + other.servicesPath, 'x-default': O + tr.servicesPath },
+      title: sv.hub.meta.title,
+      description: sv.hub.meta.description,
+      ogType: 'website',
+      ogImage: `${O}/og/og-${c0.lang}-services.jpg`,
+      ogAlt: sv.hub.meta.ogAlt,
+      jsonld: servicesHubGraph(hub, O + c0.servicesPath, { homeUrl: O + c0.path }),
+      body: servicesHubBody(hub),
+      bodyClass: 'is-guide is-services',
+      md: servicesHubMd(hub),
+      priority: '0.9',
+    });
+    for (const s of services) {
+      const own = svcPath(c0.lang, s.id);
+      const twin = svcPath(other.lang, s.id);
+      const sc = { ...c0, altPath: twin, selfPath: own };
+      const it = sv.items[s.id];
+      pages.push({
+        file: `${own}index.html`,
+        url: O + own,
+        lang: c0,
+        alt: { [c0.lang]: O + own, [other.lang]: O + twin, 'x-default': O + svcPath('tr', s.id) },
+        title: it.meta.title,
+        description: it.meta.description,
+        ogType: 'website',
+        ogImage: `${O}/og/og-${c0.lang}-svc-${s.id}.jpg`,
+        ogAlt: `${it.name} — ${site.name}`,
+        jsonld: serviceGraph(sc, s.id, O + own, { homeUrl: O + c0.path }),
+        body: serviceBody(sc, s.id),
+        bodyClass: 'is-guide is-service',
+        md: serviceMd(sc, s.id, dateLabel),
+        priority: '0.8',
+      });
+    }
   }
 
   const speculation = JSON.stringify({
@@ -257,7 +317,7 @@ ${p.body}
   const notFound = {
     file: '404.html',
     url: `${O}/404.html`,
-    lang: { ...tr },
+    lang: { ...tr, selfPath: '/404.html' },
     alt: {},
     title: tr.notFound.title,
     description: tr.notFound.text,
@@ -272,7 +332,8 @@ ${p.body}
   const hashes = { style: new Set(), script: new Set() };
   const report = [];
   for (const p of [...pages, notFound]) {
-    const html = await minify(htmlFor(p), {
+    if (p.md) p.md = measured(p.md, p.lang);
+    const html = await minify(measured(htmlFor(p), p.lang), {
       collapseWhitespace: true,
       removeComments: true,
       collapseBooleanAttributes: true,
@@ -399,6 +460,9 @@ Fonts: Geist, Geist Mono (Vercel, OFL) · Instrument Serif (OFL)
     "form-action 'self'",
     "frame-ancestors 'none'",
     "object-src 'none'",
+    // DOM XSS sinks (innerHTML, script.src, eval…) only accept Trusted Types, and no policy may be
+    // created: the site's own code never writes markup from strings. Not with zone-injected JS.
+    ...(edge.cloudflareJsDetections ? [] : ["require-trusted-types-for 'script'", "trusted-types 'none'"]),
     'upgrade-insecure-requests',
   ].join('; ');
   const security = {
@@ -425,6 +489,9 @@ ${Object.entries(security).map(([k, v]) => `  ${k}: ${v}`).join('\n')}
   Content-Type: text/markdown; charset=utf-8
 
 /llms*.txt
+  Content-Type: text/plain; charset=utf-8
+
+/.well-known/security.txt
   Content-Type: text/plain; charset=utf-8
 `,
   );
@@ -477,6 +544,20 @@ ${Object.entries(security).map(([k, v]) => `  Header always set ${k} "${v}"`).jo
     '_redirects',
     [...pages.map((p) => p.url.slice(O.length)).filter((u) => u !== '/').map((u) => `${u.slice(0, -1)} ${u} 301`), '/index.html / 301']
       .join('\n') + '\n',
+  );
+
+  // RFC 9116: where to report a vulnerability. Expires a year after each build, so it is never stale.
+  const expires = new Date(`${site.updated}T00:00:00Z`);
+  expires.setUTCFullYear(expires.getUTCFullYear() + 1);
+  await write(
+    '.well-known/security.txt',
+    `# ${O} — found a security issue? Thank you. Please write before you publish.
+Contact: tel:${site.phone.e164}
+Contact: ${wa('Security report for eyupdevart.com:')}
+Expires: ${expires.toISOString().replace('.000Z', 'Z')}
+Preferred-Languages: tr, en
+Canonical: ${O}/.well-known/security.txt
+`,
   );
 
   // IndexNow ownership key (scripts/indexnow.mjs pings after each deploy).

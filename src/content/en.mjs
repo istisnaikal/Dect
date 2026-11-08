@@ -10,6 +10,7 @@ export default {
   path: '/en/',
   guidePath: '/en/guide/aeo-geo/',
   glossaryPath: '/en/glossary/',
+  servicesPath: '/en/services/',
   alt: { lang: 'tr', label: 'Türkçe', short: 'TR' },
   dateLocale: 'en-GB',
 
@@ -140,26 +141,31 @@ export default {
         title: 'Web design & art direction',
         text: 'I turn your brand’s voice into something you can see: type, colour, motion, white space. Whoever opens the page should know who you are before they spot the logo.',
         tags: ['UI/UX', 'Art direction', 'Motion'],
+        links: ['uiux', 'web'],
       },
       {
         title: 'Web development',
         text: 'The code nobody sees deserves as much care as the parts everyone does. Brochure sites, web apps, WebGL pieces or admin panels; all of them light, secure and usable by anyone.',
         tags: ['TypeScript', 'Next.js', 'WebGL', 'Vanilla JS'],
+        links: ['web', 'frontend', 'fullstack'],
       },
       {
         title: 'SEO · AEO · GEO',
         text: 'Ranking on Google is good. Being the name that comes up when someone asks ChatGPT, Perplexity or Gemini is better. With technical SEO, structured data, llms.txt and well-built content, I aim for both.',
         tags: ['Technical SEO', 'Schema.org', 'llms.txt'],
+        links: ['seo', 'aeo-geo'],
       },
       {
         title: 'Performance engineering',
         text: 'A slow site loses customers before it has even appeared. I get Core Web Vitals green and Lighthouse to the top, so the page is ready before you’ve had time to blink.',
         tags: ['Core Web Vitals', 'Lighthouse', 'CDN'],
+        links: ['speed'],
       },
       {
         title: 'Local business & conversion',
         text: 'A tow truck, a dentist, a restaurant: customers look you up on their phones, and they’re in a hurry. I draw them the shortest route, with area pages, Google Business Profile alignment, and one-tap calls and WhatsApp.',
         tags: ['Local SEO', 'WhatsApp', 'Conversion'],
+        links: [['seo', 'local-seo', 'Local SEO']],
       },
       {
         title: 'Care & growth',
@@ -234,7 +240,7 @@ export default {
       },
       {
         q: 'What services do you offer?',
-        a: 'Web design and art direction, web development, technical SEO together with AEO and GEO, performance work, conversion-focused sites for local businesses, and care after launch. In short, everything a website needs, from the first sketch to long after go-live.',
+        a: 'Web design and art direction, web development, technical SEO together with AEO and GEO, performance work, conversion-focused sites for local businesses, and care after launch. In short, everything a website needs, from the first sketch to long after go-live. Each one is described in detail on the <a href="{services}">services page</a>.',
       },
       {
         q: 'What are AEO and GEO?',

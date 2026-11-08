@@ -2,6 +2,8 @@
 // Everything a crawler or an AI agent needs is in the HTML; JavaScript only adds.
 
 import { site, work, wa } from './site.config.mjs';
+import { en as glossEn, terms as glossTerms, tr as glossTr } from './content/glossary.mjs';
+import { services, en as svcEn, tr as svcTr } from './content/services.mjs';
 import signature from './assets/signature.json' with { type: 'json' };
 // One path per contour, so each stroke can be drawn in turn (a compound path restarts its dash pattern per contour).
 const strokes = signature.d.split(/(?=M)/).map((d) => `<path pathLength="1" d="${d.trim()}"/>`).join('');
@@ -27,12 +29,29 @@ export const plain = (s) =>
 
 export const phoneFor = (c) => (c.lang === 'tr' ? site.phone.display : site.phone.intl);
 
+// ── Services: one source for every path, label and cross-link ────────────────
+export const svcContent = (lang) => (lang === 'tr' ? svcTr : svcEn);
+export const svcPath = (lang, id) => {
+  const s = services.find((x) => x.id === id);
+  if (!s) throw new Error(`unknown service "${id}"`);
+  return `${svcContent(lang).path}${s.slug[lang]}/`;
+};
+const glossFor = (lang) => (lang === 'tr' ? glossTr : glossEn);
+export const termName = (lang, id) => {
+  const t = glossTerms.find((x) => x.id === id);
+  if (!t) throw new Error(`unknown glossary term "${id}"`);
+  return glossFor(lang).terms[id].name || t.name;
+};
+
 export const fill = (s, c) =>
   s
     .replaceAll('{wa}', esc(wa(c.wa.default)))
     .replaceAll('{tel}', `tel:${site.phone.e164}`)
     .replaceAll('{phone}', phoneFor(c))
-    .replaceAll('{guide}', c.guidePath);
+    .replaceAll('{guide}', c.guidePath)
+    .replaceAll('{glossary}', c.glossaryPath)
+    .replaceAll('{services}', c.servicesPath)
+    .replace(/\{svc:([\w-]+)\}/g, (_, id) => svcPath(c.lang, id));
 
 const pad = (n) => String(n).padStart(2, '0');
 
@@ -74,7 +93,11 @@ export function logoMark(cls = 'logo__mark', title = '') {
 // ── Shared chrome ────────────────────────────────────────────────────────────
 function header(c, { home }) {
   const base = home ? '' : c.path;
-  const navLinks = c.nav.map((n) => `<li><a href="${base}#${n.id}">${n.label}</a></li>`).join('');
+  // Off the home page, "Services" leads to the services hub rather than back to an anchor.
+  const navHref = (n) => (!home && n.id === c.services.id ? c.servicesPath : `${base}#${n.id}`);
+  const navLinks = c.nav
+    .map((n) => `<li><a href="${navHref(n)}"${navHref(n) === c.selfPath ? ' aria-current="page"' : ''}>${n.label}</a></li>`)
+    .join('');
   const altPath = c.altPath;
   return `<header class="hdr" data-hdr>
 <div class="hdr__in">
@@ -98,6 +121,7 @@ function footer(c) {
 <p class="ftr__tag">${c.footer.tagline}</p>
 </div>
 <nav class="ftr__nav" aria-label="${c.lang === 'tr' ? 'Alt menü' : 'Footer'}"><ul>
+<li><a href="${c.servicesPath}">${svcContent(c.lang).hub.crumb}</a></li>
 <li><a href="${c.guidePath}">${c.footer.guide}</a></li>
 <li><a href="${c.glossaryPath}">${c.footer.glossary}</a></li>
 <li><a href="/llms.txt">${c.footer.llms}</a></li>
@@ -132,6 +156,17 @@ function palette(c) {
     { id: 'share', label: k.share, action: 'share', ic: icon.arrowOut, kw: 'share paylaş gönder', hidden: true },
     { id: 'top', label: k.top, action: 'top', ic: icon.up, kw: 'top başa yukarı' },
   ];
+  const sv = svcContent(c.lang);
+  const svc = [
+    { id: 'services', label: sv.ui.all, href: c.servicesPath, ic: icon.hash, kw: 'hizmetler services hizmet service' },
+    ...services.map((s) => ({
+      id: `svc-${s.id}`,
+      label: sv.items[s.id].crumb,
+      href: svcPath(c.lang, s.id),
+      ic: icon.arrowRight,
+      kw: `${svcTr.items[s.id].crumb} ${svcEn.items[s.id].crumb} ${s.id}`.toLowerCase(),
+    })),
+  ];
   const opt = (o) =>
     `<li role="option" id="cmd-${o.id}" class="palette__opt" aria-selected="false"${o.hidden ? ' hidden data-optional' : ''} ${o.href ? `data-href="${esc(o.href)}"` : `data-action="${o.action}"`} data-kw="${esc(o.kw)}">${o.ic}<span>${esc(o.label)}</span></li>`;
   return `<dialog class="palette" data-palette aria-label="${esc(c.ui.palette)}">
@@ -143,6 +178,8 @@ function palette(c) {
 ${actions.map(opt).join('')}
 <li role="presentation" class="palette__group">${k.groupGo}</li>
 ${go.map(opt).join('')}${more.map(opt).join('')}
+<li role="presentation" class="palette__group">${c.services.label}</li>
+${svc.map(opt).join('')}
 </ul>
 <p class="palette__empty" data-palette-empty hidden>${esc(c.ui.paletteEmpty)}</p>
 <p class="palette__foot" aria-hidden="true"><kbd class="kbd">↑</kbd><kbd class="kbd">↓</kbd> <kbd class="kbd">↵</kbd> <kbd class="kbd">esc</kbd> <span>${c.ui.paletteHint}</span></p>
@@ -292,7 +329,18 @@ ${work.map((p, i) => workCard(p, c, i)).join('\n')}
 </section>`;
 }
 
-function services(c) {
+/** Each home service points at the page(s) that go deeper: 'id' or [id, fragment, label]. */
+function svcLinks(links, c) {
+  if (!links?.length) return '';
+  const sv = svcContent(c.lang);
+  const a = (l) => {
+    const [id, hash, label] = Array.isArray(l) ? l : [l];
+    return `<a href="${svcPath(c.lang, id)}${hash ? `#${hash}` : ''}">${label || sv.items[id].crumb}<span aria-hidden="true">→</span></a>`;
+  };
+  return `<p class="svc__more">${links.map(a).join('')}</p>`;
+}
+
+function servicesSection(c) {
   const s = c.services;
   return `<section class="services wrap" id="${s.id}" aria-labelledby="${s.id}-title">
 ${secHead(s, 4)}
@@ -302,11 +350,12 @@ ${s.items
     (it, i) => `<li class="svc__item" data-spot>
 <span class="svc__n" aria-hidden="true">${pad(i + 1)}</span>
 <h3 class="svc__title">${it.title}</h3>
-<div class="svc__body"><p>${it.text}</p><ul class="tags">${it.tags.map((t) => `<li>${t}</li>`).join('')}</ul></div>
+<div class="svc__body"><p>${it.text}</p><ul class="tags">${it.tags.map((t) => `<li>${t}</li>`).join('')}</ul>${svcLinks(it.links, c)}</div>
 </li>`,
   )
   .join('\n')}
 </ol>
+<p class="svc__all"><a class="btn btn--ghost btn--lg" href="${c.servicesPath}"><span>${svcContent(c.lang).ui.homeMore}</span>${icon.arrowRight}</a></p>
 </section>`;
 }
 
@@ -406,7 +455,7 @@ ${marquee(c)}
 ${short(c)}
 ${manifesto(c)}
 ${workSection(c)}
-${services(c)}
+${servicesSection(c)}
 ${proof(c)}
 ${processSection(c)}
 ${faq(c)}
@@ -433,7 +482,7 @@ export function guideBody(c, { readMinutes, dateLabel }) {
 <p class="byline">${g.byline} <a href="${c.path}" rel="author">${esc(site.name)}</a><span aria-hidden="true"> · </span>${g.updated} <time datetime="${site.updated}">${dateLabel}</time><span aria-hidden="true"> · </span>${readMinutes} ${g.minutes}</p>
 </header>
 <div class="guide__layout wrap">
-<aside class="toc" aria-labelledby="toc-title"><h2 class="toc__title" id="toc-title">${g.tocLabel}</h2><ol>${toc}<li><a class="toc__out" href="${c.glossaryPath}">${g.glossaryLink} →</a></li></ol></aside>
+<aside class="toc" aria-labelledby="toc-title"><h2 class="toc__title" id="toc-title">${g.tocLabel}</h2><ol>${toc}<li><a class="toc__out" href="${c.glossaryPath}">${g.glossaryLink} →</a></li><li><a class="toc__out" href="${svcPath(c.lang, 'aeo-geo')}">${svcContent(c.lang).items['aeo-geo'].name} →</a></li></ol></aside>
 <div class="prose">
 <section class="tldr" aria-labelledby="tldr-title"><h2 id="tldr-title">${g.tldrLabel}</h2><p id="tldr-answer">${g.tldr}</p></section>
 ${g.sections.map((s) => `<section id="${s.id}" aria-labelledby="${s.id}-h"><h2 id="${s.id}-h">${s.h2}</h2>\n${s.html}\n</section>`).join('\n')}
@@ -487,7 +536,7 @@ ${terms
 <p class="byline">${c.guide.byline} <a href="${c.path}" rel="author">${esc(site.name)}</a><span aria-hidden="true"> · </span>${g.updated} <time datetime="${site.updated}">${dateLabel}</time><span aria-hidden="true"> · </span>${terms.length} ${g.count}</p>
 </header>
 <div class="guide__layout wrap">
-<aside class="toc" aria-labelledby="toc-title"><h2 class="toc__title" id="toc-title">${c.lang === 'tr' ? 'Bu sözlükte' : 'In this glossary'}</h2><ol>${toc}<li><a class="toc__out" href="${c.guidePath}">${c.guide.crumb} →</a></li></ol></aside>
+<aside class="toc" aria-labelledby="toc-title"><h2 class="toc__title" id="toc-title">${c.lang === 'tr' ? 'Bu sözlükte' : 'In this glossary'}</h2><ol>${toc}<li><a class="toc__out" href="${c.guidePath}">${c.guide.crumb} →</a></li><li><a class="toc__out" href="${c.servicesPath}">${svcContent(c.lang).hub.crumb} →</a></li></ol></aside>
 <div class="prose">
 ${sections}
 <aside class="cta-box card" aria-labelledby="cta-box-title">
@@ -495,6 +544,115 @@ ${sections}
 <p>${g.cta.text}</p>
 <a class="btn btn--primary btn--lg" href="${esc(wa(c.wa.audit))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${g.cta.button}</span></a>
 </aside>
+</div>
+</div>
+</article>
+</main>
+${footer(c)}
+${dock(c)}
+${palette(c)}`;
+}
+
+// ── Services ─────────────────────────────────────────────────────────────────
+const crumbs = (c, trail) =>
+  `<nav class="crumbs" aria-label="${c.lang === 'tr' ? 'Sayfa yolu' : 'Breadcrumb'}"><ol><li><a href="${c.path}">${c.ui.home}</a></li>${trail
+    .map(([label, href]) => (href ? `<li><a href="${href}">${label}</a></li>` : `<li><span aria-current="page">${label}</span></li>`))
+    .join('')}</ol></nav>`;
+
+const ctaBox = (cta, href) => `<aside class="cta-box card" aria-labelledby="cta-box-title">
+<h2 class="cta-box__title" id="cta-box-title">${rich(cta.title)}</h2>
+<p>${cta.text}</p>
+<a class="btn btn--primary btn--lg" href="${esc(href)}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${cta.button}</span></a>
+</aside>`;
+
+const answerBox = (label, html) =>
+  `<section class="tldr" aria-labelledby="answer-title"><h2 id="answer-title">${label}</h2><p id="answer">${html}</p></section>`;
+
+export function serviceBody(c, id) {
+  const sv = svcContent(c.lang);
+  const s = services.find((x) => x.id === id);
+  const it = sv.items[id];
+  const faqId = c.lang === 'tr' ? 'sss' : 'faq';
+  const toc = [...it.sections.map((x) => [x.id, x.h2]), [faqId, sv.ui.faq], ['related', sv.ui.related]]
+    .map(([h, t]) => `<li><a href="#${h}">${t}</a></li>`)
+    .join('');
+  const rows = ['for', 'includes', 'stack', 'measure', 'start']
+    .filter((k) => it.facts[k])
+    .map((k) => `<div class="facts__row"><dt>${sv.ui.rows[k]}</dt><dd>${listy(it.facts[k])}</dd></div>`)
+    .join('');
+  const related = s.related
+    .map(
+      (r) =>
+        `<li><a class="svc-rel__card card" href="${svcPath(c.lang, r)}" data-spot><span class="svc-rel__name">${sv.items[r].crumb}</span><span class="svc-rel__text">${sv.items[r].summary}</span>${icon.arrowRight}</a></li>`,
+    )
+    .join('');
+  const terms = s.terms.map((t) => `<a href="${c.glossaryPath}#${t}">${esc(termName(c.lang, t))}</a>`).join('<span aria-hidden="true"> · </span>');
+  return `${header(c, { home: false })}
+<div class="progress" aria-hidden="true"></div>
+<main id="main">
+<article class="guide svc-page">
+<header class="guide__head wrap">
+${crumbs(c, [[sv.hub.crumb, sv.path], [it.crumb]])}
+<p class="sec-label"><span class="sec-label__n">${pad(services.indexOf(s) + 1)}</span>${sv.ui.label}</p>
+<h1 class="guide__title">${rich(it.h1)}</h1>
+</header>
+<div class="guide__layout wrap">
+<aside class="toc" aria-labelledby="toc-title"><h2 class="toc__title" id="toc-title">${sv.ui.toc}</h2><ol>${toc}<li><a class="toc__out" href="${sv.path}">${sv.ui.all} →</a></li></ol></aside>
+<div class="prose">
+${answerBox(sv.ui.answer, fill(it.answer, c))}
+<dl class="facts svc-facts">${rows}</dl>
+${hook({ text: sv.ui.hook, link: c.ui.whatsapp }, wa(it.wa))}
+${it.sections.map((x) => `<section id="${x.id}" aria-labelledby="${x.id}-h"><h2 id="${x.id}-h">${x.h2}</h2>\n${fill(x.html, c)}\n</section>`).join('\n')}
+<section id="${faqId}" aria-labelledby="svc-faq-h"><h2 id="svc-faq-h">${sv.ui.faq}</h2>
+<div class="faq__list">${faqList(it.faq, c, 'sfaq')}</div>
+</section>
+<section id="related" class="svc-rel" aria-labelledby="related-h"><h2 id="related-h">${sv.ui.related}</h2>
+<ul class="svc-rel__list">${related}</ul>
+<p class="svc-terms"><span class="svc-terms__k">${sv.ui.terms}</span> ${terms}</p>
+</section>
+${ctaBox(it.cta, wa(it.wa))}
+</div>
+</div>
+</article>
+</main>
+${footer(c)}
+${dock(c)}
+${palette(c)}`;
+}
+
+export function servicesHubBody(c) {
+  const sv = svcContent(c.lang);
+  const h = sv.hub;
+  const faqId = c.lang === 'tr' ? 'sss' : 'faq';
+  const items = services
+    .map((s, i) => {
+      const it = sv.items[s.id];
+      return `<li class="svc__item" data-spot>
+<span class="svc__n" aria-hidden="true">${pad(i + 1)}</span>
+<h2 class="svc__title"><a class="svc__link" href="${svcPath(c.lang, s.id)}">${it.crumb}</a></h2>
+<div class="svc__body"><p>${it.summary}</p><p class="svc__for"><span>${sv.ui.rows.for}</span> ${listy(it.facts.for)}</p><span class="svc__go" aria-hidden="true">${sv.ui.more}${icon.arrowRight}</span></div>
+</li>`;
+    })
+    .join('\n');
+  return `${header(c, { home: false })}
+<main id="main">
+<article class="guide svc-hub">
+<header class="guide__head wrap">
+${crumbs(c, [[h.crumb]])}
+<p class="sec-label"><span class="sec-label__n">${pad(services.length)}</span>${h.label}</p>
+<h1 class="guide__title">${rich(h.h1)}</h1>
+<p class="gloss__intro">${h.intro}</p>
+</header>
+<div class="wrap svc-hub__in">
+<div class="prose">${answerBox(sv.ui.answer, h.answer)}</div>
+<ol class="svc svc--hub">
+${items}
+</ol>
+<div class="prose">
+<section id="${faqId}" aria-labelledby="hub-faq-h"><h2 id="hub-faq-h">${sv.ui.faq}</h2>
+<div class="faq__list">${faqList(h.faq, c, 'hfaq')}</div>
+</section>
+${ctaBox(h.cta, wa(c.wa.default))}
 </div>
 </div>
 </article>

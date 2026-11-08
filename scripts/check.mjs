@@ -99,6 +99,21 @@ for (const [url, src] of pages) {
     if (!is404 && !types.includes('Person')) fail(f, 'JSON-LD graph lacks Person');
   }
 
+  // Speakable selectors point at something real (an AI reading the page aloud gets text, not nothing)
+  for (const m of src.matchAll(/"cssSelector":\[([^\]]*)\]/g))
+    for (const sel of JSON.parse(`[${m[1]}]`)) {
+      const ok = sel.startsWith('#') ? ids.has(sel.slice(1)) : sel.startsWith('.') ? src.includes(sel.slice(1)) : new RegExp(`<${sel}[\\s>]`).test(src);
+      if (!ok) fail(f, `speakable selector ${sel} matches nothing`);
+    }
+
+  // The social card each page promises exists
+  const og = src.match(/<meta property="?og:image"? content="([^"]+)"/)?.[1];
+  if (og && !exists(og.replace(ORIGIN, ''))) fail(f, `og:image missing: ${og}`);
+
+  // No template placeholder survives the build
+  const left = src.match(/\{(?:wa|tel|phone|guide|glossary|services|jsKB|svc:[\w-]+)\}/);
+  if (left) fail(f, `unfilled placeholder ${left[0]}`);
+
   // hreflang: every alternate exists and links back (reciprocity)
   for (const m of src.matchAll(/<link rel="?alternate"? hreflang="?([\w-]+)"? href="?([^"\s>]+)"?/g)) {
     const [, lang, href] = m;
@@ -109,9 +124,51 @@ for (const [url, src] of pages) {
   }
 }
 
+// Every title and description is unique (duplicates make pages compete with each other)
+const seen = { title: new Map(), description: new Map() };
+for (const [url, src] of pages) {
+  if (url === '/404.html') continue;
+  const vals = { title: src.match(/<title>(.*?)<\/title>/)?.[1], description: src.match(/<meta name="?description"? content="([^"]*)"/)?.[1] };
+  for (const k of ['title', 'description']) {
+    if (seen[k].has(vals[k])) fail(url, `duplicate ${k} (same as ${seen[k].get(vals[k])})`);
+    else seen[k].set(vals[k], url);
+  }
+}
+
+// Crawl architecture: every page in the sitemap, every sitemap URL a page, nothing deeper than 2 clicks from /
+const sitemapUrls = [...fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8').matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1].replace(ORIGIN, ''));
+const pageUrls = [...pages.keys()].filter((u) => u !== '/404.html');
+for (const u of pageUrls) if (!sitemapUrls.includes(u)) fail(u, 'page missing from sitemap.xml');
+const depth = new Map([['/', 0]]);
+for (let queue = ['/']; queue.length; ) {
+  const u = queue.shift();
+  for (const m of (pages.get(u) || '').matchAll(/\shref="?(\/[^"\s>#?]*)/g)) {
+    const t = m[1];
+    if (pages.has(t) && !depth.has(t)) depth.set(t, depth.get(u) + 1), queue.push(t);
+  }
+}
+for (const u of sitemapUrls) {
+  if (!depth.has(u)) fail(u, 'unreachable from the home page (orphan)');
+  else if (depth.get(u) > 2) fail(u, `${depth.get(u)} clicks from the home page (max 2)`);
+}
+const deepest = Math.max(...sitemapUrls.map((u) => depth.get(u) ?? 99));
+
+// Markdown twins: every page that announces one has one, with no placeholder left in it
+for (const [url, src] of pages) {
+  const md = src.match(/<link rel="?alternate"? type="?text\/markdown"? href="([^"]+)"/)?.[1];
+  if (!md) continue;
+  const file = path.join(DIST, md.replace(ORIGIN, ''));
+  if (!fs.existsSync(file)) fail(url, `Markdown twin missing: ${md}`);
+  else if (/\{(?:wa|tel|phone|guide|glossary|services|jsKB|svc:[\w-]+)\}/.test(fs.readFileSync(file, 'utf8'))) fail(md, 'unfilled placeholder');
+}
+
 // Machine-readable files
 for (const f of ['robots.txt', 'sitemap.xml', 'llms.txt', 'llms-full.txt', 'manifest.webmanifest', 'humans.txt', 'favicon.ico', 'favicon.svg', '_headers', '.htaccess'])
   if (!fs.existsSync(path.join(DIST, f))) fail(f, 'missing');
+const sec = fs.existsSync(path.join(DIST, '.well-known/security.txt')) ? fs.readFileSync(path.join(DIST, '.well-known/security.txt'), 'utf8') : '';
+if (!/^Contact: /m.test(sec)) fail('.well-known/security.txt', 'missing or has no Contact');
+const exp = sec.match(/^Expires: (.+)$/m)?.[1];
+if (!exp || !(new Date(exp) > new Date())) fail('.well-known/security.txt', `Expires missing or in the past (${exp})`);
 const sitemap = fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8');
 for (const m of sitemap.matchAll(/<loc>(.*?)<\/loc>/g)) if (!exists(m[1].replace(ORIGIN, '') || '/')) fail('sitemap.xml', `dead URL ${m[1]}`);
 const llms = fs.readFileSync(path.join(DIST, 'llms.txt'), 'utf8');
@@ -119,7 +176,6 @@ for (const m of llms.matchAll(/\]\((https:\/\/eyupdevart\.com[^)]*)\)/g)) if (!e
 if (!/Sitemap: https:\/\/eyupdevart\.com\/sitemap\.xml/.test(fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8'))) fail('robots.txt', 'no Sitemap line');
 const manifest = JSON.parse(fs.readFileSync(path.join(DIST, 'manifest.webmanifest'), 'utf8'));
 for (const i of manifest.icons) if (!exists(i.src)) fail('manifest', `missing icon ${i.src}`);
-for (const og of ['og-tr.jpg', 'og-en.jpg', 'og-tr-guide.jpg', 'og-en-guide.jpg', 'og-tr-glossary.jpg', 'og-en-glossary.jpg']) if (!exists(`/og/${og}`)) fail('og', `missing /og/${og}`);
 
 warn.forEach((w) => console.log(`  ⚠ ${w}`));
 if (errors.length) {
@@ -127,4 +183,6 @@ if (errors.length) {
   console.log(`\n  ${errors.length} problem(s) across ${pages.size} pages.\n`);
   process.exit(1);
 }
-console.log(`  ✓ ${pages.size} pages · links, fragments, JSON-LD @id graph, hreflang, sitemap, llms.txt, icons — all good.`);
+console.log(
+  `  ✓ ${pages.size} pages · links, fragments, JSON-LD @id graph, speakable, hreflang, unique titles, sitemap ⇄ pages, crawl depth ≤ ${deepest}, OG cards, Markdown twins, llms.txt, security.txt — all good.`,
+);

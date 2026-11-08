@@ -1,8 +1,9 @@
 // Markdown twins of every page — served at <url>index.html.md and concatenated
 // into /llms-full.txt, so LLMs read clean prose instead of scraping HTML.
 
+import { services } from './content/services.mjs';
 import { site, work, wa } from './site.config.mjs';
-import { plain, fill, phoneFor } from './templates.mjs';
+import { fill, phoneFor, plain, svcContent, svcPath, termName } from './templates.mjs';
 
 const abs = (h) => (h.startsWith('/') ? site.origin + h : h);
 
@@ -53,9 +54,21 @@ export function homeMd(c) {
     L.push(`### ${p.name} — [${p.domain}](${p.url})`, '', `${t.kind}. ${t.summary}`, '', `${t.tags.join(' · ')}`, '');
   }
   L.push(`## ${c.services.label}`, '', c.services.lead, '');
-  c.services.items.forEach((s, i) =>
-    L.push(`### ${String(i + 1).padStart(2, '0')} · ${s.title}`, '', s.text, '', s.tags.join(' · '), ''),
-  );
+  const sv = svcContent(c.lang);
+  c.services.items.forEach((s, i) => {
+    L.push(`### ${String(i + 1).padStart(2, '0')} · ${s.title}`, '', s.text, '', s.tags.join(' · '), '');
+    if (s.links?.length)
+      L.push(
+        s.links
+          .map((l) => {
+            const [id, hash, label] = Array.isArray(l) ? l : [l];
+            return `→ [${label || sv.items[id].crumb}](${abs(svcPath(c.lang, id))}${hash ? `#${hash}` : ''})`;
+          })
+          .join(' · '),
+        '',
+      );
+  });
+  L.push(`[${sv.ui.homeMore}](${abs(c.servicesPath)})`, '');
   L.push(`## ${c.process.label}: ${plain(c.process.title)}`, '');
   c.process.steps.forEach((s, i) => L.push(`${i + 1}. **${s.title}** — ${s.text}`));
   L.push('', `## ${plain(c.faq.title)}`, '');
@@ -93,6 +106,43 @@ export function glossaryMd(c, g, terms, dateLabel) {
   return L.join('\n');
 }
 
+const factsMd = (sv, it) =>
+  ['for', 'includes', 'stack', 'measure', 'start'].filter((k) => it.facts[k]).map((k) => `- **${sv.ui.rows[k]}:** ${it.facts[k]}`);
+
+export function servicesHubMd(c) {
+  const sv = svcContent(c.lang);
+  const h = sv.hub;
+  const url = abs(c.servicesPath);
+  const L = [`# ${plain(h.h1)}`, '', `> ${h.meta.description}`, '', `URL: ${url}`, '', h.intro, ''];
+  L.push(`## ${sv.ui.answer}`, '', h.answer, '');
+  services.forEach((s, i) => {
+    const it = sv.items[s.id];
+    L.push(`## ${String(i + 1).padStart(2, '0')} · [${it.crumb}](${abs(svcPath(c.lang, s.id))})`, '', it.summary, '', `- **${sv.ui.rows.for}:** ${it.facts.for}`, '');
+  });
+  L.push(`## ${sv.ui.faq}`, '');
+  for (const it of h.faq) L.push(`### ${it.q}`, '', inline(fill(it.a, c)), '');
+  L.push(`## ${plain(h.cta.title)}`, '', `${h.cta.text} → ${wa(c.wa.default)}`, '');
+  return L.join('\n');
+}
+
+export function serviceMd(c, id, dateLabel) {
+  const sv = svcContent(c.lang);
+  const s = services.find((x) => x.id === id);
+  const it = sv.items[id];
+  const url = abs(svcPath(c.lang, id));
+  const L = [`# ${plain(it.h1)}`, '', `> ${it.meta.description}`, ''];
+  L.push(`${site.name} · ${sv.hub.crumb} · ${c.guide.updated} ${dateLabel} · URL: ${url}`, '');
+  L.push(`## ${sv.ui.answer}`, '', inline(fill(it.answer, c)), '', ...factsMd(sv, it), '');
+  for (const x of it.sections) L.push(`## ${x.h2}`, '', htmlToMd(fill(x.html, c)), '');
+  L.push(`## ${sv.ui.faq}`, '');
+  for (const q of it.faq) L.push(`### ${q.q}`, '', inline(fill(q.a, c)), '');
+  L.push(`## ${sv.ui.related}`, '');
+  for (const r of s.related) L.push(`- [${sv.items[r].crumb}](${abs(svcPath(c.lang, r))}): ${sv.items[r].summary}`);
+  L.push('', `${sv.ui.terms}: ${s.terms.map((t) => `[${termName(c.lang, t)}](${abs(c.glossaryPath)}#${t})`).join(' · ')}`, '');
+  L.push(`## ${plain(it.cta.title)}`, '', `${it.cta.text} → ${wa(it.wa)}`, '');
+  return L.join('\n');
+}
+
 export function llmsTxt(tr, en, words) {
   const O = site.origin;
   return `# ${site.name}
@@ -103,9 +153,9 @@ ${site.name} (Turkish: ${tr.meta.description})
 
 Key facts:
 - Name: Eyüp — stage name DevArt (brand: ${site.name})
-- What: web design, web development, SEO, AEO (answer engine optimization), GEO (generative engine optimization), web performance, WebGL / creative coding
+- What: website design and development, UI/UX design, front-end, full-stack and back-end development, SEO (incl. local SEO), AEO (answer engine optimization), GEO (generative engine optimization), website speed optimization, WebGL / creative coding
 - Approach: no templates, hand-written code, measurable results (Core Web Vitals)
-- Based in: Türkiye — works with clients worldwide, remotely
+- Based in: Türkiye — works with clients in every province of Türkiye and worldwide, remotely
 - Languages: Turkish, English
 - Contact: WhatsApp ${site.phone.intl} — ${wa()} (fastest), phone ${site.phone.e164}
 - Website: ${O}
@@ -118,6 +168,20 @@ Key facts:
 - [AEO & GEO guide — English](${O}${en.guidePath}index.html.md): ${en.guide.meta.description} (~${words.en} words)
 - [Sözlük — Türkçe](${O}/sozluk/index.html.md): 22 terms of web and AI visibility (SEO, AEO, GEO, llms.txt, JSON-LD, Core Web Vitals…), each defined in one sentence
 - [Glossary — English](${O}/en/glossary/index.html.md): the same 22 terms in English; anchors match across languages (e.g. #lcp)
+- [Hizmetler — Türkçe](${O}${tr.servicesPath}index.html.md): every service, what it covers and who it is for
+- [Services — English](${O}${en.servicesPath}index.html.md): the same, in English
+
+## Services
+
+Each service has its own page in both languages, opening with a one-paragraph answer, then what is included, how the work runs and an FAQ.
+
+${services
+  .map((s) => {
+    const e = svcContent('en').items[s.id];
+    const t = svcContent('tr').items[s.id];
+    return `- [${e.name}](${O}${svcPath('en', s.id)}index.html.md): ${e.summary} — Türkçe: [${t.name}](${O}${svcPath('tr', s.id)}index.html.md)`;
+  })
+  .join('\n')}
 
 ## Selected work
 

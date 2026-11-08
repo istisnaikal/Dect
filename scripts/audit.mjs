@@ -12,7 +12,8 @@ import { promisify } from 'node:util';
 process.env.PORT = process.env.AUDIT_PORT || '4398';
 await import('./serve.mjs');
 const base = `http://localhost:${process.env.PORT}`;
-const all = ['/', '/en/', '/rehber/aeo-geo/', '/en/guide/aeo-geo/', '/sozluk/', '/en/glossary/'];
+// Every page in the sitemap: a new page can never skip the audit.
+const all = [...fs.readFileSync(path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'dist', 'sitemap.xml'), 'utf8').matchAll(/<loc>https?:\/\/[^/]+(\/.*?)<\/loc>/g)].map((m) => m[1]);
 const pages = process.argv.length > 2 ? process.argv.slice(2) : all;
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'devart-lh-'));
 const short = { performance: 'perf', accessibility: 'a11y', 'best-practices': 'bp', seo: 'seo', 'agentic-browsing': 'agent' };
@@ -41,7 +42,7 @@ for (const page of pages) {
     });
     const a = r.audits;
     console.log(
-      `${page.padEnd(22)} ${preset.padEnd(8)} ${scores.join('  ')}   LCP ${a['largest-contentful-paint'].displayValue}  TBT ${a['total-blocking-time'].displayValue}  CLS ${a['cumulative-layout-shift'].displayValue}`,
+      `${page.padEnd(44)} ${preset.padEnd(8)} ${scores.join('  ')}   LCP ${a['largest-contentful-paint'].displayValue}  TBT ${a['total-blocking-time'].displayValue}  CLS ${a['cumulative-layout-shift'].displayValue}`,
     );
   }
 }

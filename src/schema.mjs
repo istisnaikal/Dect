@@ -2,8 +2,9 @@
 // search engines and LLMs resolve "Eyüp", "DevArt", the site and the work into
 // a single, unambiguous entity.
 
+import { services } from './content/services.mjs';
 import { site, work, wa } from './site.config.mjs';
-import { plain, fill } from './templates.mjs';
+import { fill, plain, svcContent, svcPath, termName } from './templates.mjs';
 
 const O = site.origin;
 const ID = {
@@ -13,21 +14,32 @@ const ID = {
   logo: `${O}/#logo`,
 };
 
+// Every concept is pinned to its Wikidata item, so "GEO" can never be read as geography
+// and "DevArt" can never be confused with another studio. Ids verified on wikidata.org.
+const WD = (q) => `https://www.wikidata.org/wiki/${q}`;
+const thing = ([q, name]) => ({ '@type': 'Thing', name, sameAs: WD(q) });
 const KNOWS = [
-  'Web design',
-  'Web development',
-  'Search engine optimization (SEO)',
-  'Answer engine optimization (AEO)',
-  'Generative engine optimization (GEO)',
-  'Core Web Vitals',
-  'Web performance',
-  'WebGL',
-  'Creative coding',
-  'Schema.org structured data',
-  'Accessibility',
-  'UI/UX design',
-  'Local SEO',
-];
+  ['Q190637', 'Web design'],
+  ['Q386275', 'Web development'],
+  ['Q4130556', 'Front-end development'],
+  ['Q110245837', 'Back-end development'],
+  ['Q135707', 'User interface design'],
+  ['Q11248500', 'User experience design'],
+  ['Q11285657', 'Art direction'],
+  ['Q180711', 'Search engine optimization'],
+  ['Q30324357', 'Local search engine optimization'],
+  ['Q97171941', 'Answer engine optimization'],
+  ['Q134083964', 'Generative engine optimization'],
+  ['Q7978612', 'Web performance optimization'],
+  ['Q104618838', 'Core Web Vitals'],
+  ['Q808932', 'Web accessibility'],
+  ['Q375913', 'WebGL'],
+  ['Q17087654', 'Creative coding'],
+  ['Q3475322', 'Schema.org'],
+].map(thing);
+const AREA = [{ '@type': 'Country', name: 'Türkiye', sameAs: WD('Q43') }, 'Worldwide'];
+const svcUrl = (lang, id) => `${O}${svcPath(lang, id)}`;
+const svcRef = (c, id) => ({ '@type': 'Service', '@id': `${svcUrl(c.lang, id)}#service`, name: svcContent(c.lang).items[id].name, url: svcUrl(c.lang, id) });
 
 const sameAs = site.sameAs.length ? { sameAs: site.sameAs } : {};
 
@@ -65,6 +77,7 @@ function core(c) {
         '@type': 'Occupation',
         name: c.lang === 'tr' ? 'Web geliştirici ve tasarımcı' : 'Web developer and designer',
         occupationalCategory: '15-1254.00 Web Developers',
+        sameAs: WD('Q6859454'),
         skills: 'Web design, web development, SEO, AEO, GEO, web performance, WebGL',
       },
       description: c.short.a,
@@ -88,7 +101,7 @@ function core(c) {
       founder: { '@id': ID.person },
       telephone: site.phone.e164,
       address: { '@type': 'PostalAddress', addressCountry: site.country },
-      areaServed: [{ '@type': 'Country', name: 'Türkiye' }, 'Worldwide'],
+      areaServed: AREA,
       knowsAbout: KNOWS,
       knowsLanguage: ['tr', 'en'],
       contactPoint: {
@@ -100,17 +113,13 @@ function core(c) {
       },
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
-        name: c.services.label,
-        itemListElement: c.services.items.map((s, i) => ({
+        '@id': `${O}${c.servicesPath}#catalog`,
+        name: svcContent(c.lang).hub.crumb,
+        url: `${O}${c.servicesPath}`,
+        itemListElement: services.map((s, i) => ({
           '@type': 'Offer',
           position: i + 1,
-          itemOffered: {
-            '@type': 'Service',
-            name: plain(s.title),
-            description: plain(s.text),
-            provider: { '@id': ID.org },
-            areaServed: 'Worldwide',
-          },
+          itemOffered: { ...svcRef(c, s.id), description: svcContent(c.lang).items[s.id].summary, provider: { '@id': ID.org } },
         })),
       },
       ...sameAs,
@@ -182,7 +191,7 @@ export function homeGraph(c, url) {
           cssSelector: [`#${c.short.id}-q`, `#${c.short.id}-answer`],
         },
         hasPart: [{ '@id': `${url}#faq` }, { '@id': `${url}#work` }],
-        significantLink: [`${O}${c.guidePath}`, `${O}${c.glossaryPath}`],
+        significantLink: [`${O}${c.servicesPath}`, `${O}${c.guidePath}`, `${O}${c.glossaryPath}`],
         ...twin(c, 'ProfilePage', `${O}/`, `${O}/en/`, '#webpage'),
       },
       {
@@ -337,6 +346,104 @@ export function glossaryGraph(c, g, url, { terms, homeUrl }) {
           inDefinedTermSet: { '@id': `${url}#terms` },
         })),
       },
+    ],
+  };
+}
+
+const SERVICES = { tr: `${O}/hizmetler/`, en: `${O}/en/services/` };
+const crumbList = (url, items) => ({
+  '@type': 'BreadcrumbList',
+  '@id': `${url}#breadcrumb`,
+  itemListElement: items.map(([name, item], i) => ({ '@type': 'ListItem', position: i + 1, name, item })),
+});
+
+export function servicesHubGraph(c, url, { homeUrl }) {
+  const h = svcContent(c.lang).hub;
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      ...core(c),
+      image(url, c, h.meta.ogAlt, 'services'),
+      {
+        '@type': 'CollectionPage',
+        '@id': `${url}#webpage`,
+        url,
+        name: h.meta.title,
+        description: h.meta.description,
+        inLanguage: c.inLanguage,
+        isPartOf: { '@id': ID.website },
+        about: { '@id': ID.org },
+        mainEntity: { '@id': `${url}#catalog` },
+        primaryImageOfPage: { '@id': `${url}#primaryimage` },
+        breadcrumb: { '@id': `${url}#breadcrumb` },
+        significantLink: services.map((s) => svcUrl(c.lang, s.id)),
+        datePublished: site.updated,
+        dateModified: site.updated,
+        speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '#answer'] },
+        ...twin(c, 'CollectionPage', SERVICES.tr, SERVICES.en, '#webpage'),
+      },
+      crumbList(url, [[c.ui.home, homeUrl], [h.crumb, url]]),
+      faqNode(url, h.faq, c, c.inLanguage),
+    ],
+  };
+}
+
+export function serviceGraph(c, id, url, { homeUrl }) {
+  const sv = svcContent(c.lang);
+  const s = services.find((x) => x.id === id);
+  const it = sv.items[id];
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      ...core(c),
+      image(url, c, it.name, `svc-${id}`),
+      {
+        '@type': 'WebPage',
+        '@id': `${url}#webpage`,
+        url,
+        name: it.meta.title,
+        description: it.meta.description,
+        inLanguage: c.inLanguage,
+        isPartOf: { '@id': ID.website },
+        mainEntity: { '@id': `${url}#service` },
+        about: [...s.wikidata.map(thing), ...s.terms.map((t) => glossaryTerm(c, t, termName(c.lang, t)))],
+        primaryImageOfPage: { '@id': `${url}#primaryimage` },
+        breadcrumb: { '@id': `${url}#breadcrumb` },
+        relatedLink: s.related.map((r) => svcUrl(c.lang, r)),
+        datePublished: site.updated,
+        dateModified: site.updated,
+        speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '#answer'] },
+        ...twin(c, 'WebPage', svcUrl('tr', id), svcUrl('en', id), '#webpage'),
+      },
+      crumbList(url, [[c.ui.home, homeUrl], [sv.hub.crumb, SERVICES[c.lang]], [it.crumb, url]]),
+      {
+        '@type': 'Service',
+        '@id': `${url}#service`,
+        name: it.name,
+        serviceType: it.serviceType,
+        description: plain(fill(it.answer, c)),
+        disambiguatingDescription: it.summary,
+        url,
+        image: { '@id': `${url}#primaryimage` },
+        provider: { '@id': ID.org },
+        areaServed: AREA,
+        audience: { '@type': 'Audience', audienceType: it.facts.for.replaceAll(' · ', ', ') },
+        availableChannel: {
+          '@type': 'ServiceChannel',
+          serviceUrl: wa(it.wa),
+          servicePhone: { '@type': 'ContactPoint', telephone: site.phone.e164, contactType: 'sales' },
+          availableLanguage: ['Turkish', 'English'],
+        },
+        isRelatedTo: s.related.map((r) => svcRef(c, r)),
+        subjectOf: { '@id': `${url}#faq` },
+      },
+      {
+        '@type': 'DefinedTermSet',
+        '@id': `${GLOSSARY[c.lang]}#terms`,
+        url: GLOSSARY[c.lang],
+        name: c.lang === 'tr' ? 'Bulunmanın sözlüğü' : 'A glossary of being found',
+      },
+      faqNode(url, it.faq, c, c.inLanguage),
     ],
   };
 }

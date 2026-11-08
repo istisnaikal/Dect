@@ -8,8 +8,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import en from '../src/content/en.mjs';
+import { services } from '../src/content/services.mjs';
 import tr from '../src/content/tr.mjs';
-import { plain } from '../src/templates.mjs';
+import { plain, svcContent } from '../src/templates.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
@@ -25,10 +26,20 @@ const cards = [
   { file: 'og-en-guide.jpg', c: en, kicker: 'Guide', title: plain(en.guide.h1) },
   { file: 'og-tr-glossary.jpg', c: tr, kicker: 'Sözlük', title: 'Bulunmanın sözlüğü: SEO, AEO, GEO ve 19 terim daha' },
   { file: 'og-en-glossary.jpg', c: en, kicker: 'Glossary', title: 'A glossary of being found: SEO, AEO, GEO and 19 more' },
+  // Services: the hub and one card per service, in both languages, straight from the content.
+  ...[tr, en].flatMap((c) => {
+    const sv = svcContent(c.lang);
+    return [
+      { file: `og-${c.lang}-services.jpg`, c, kicker: sv.hub.label, title: c.lang === 'tr' ? 'Web sitesi · UI/UX · Frontend · Full-stack · SEO · AEO · GEO · Hız' : 'Websites · UI/UX · Front-end · Full-stack · SEO · AEO · GEO · Speed' },
+      ...services.map((s) => ({ file: `og-${c.lang}-svc-${s.id}.jpg`, c, kicker: sv.ui.label, title: plain(sv.items[s.id].h1) })),
+    ];
+  }),
 ];
+// `node scripts/og.mjs svc` renders only the cards whose file name contains "svc" (or any other filter).
+const only = process.argv[2];
 
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
-for (const card of cards) {
+for (const card of cards.filter((x) => !only || x.file.includes(only))) {
   // bypassCSP: the preview server enforces the production CSP, which (rightly) blocks injected styles.
   const page = await browser.newPage({ viewport: { width: 1200, height: 630 }, deviceScaleFactor: 1, bypassCSP: true });
   // Layout for the card goes in before the page's own scripts, so the shader lays out the wordmark for it.
@@ -37,7 +48,7 @@ for (const card of cards) {
       .og{position:fixed;inset:0;padding:44px 56px;display:flex;flex-direction:column;justify-content:space-between;z-index:9;font-family:Geist,sans-serif;color:#141317}
       .og__top{display:flex;justify-content:space-between;align-items:center;font:500 18px/1 "Geist Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
       .og__top b{color:#ff5b22;font-weight:500}
-      .og__title{font-size:${/guide|glossary/.test(card.file) ? 46 : 40}px;line-height:1.05;letter-spacing:-.04em;font-weight:500;max-width:1000px;text-wrap:balance}
+      .og__title{font-size:${/guide|glossary|svc|services/.test(card.file) ? 46 : 40}px;line-height:1.05;letter-spacing:-.04em;font-weight:500;max-width:1000px;text-wrap:balance}
       .og__kicker{display:block;margin-bottom:12px;font:italic 400 34px/1 "Instrument Serif",serif;letter-spacing:0;color:#b73d0b}`;
   await page.addInitScript((css) => {
     document.addEventListener('DOMContentLoaded', () => {
@@ -53,7 +64,8 @@ for (const card of cards) {
     el.className = 'og';
     el.innerHTML = `<div class="og__top"><span>Eyüp <b>/</b> DevArt</span><span>eyupdevart.com</span></div><div class="og__title"><span class="og__kicker"></span><span class="og__t"></span></div>`;
     el.querySelector('.og__kicker').textContent = kicker;
-    el.querySelector('.og__t').textContent = title;
+    // A word joiner after each hyphen: "Full-stack" never breaks across two lines.
+    el.querySelector('.og__t').textContent = title.replaceAll('-', '-\u2060');
     document.body.append(el);
   }, card);
   await page.waitForTimeout(1600);

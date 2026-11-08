@@ -105,8 +105,29 @@ function palette() {
   let active = 0;
   let closing = 0;
 
-  const norm = (s) =>
-    s.toLocaleLowerCase(lang).replace(/ı/g, 'i').normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const lower = (s) => s.toLocaleLowerCase(lang);
+  const fold = (s) => lower(s).replace(/ı/g, 'i').normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const list = $('.palette__list', dlg);
+  const original = [...list.children];
+
+  // Best match first: label prefix › a word in the label › anywhere in the label › keywords only.
+  // Exact spelling outranks accent-folded spelling, so "hız" finds speed before "hizmetler".
+  const tier = (label, kw, q) => {
+    if (label.startsWith(q)) return 0;
+    if (label.split(/[\s/·—–-]+/).some((w) => w.startsWith(q))) return 1;
+    if (label.includes(q)) return 2;
+    return kw.includes(q) ? 3 : -1;
+  };
+  // "Exact" tries Turkish and plain casing: in Turkish "UI" lowercases to "uı", yet the acronym is English.
+  const best = (...r) => Math.min(...r.map((x) => (x < 0 ? Infinity : x)));
+  const rank = (o, q) => {
+    const t = o.textContent;
+    const k = o.dataset.kw;
+    const exact = best(tier(lower(t), lower(k), lower(q)), tier(t.toLowerCase(), k.toLowerCase(), q.toLowerCase()));
+    const folded = tier(fold(t), fold(k), fold(q));
+    if (exact < Infinity) return exact;
+    return folded >= 0 ? folded + 4 : -1;
+  };
 
   const select = (i, scroll = true) => {
     opts.forEach((o) => o.setAttribute('aria-selected', 'false'));
@@ -119,12 +140,12 @@ function palette() {
   };
 
   const filter = () => {
-    const q = norm(input.value.trim());
-    visible = opts.filter((o) => {
-      const hit = !q || norm(`${o.textContent} ${o.dataset.kw}`).includes(q);
-      o.hidden = !hit;
-      return hit;
-    });
+    const q = input.value.trim();
+    const scored = opts.map((o, i) => [o, q ? rank(o, q) : 0, i]);
+    scored.forEach(([o, r]) => (o.hidden = r < 0));
+    visible = scored.filter(([, r]) => r >= 0).sort((a, b) => a[1] - b[1] || a[2] - b[2]).map(([o]) => o);
+    // While searching the list shows results by rank; an empty query restores the authored order.
+    list.append(...(q ? visible : original));
     groups.forEach((g) => (g.hidden = !!q));
     empty.hidden = visible.length > 0;
     select(0, !touch());

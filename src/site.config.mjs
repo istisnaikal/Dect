@@ -24,7 +24,7 @@ export const site = {
   // JSON-LD `sameAs`, which is how Google & LLMs connect your identity across the web.
   sameAs: [],
   // Bump when content changes meaningfully — feeds sitemap <lastmod> and dateModified.
-  updated: '2026-11-07',
+  updated: '2026-11-08',
   published: '2026-11-07',
   themeColor: '#f6f4ef',
   // IndexNow (Bing, Yandex, Seznam, Naver…): public key served at /<key>.txt — not a secret.
@@ -35,8 +35,10 @@ export const site = {
     // Web Analytics (cookieless) → allows static.cloudflareinsights.com + cloudflareinsights.com
     cloudflareWebAnalytics: true,
     // Bot protection "JavaScript Detections" → an inline script with per-request values; no
-    // hash can match it, so script-src needs 'unsafe-inline' (external origins stay locked).
-    cloudflareJsDetections: true,
+    // hash can match it, so script-src would need 'unsafe-inline'. Off since 2026-11-08 (Bot Fight
+    // Mode and JS detections disabled on the zone), so script-src is hash-locked and Trusted
+    // Types are enforced. Turn this back on only together with the zone setting.
+    cloudflareJsDetections: false,
   },
 };
 

@@ -10,6 +10,7 @@ export default {
   path: '/',
   guidePath: '/rehber/aeo-geo/',
   glossaryPath: '/sozluk/',
+  servicesPath: '/hizmetler/',
   alt: { lang: 'en', label: 'English', short: 'EN' },
   dateLocale: 'tr-TR',
 
@@ -141,26 +142,31 @@ export default {
         title: 'Web tasarım & sanat yönetimi',
         text: 'Markanızın sesini görsele çeviririm: tipografi, renk, hareket, boşluk. Sayfayı açan kişi, logoyu görmeden kim olduğunuzu anlamalı.',
         tags: ['UI/UX', 'Sanat yönetimi', 'Hareket'],
+        links: ['uiux', 'web'],
       },
       {
         title: 'Web geliştirme',
         text: 'Kodun görünmeyen tarafı da görünen tarafı kadar özen ister. Tanıtım sitesi, web uygulaması, WebGL deneyimi ya da yönetim paneli; hepsi hafif, güvenli ve herkesin kullanabileceği biçimde.',
         tags: ['TypeScript', 'Next.js', 'WebGL', 'Vanilla JS'],
+        links: ['web', 'frontend', 'fullstack'],
       },
       {
         title: 'SEO · AEO · GEO',
         text: 'Google’da üst sıralarda olmak iyidir. ChatGPT’ye, Perplexity’ye ya da Gemini’ye sorulduğunda adınızın geçmesi daha iyi. Teknik SEO, yapılandırılmış veri, llms.txt ve sağlam kurulmuş içerikle ikisini birden hedeflerim.',
         tags: ['Teknik SEO', 'Schema.org', 'llms.txt'],
+        links: ['seo', 'aeo-geo'],
       },
       {
         title: 'Performans mühendisliği',
         text: 'Yavaş bir site, daha açılmadan müşteri kaybeder. Core Web Vitals’ı yeşile, Lighthouse’u zirveye taşırım; sayfa, siz göz kırpmadan hazır olur.',
         tags: ['Core Web Vitals', 'Lighthouse', 'CDN'],
+        links: ['speed'],
       },
       {
         title: 'Yerel işletme & dönüşüm',
         text: 'Bir çekici, bir diş hekimi, bir restoran: müşteri sizi telefonundan arar ve acelesi vardır. Ona en kısa yolu çizerim; bölge sayfaları, Google İşletme Profili uyumu, tek dokunuşla arama ve WhatsApp.',
         tags: ['Yerel SEO', 'WhatsApp', 'Dönüşüm'],
+        links: [['seo', 'yerel-seo', 'Yerel SEO']],
       },
       {
         title: 'Bakım & büyüme',
@@ -235,7 +241,7 @@ export default {
       },
       {
         q: 'Hangi hizmetleri veriyorsunuz?',
-        a: 'Web tasarım ve sanat yönetimi, web geliştirme, teknik SEO ile birlikte AEO ve GEO, performans çalışması, yerel işletmeler için dönüşüm odaklı siteler ve yayından sonraki bakım. Kısacası bir web sitesinin ilk eskizden yayından çok sonrasına kadar ihtiyaç duyduğu her şey.',
+        a: 'Web tasarım ve sanat yönetimi, web geliştirme, teknik SEO ile birlikte AEO ve GEO, performans çalışması, yerel işletmeler için dönüşüm odaklı siteler ve yayından sonraki bakım. Kısacası bir web sitesinin ilk eskizden yayından çok sonrasına kadar ihtiyaç duyduğu her şey. Her birinin ayrıntısı <a href="{services}">hizmetler sayfasında</a>.',
       },
       {
         q: 'AEO ve GEO nedir?',
