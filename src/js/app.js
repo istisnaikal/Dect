@@ -545,26 +545,40 @@ function thread() {
       end = { x: b.left - mr.left - 2, y: b.top - mr.top + b.height / 2 };
     }
     let d = `M${pts[0].x} ${pts[0].y}`;
+    const curves = [];
+    const curve = (a, p, q, b) => {
+      curves.push([a, p, q, b]);
+      d += ` C${p.x} ${p.y} ${q.x} ${q.y} ${b.x} ${b.y}`;
+    };
     for (let i = 1; i < pts.length; i++) {
       const a = pts[i - 1];
       const b = pts[i];
       const dy = b.y - a.y;
       // Weave: out into the margin, then back towards the text, never touching it.
       const off = i % 2 ? -amp : inward;
-      d += ` C${a.x + off} ${a.y + dy * 0.38} ${b.x + off} ${b.y - dy * 0.38} ${b.x} ${b.y}`;
+      curve(a, { x: a.x + off, y: a.y + dy * 0.38 }, { x: b.x + off, y: b.y - dy * 0.38 }, b);
     }
     if (end) {
       const a = pts[pts.length - 1];
-      d += ` C${a.x - amp * 0.6} ${a.y + (end.y - a.y) * 0.6} ${end.x - 70} ${end.y} ${end.x} ${end.y}`;
+      curve(a, { x: a.x - amp * 0.6, y: a.y + (end.y - a.y) * 0.6 }, { x: end.x - 70, y: end.y }, end);
     }
     route.setAttribute('d', d);
     stitch.setAttribute('d', d);
-    // Sample the path once so the knot can follow the reading position cheaply.
-    const len = stitch.getTotalLength();
+    // Sample the curves once, by their own arithmetic, so the knot can follow the
+    // reading position cheaply. (Asking the SVG path for a thousand points with
+    // getPointAtLength cost ~100 ms of main thread; this costs well under one.)
     samples = [];
-    for (let l = 0; l <= len; l += 10) {
-      const pt = stitch.getPointAtLength(l);
-      samples.push([pt.x, pt.y]);
+    for (const [a, p, q, b] of curves) {
+      const n = Math.max(8, Math.ceil(Math.abs(b.y - a.y) / 10));
+      for (let k = samples.length ? 1 : 0; k <= n; k++) {
+        const t = k / n;
+        const u = 1 - t;
+        const w0 = u * u * u;
+        const w1 = 3 * u * u * t;
+        const w2 = 3 * u * t * t;
+        const w3 = t * t * t;
+        samples.push([w0 * a.x + w1 * p.x + w2 * q.x + w3 * b.x, w0 * a.y + w1 * p.y + w2 * q.y + w3 * b.y]);
+      }
     }
     endY = end ? end.y : Infinity;
     el.classList.add('is-ready');
@@ -606,6 +620,20 @@ function thread() {
   build();
 }
 
+/* ── Rest: the endless loops (the horizon, the invitation's light, the live dot,
+   the front door's breath) pause while out of sight. Nobody sees them, so no frame
+   is made for them. Far off-screen, the horizon's drift alone kept the main thread
+   painting sixty frames a second; at rest, it paints none. ─────────────────── */
+function rest() {
+  const els = $$('[data-hero], .marquee, [data-invite], [data-proof]');
+  if (!els.length || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(
+    (es) => es.forEach((e) => e.target.classList.toggle('is-away', !e.isIntersecting)),
+    { rootMargin: '200px 0px' },
+  );
+  els.forEach((el) => io.observe(el));
+}
+
 /* ── The Seam: WebGL hero, loaded only when the main thread is idle ───────── */
 function seam() {
   const canvas = $('[data-seam]');
@@ -640,4 +668,4 @@ press();
 palette();
 vitals();
 seam();
-for (const fn of [dock, pointer, clock, thread, relief, invite, intent, hello]) idle(fn);
+for (const fn of [dock, pointer, clock, thread, relief, invite, intent, rest, hello]) idle(fn);
