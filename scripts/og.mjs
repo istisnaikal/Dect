@@ -10,7 +10,7 @@ import sharp from 'sharp';
 import en from '../src/content/en.mjs';
 import { services } from '../src/content/services.mjs';
 import tr from '../src/content/tr.mjs';
-import { plain, svcContent } from '../src/templates.mjs';
+import { logoMark, plain, svcContent } from '../src/templates.mjs';
 
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
@@ -48,6 +48,7 @@ for (const card of cards.filter((x) => !only || x.file.includes(only))) {
       .og{position:fixed;inset:0;padding:44px 56px;display:flex;flex-direction:column;justify-content:space-between;z-index:9;font-family:Geist,sans-serif;color:#141317}
       .og__top{display:flex;justify-content:space-between;align-items:center;font:500 18px/1 "Geist Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
       .og__top b{color:#ff5b22;font-weight:500}
+      .og__brand{display:flex;align-items:center;gap:14px}.og__mark{width:auto;height:46px;fill:#141317}.og__mark .logo__seam{fill:#ff5b22}.og__mark .logo__cells{display:inline!important}
       .og__title{font-size:${/guide|glossary|svc|services/.test(card.file) ? 46 : 40}px;line-height:1.05;letter-spacing:-.04em;font-weight:500;max-width:1000px;text-wrap:balance}
       .og__kicker{display:block;margin-bottom:12px;font:italic 400 34px/1 "Instrument Serif",serif;letter-spacing:0;color:#b73d0b}`;
   await page.addInitScript((css) => {
@@ -59,15 +60,16 @@ for (const card of cards.filter((x) => !only || x.file.includes(only))) {
   }, css);
   await page.goto(`http://localhost:${process.env.PORT}${card.c.path}?og`, { waitUntil: 'load' });
   await page.waitForSelector('.hero.is-live', { timeout: 30_000 });
-  await page.evaluate(({ kicker, title }) => {
+  const mark = logoMark('og__mark', '', { size: 'large' });
+  await page.evaluate(({ kicker, title, mark }) => {
     const el = document.createElement('div');
     el.className = 'og';
-    el.innerHTML = `<div class="og__top"><span>Eyüp <b>/</b> DevArt</span><span>eyupdevart.com</span></div><div class="og__title"><span class="og__kicker"></span><span class="og__t"></span></div>`;
+    el.innerHTML = `<div class="og__top"><span class="og__brand">${mark}<span>Eyüp <b>/</b> DevArt</span></span><span>eyupdevart.com</span></div><div class="og__title"><span class="og__kicker"></span><span class="og__t"></span></div>`;
     el.querySelector('.og__kicker').textContent = kicker;
     // A word joiner after each hyphen: "Full-stack" never breaks across two lines.
     el.querySelector('.og__t').textContent = title.replaceAll('-', '-\u2060');
     document.body.append(el);
-  }, card);
+  }, { ...card, c: undefined, mark });
   await page.waitForTimeout(1600);
   const png = await page.screenshot({ type: 'png' });
   await sharp(png).jpeg({ quality: 84, mozjpeg: true }).toFile(path.join(OUT, card.file));

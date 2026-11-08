@@ -78,16 +78,69 @@ export const icon = {
   scan: `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M4 9V6a2 2 0 0 1 2-2h3m6 0h3a2 2 0 0 1 2 2v3m0 6v3a2 2 0 0 1-2 2h-3m-6 0H6a2 2 0 0 1-2-2v-3m3-3h10"/></svg>`,
 };
 
-// ── Logo mark: a pixel half (developer) + a smooth half (artist), split by the seam ──
-export function logoMark(cls = 'logo__mark', title = '') {
-  let rects = '';
-  for (let y = 4; y < 28; y += 3) {
-    const yc = y + 1.5;
-    const w = Math.sqrt(Math.max(0, 144 - (yc - 16) ** 2));
-    const cells = Math.max(1, Math.round(w / 3));
-    rects += `M${15 - cells * 3} ${y}h${cells * 3}v3h-${cells * 3}z`;
-  }
-  return `<svg class="${cls}" viewBox="0 0 32 32" ${title ? `role="img" aria-label="${esc(title)}"` : 'aria-hidden="true" focusable="false"'}><path fill="currentColor" d="${rects}"/><path fill="currentColor" d="M17 4a12 12 0 0 1 0 24z"/><rect class="logo__seam" x="15.25" y="1.5" width="1.5" height="29" rx=".75"/></svg>`;
+// ── The emblem: DevArt's "D" ──────────────────────────────────────────────────
+// The letter is split down its spine. Left, the stem is built from cells on a grid:
+// the developer, discrete and computed. Right, the bowl is one continuous superelliptic
+// curve, heavier where a pen would press: the artist. Between them runs an ember needle,
+// the tailor who joins the two halves (and, standing upright, a developer's caret).
+// Construction on a 32-unit square: cap line 4, baseline 28, spine x = 16.
+//   needle  1.5 wide, eye 0.5 × 3, head at y 1, point at y 31.2 (it passes through the letter)
+//   gaps    0.6 either side of the needle, so both halves sit at the same distance
+//   stem    2 × 8 cells of 2.6, spread exactly between cap line and baseline
+//   bowl    outer superellipse n 2.4 with 0.25 overshoot (round forms must pass the flat
+//           ones to look the same height); counter n 2.2, strokes 6.4 at the side, 3.6 at
+//           the top and bottom
+// Two optical sizes: the cell stem wherever there are pixels to show it, a solid stem for
+// favicons and 1× screens, where 0.4-unit gaps would only blur into grey.
+const EMBLEM = (() => {
+  const f = (n) => +n.toFixed(2);
+  const spine = 16;
+  const top = 4;
+  const base = 28;
+  const nw = 1.5;
+  const gap = 0.6;
+  const stemR = spine - nw / 2 - gap;
+  const bowlL = spine + nw / 2 + gap;
+  const cell = 2.6;
+  const pitch = (base - top - cell) / 7;
+  const rows = Array.from({ length: 8 }, (_, r) =>
+    [0, 1].map((c) => `M${f(stemR - c * pitch - cell)} ${f(top + r * pitch)}h${cell}v${cell}h-${cell}z`).join(''),
+  );
+  const solid = `M${f(stemR - pitch - cell)} ${top}H${f(stemR)}V${base}H${f(stemR - pitch - cell)}z`;
+  const half = (a, b, n, steps = 40) =>
+    Array.from({ length: steps + 1 }, (_, i) => {
+      const t = -Math.PI / 2 + (Math.PI * i) / steps;
+      const c = Math.cos(t);
+      const s = Math.sin(t);
+      return `${f(bowlL + a * Math.abs(c) ** (2 / n))} ${f(16 + b * Math.sign(s) * Math.abs(s) ** (2 / n))}`;
+    });
+  const a = 12 - gap;
+  const b = 12.25;
+  const bowl = `M${half(a, b, 2.4).join('L')}ZM${half(a - 6.4, b - 3.6, 2.2).reverse().join('L')}Z`;
+  const x0 = spine - nw / 2;
+  const needle = `M${x0} ${1 + nw / 2}a${nw / 2} ${nw / 2} 0 0 1 ${nw} 0V25.8L${spine} 31.2L${x0} 25.8z`;
+  const eye = `M15.75 2.3h.5v3h-.5z`;
+  // The canvas hugs the letter (0.3 of air either side), so the emblem's visible edge is its box
+  // edge: it aligns to the page gutter and spaces against the wordmark with no hidden margin.
+  const left = stemR - pitch - cell - 0.3;
+  const right = bowlL + a + 0.3;
+  const viewBox = `${f(left)} 0 ${f(right - left)} 32`;
+  return { rows, solid, bowl, needle, eye, viewBox };
+})();
+
+/**
+ * The emblem as inline SVG (fill: currentColor; the needle takes the ember from CSS).
+ * size: 'auto' carries both stems and lets CSS choose by screen resolution;
+ * 'large' is the cell stem with the needle's eye; 'small' is the solid stem.
+ */
+export function logoMark(cls = 'logo__mark', title = '', { size = 'auto', ink = 'currentColor', seam = '' } = {}) {
+  const e = EMBLEM;
+  const cells = `<g class="logo__cells">${e.rows.map((d) => `<path d="${d}"/>`).join('')}</g>`;
+  const solid = `<path class="logo__solid" d="${e.solid}"/>`;
+  const stem = size === 'large' ? cells : size === 'small' ? solid.replace(' class="logo__solid"', '') : cells + solid;
+  const needle = `<path class="logo__seam"${seam ? ` fill="${seam}"` : ''} fill-rule="evenodd" d="${e.needle}${size === 'small' ? '' : e.eye}"/>`;
+  const a11y = title ? `role="img" aria-label="${esc(title)}"` : 'aria-hidden="true" focusable="false"';
+  return `<svg class="${cls}" viewBox="${e.viewBox}" fill="${ink}" ${a11y}>${stem}<path fill-rule="evenodd" d="${e.bowl}"/>${needle}</svg>`;
 }
 
 // ── Shared chrome ────────────────────────────────────────────────────────────
@@ -120,8 +173,10 @@ function footer(c) {
 <a class="logo" href="${c.path}" aria-label="${esc(site.name)} — ${esc(c.ui.home)}">${logoMark()}<span class="logo__word"><span class="dev">Dev</span><span class="art">Art</span></span></a>
 <p class="ftr__tag">${c.footer.tagline}</p>
 </div>
-<nav class="ftr__nav" aria-label="${c.lang === 'tr' ? 'Alt menü' : 'Footer'}"><ul>
-<li><a href="${c.servicesPath}">${svcContent(c.lang).hub.crumb}</a></li>
+<nav class="ftr__nav ftr__svc" aria-labelledby="ftr-svc"><p class="ftr__h" id="ftr-svc"><a href="${c.servicesPath}">${svcContent(c.lang).hub.crumb}</a></p><ul>
+${services.map((s) => `<li><a href="${svcPath(c.lang, s.id)}">${svcContent(c.lang).items[s.id].crumb}</a></li>`).join('\n')}
+</ul></nav>
+<nav class="ftr__nav" aria-labelledby="ftr-res"><p class="ftr__h" id="ftr-res">${c.footer.resources}</p><ul>
 <li><a href="${c.guidePath}">${c.footer.guide}</a></li>
 <li><a href="${c.glossaryPath}">${c.footer.glossary}</a></li>
 <li><a href="/llms.txt">${c.footer.llms}</a></li>
@@ -129,6 +184,7 @@ function footer(c) {
 <li><a href="${c.altPath}" hreflang="${c.alt.lang}" lang="${c.alt.lang}">${c.alt.label}</a></li>
 </ul></nav>
 <div class="ftr__contact">
+<p class="ftr__h">${c.contact.label}</p>
 <address><a class="ftr__phone" href="tel:${site.phone.e164}">${phoneFor(c)}</a></address>
 <button class="ftr__palette" type="button" data-palette-open aria-haspopup="dialog"><kbd class="kbd only-fine" data-kbd>⌘K</kbd> <span class="only-fine">${c.footer.palette}</span><span class="only-touch">${c.footer.menu}</span></button>
 </div>
@@ -185,7 +241,7 @@ ${svc.map(opt).join('')}
 <p class="palette__foot" aria-hidden="true"><kbd class="kbd">↑</kbd><kbd class="kbd">↓</kbd> <kbd class="kbd">↵</kbd> <kbd class="kbd">esc</kbd> <span>${c.ui.paletteHint}</span></p>
 </div>
 </dialog>
-<div class="toast" role="status" aria-live="polite" data-toast></div>`;
+<div class="toast" role="status" aria-live="polite" data-toast data-phone="${phoneFor(c)}" data-msg="${esc(c.ui.copied)}" data-opening="${esc(c.ui.opening)}"></div>`;
 }
 
 function dock(c) {
@@ -403,6 +459,12 @@ ${p.steps.map((s, i) => `<li class="step"><span class="step__n" aria-hidden="tru
 </section>`;
 }
 
+/** After the message, in three quiet steps: knowing what comes next is what makes it easy to begin. */
+export const nextSteps = (c) => {
+  const n = c.contact.next;
+  return `<div class="next"><p class="next__label">${n.label}</p><ol class="next__steps">${n.steps.map((x) => `<li>${x}</li>`).join('')}</ol></div>`;
+};
+
 export function faqList(items, c, name) {
   return items
     .map(
@@ -438,9 +500,10 @@ function contact(c, qr) {
 </address>
 <p class="contact__note">${k.prefilled}</p>
 <p class="contact__assure">${k.assure}</p>
+${nextSteps(c)}
 <div class="contact__aside">
 <figure class="qr"><div class="qr__code">${qr}</div><figcaption>${k.qr}</figcaption></figure>
-<p class="clock"><span>${k.clock}</span><time data-clock>--:--</time></p>
+<p class="clock"><span>${k.clock}</span><time data-clock>--:--</time><small class="clock__note" data-clock-note data-hours="${esc(JSON.stringify(k.hours))}" hidden></small></p>
 </div>
 </div>
 </section>`;
@@ -485,15 +548,11 @@ export function guideBody(c, { readMinutes, dateLabel }) {
 <aside class="toc" aria-labelledby="toc-title"><h2 class="toc__title" id="toc-title">${g.tocLabel}</h2><ol>${toc}<li><a class="toc__out" href="${c.glossaryPath}">${g.glossaryLink} →</a></li><li><a class="toc__out" href="${svcPath(c.lang, 'aeo-geo')}">${svcContent(c.lang).items['aeo-geo'].name} →</a></li></ol></aside>
 <div class="prose">
 <section class="tldr" aria-labelledby="tldr-title"><h2 id="tldr-title">${g.tldrLabel}</h2><p id="tldr-answer">${g.tldr}</p></section>
-${g.sections.map((s) => `<section id="${s.id}" aria-labelledby="${s.id}-h"><h2 id="${s.id}-h">${s.h2}</h2>\n${s.html}\n</section>`).join('\n')}
+${g.sections.map((s) => `<section id="${s.id}" aria-labelledby="${s.id}-h"><h2 id="${s.id}-h">${s.h2}</h2>\n${fill(s.html, c)}\n</section>`).join('\n')}
 <section id="${c.lang === 'tr' ? 'sss' : 'faq'}" aria-labelledby="guide-faq-h"><h2 id="guide-faq-h">${g.faqTitle}</h2>
 <div class="faq__list">${faqList(g.faq, c, 'gfaq')}</div>
 </section>
-<aside class="cta-box card" aria-labelledby="cta-box-title">
-<h2 class="cta-box__title" id="cta-box-title">${rich(g.cta.title)}</h2>
-<p>${g.cta.text}</p>
-<a class="btn btn--primary btn--lg" href="${esc(wa(c.wa.audit))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${g.cta.button}</span></a>
-</aside>
+${ctaBox(g.cta, wa(c.wa.audit), c)}
 </div>
 </div>
 </article>
@@ -517,7 +576,9 @@ ${terms
   .filter((t) => t.group === k)
   .map((t) => {
     const x = g.terms[t.id];
-    return `<div class="gterm" id="${t.id}"><dt><a class="gterm__name" href="#${t.id}">${esc(nameOf(t))}</a><span class="gterm__aka">${esc(x.aka)}</span></dt><dd><p class="gterm__short">${x.short}</p><p class="gterm__body">${x.body}</p></dd></div>`;
+    const sv = t.service && svcContent(c.lang);
+    const practice = sv ? `<p class="gterm__svc"><a href="${svcPath(c.lang, t.service)}">${sv.ui.inPractice}: ${sv.items[t.service].crumb}<span aria-hidden="true">→</span></a></p>` : '';
+    return `<div class="gterm" id="${t.id}"><dt><a class="gterm__name" href="#${t.id}">${esc(nameOf(t))}</a><span class="gterm__aka">${esc(x.aka)}</span></dt><dd><p class="gterm__short">${x.short}</p><p class="gterm__body">${x.body}</p>${practice}</dd></div>`;
   })
   .join('\n')}
 </dl>
@@ -539,11 +600,7 @@ ${terms
 <aside class="toc" aria-labelledby="toc-title"><h2 class="toc__title" id="toc-title">${c.lang === 'tr' ? 'Bu sözlükte' : 'In this glossary'}</h2><ol>${toc}<li><a class="toc__out" href="${c.guidePath}">${c.guide.crumb} →</a></li><li><a class="toc__out" href="${c.servicesPath}">${svcContent(c.lang).hub.crumb} →</a></li></ol></aside>
 <div class="prose">
 ${sections}
-<aside class="cta-box card" aria-labelledby="cta-box-title">
-<h2 class="cta-box__title" id="cta-box-title">${rich(g.cta.title)}</h2>
-<p>${g.cta.text}</p>
-<a class="btn btn--primary btn--lg" href="${esc(wa(c.wa.audit))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${g.cta.button}</span></a>
-</aside>
+${ctaBox(g.cta, wa(c.wa.audit), c)}
 </div>
 </div>
 </article>
@@ -559,10 +616,11 @@ const crumbs = (c, trail) =>
     .map(([label, href]) => (href ? `<li><a href="${href}">${label}</a></li>` : `<li><span aria-current="page">${label}</span></li>`))
     .join('')}</ol></nav>`;
 
-const ctaBox = (cta, href) => `<aside class="cta-box card" aria-labelledby="cta-box-title">
+const ctaBox = (cta, href, c) => `<aside class="cta-box card" aria-labelledby="cta-box-title">
 <h2 class="cta-box__title" id="cta-box-title">${rich(cta.title)}</h2>
 <p>${cta.text}</p>
 <a class="btn btn--primary btn--lg" href="${esc(href)}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${cta.button}</span></a>
+${nextSteps(c)}
 </aside>`;
 
 const answerBox = (label, html) =>
@@ -610,7 +668,7 @@ ${it.sections.map((x) => `<section id="${x.id}" aria-labelledby="${x.id}-h"><h2 
 <ul class="svc-rel__list">${related}</ul>
 <p class="svc-terms"><span class="svc-terms__k">${sv.ui.terms}</span> ${terms}</p>
 </section>
-${ctaBox(it.cta, wa(it.wa))}
+${ctaBox(it.cta, wa(it.wa), c)}
 </div>
 </div>
 </article>
@@ -652,7 +710,7 @@ ${items}
 <section id="${faqId}" aria-labelledby="hub-faq-h"><h2 id="hub-faq-h">${sv.ui.faq}</h2>
 <div class="faq__list">${faqList(h.faq, c, 'hfaq')}</div>
 </section>
-${ctaBox(h.cta, wa(c.wa.default))}
+${ctaBox(h.cta, wa(c.wa.default), c)}
 </div>
 </div>
 </article>

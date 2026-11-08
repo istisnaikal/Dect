@@ -74,6 +74,7 @@ export const tr = {
     all: 'Tüm hizmetler',
     more: 'Ayrıntılar',
     homeMore: 'Tüm hizmetler, ayrıntılarıyla',
+    inPractice: 'Uygulamada',
     rows: { for: 'Kimler için', includes: 'Neler dahil', stack: 'Teknolojiler', measure: 'Ölçüt', start: 'Başlangıç' },
     hook: 'Uzun uzun anlatmanız gerekmez.',
   },
@@ -99,7 +100,7 @@ export const tr = {
       },
       {
         q: 'Hangi şehirlerde hizmet veriyorsunuz?',
-        a: 'İşin tamamı uzaktan yürüdüğü için Türkiye’nin her ilinden ve yurt dışından müşterilerle çalışıyorum. Konuşmalar WhatsApp’ta ya da görüntülü görüşmede; Türkçe ya da İngilizce.',
+        a: 'İşin tamamı uzaktan yürüdüğü için İstanbul’dan Ankara’ya, İzmir’den Van’a, Türkiye’nin her ilinden ve yurt dışından müşterilerle çalışıyorum. Konuşmalar WhatsApp’ta ya da görüntülü görüşmede; Türkçe ya da İngilizce.',
       },
       {
         q: 'Hizmetleri ayrı ayrı alabilir miyim?',
@@ -670,6 +671,7 @@ export const en = {
     all: 'All services',
     more: 'Details',
     homeMore: 'Every service, in detail',
+    inPractice: 'In practice',
     rows: { for: 'For', includes: 'Included', stack: 'Stack', measure: 'Measured by', start: 'To start' },
     hook: 'No need for a long brief.',
   },
@@ -695,7 +697,7 @@ export const en = {
       },
       {
         q: 'Where do you work?',
-        a: 'Everywhere, remotely. I work with clients across Türkiye and abroad; we talk on WhatsApp or a video call, in English or Turkish.',
+        a: 'Everywhere, remotely: from Istanbul to Ankara, İzmir to Van, every province of Türkiye, and abroad. We talk on WhatsApp or a video call, in English or Turkish.',
       },
       {
         q: 'Can I hire you for just one service?',

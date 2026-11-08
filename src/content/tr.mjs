@@ -45,6 +45,7 @@ export default {
     paletteEmpty: 'Burada yok. WhatsApp’tan sormak daha çabuk olabilir.',
     paletteHint: 'gezin · seç · kapat',
     copied: 'Numara kopyalandı',
+    opening: 'WhatsApp açılıyor…',
     whatsapp: 'WhatsApp’tan yazın',
     whatsappShort: 'WhatsApp',
     call: 'Arayın',
@@ -90,7 +91,7 @@ export default {
     a: 'Eyüp DevArt, web sitelerini hem tasarlayan hem de kodlayan bir geliştirici ve dijital sanatçıdır; DevArt, Eyüp’ün sahne adı. Markalar ve işletmeler için çalışır; tasarımı, kodu, hızı ve arama görünürlüğünü tek elde toplar. Ortaya çıkan siteyi ziyaretçi de, Google da, yapay zekâ asistanları da ilk bakışta anlar.',
     facts: [
       ['Ad', 'Eyüp · sahne adı DevArt'],
-      ['Uzmanlık', 'Web tasarım · Web geliştirme · SEO, AEO, GEO · Performans'],
+      ['Uzmanlık', '<a href="{svc:web}">Web tasarım</a> · <a href="{svc:fullstack}">Web geliştirme</a> · <a href="{svc:seo}">SEO</a>, <a href="{svc:aeo-geo}">AEO, GEO</a> · <a href="{svc:speed}">Performans</a>'],
       ['Yaklaşım', 'Hazır şablon yok; her site sıfırdan, elle yazılır'],
       ['Hizmet alanı', 'Türkiye’den dünyanın her yerine, uzaktan'],
       ['Dil', 'Türkçe · İngilizce'],
@@ -257,7 +258,7 @@ export default {
       },
       {
         q: 'Mevcut sitemi hızlandırabilir ya da SEO’sunu düzeltebilir misiniz?',
-        a: 'Evet. Önce ölçerim: Core Web Vitals, taranabilirlik, dizine eklenme, yapılandırılmış veri. Sonra sorunları etkisine göre sıralar, size en çok kazandıracak olandan başlarım.',
+        a: 'Evet. Önce ölçerim: Core Web Vitals, taranabilirlik, dizine eklenme, yapılandırılmış veri. Sonra sorunları etkisine göre sıralar, size en çok kazandıracak olandan başlarım. Ayrıntılar <a href="{svc:speed}">site hızlandırma</a> ve <a href="{svc:seo}">SEO</a> sayfalarında.',
       },
       {
         q: 'Neden hazır şablon kullanmıyorsunuz?',
@@ -283,6 +284,17 @@ export default {
     assure: 'Bir mesaj sizi hiçbir şeye bağlamaz. Önce dinlerim; birbirimize uygun olup olmadığımıza birlikte karar veririz.',
     qr: 'Kameranızı buraya tutun, sohbet telefonunuzda açılsın.',
     clock: 'Türkiye’de saat',
+    // Beside the clock: what the hour means, never a promise of speed.
+    hours: {
+      open: 'Şu an mesai saati.',
+      closed: 'Mesai dışı; yine de yazın, ilk fırsatta dönerim.',
+      weekend: 'Hafta sonu; yine de yazın, ilk fırsatta dönerim.',
+    },
+    // What happens after the message: uncertainty is what makes people hesitate.
+    next: {
+      label: 'Sonra ne olur?',
+      steps: ['Siz yazarsınız; iki cümle yeter.', 'Ben dinler, birkaç soru sorarım.', 'Net bir kapsam ve teklifle dönerim.'],
+    },
   },
 
   footer: {
@@ -292,6 +304,7 @@ export default {
     glossary: 'Sözlük',
     llms: 'llms.txt',
     sitemap: 'Site haritası',
+    resources: 'Kaynaklar',
     palette: 'Komut paleti',
     menu: 'Menü',
   },
@@ -362,7 +375,8 @@ export default {
 <li><strong>İçeriği HTML’de sunun.</strong> Birçok yapay zekâ tarayıcısı JavaScript çalıştırmaz; kritik metin, sunucudan gelen HTML’de yer almalı.</li>
 <li><strong>Hızlı olun.</strong> Core Web Vitals eşiklerini geçin: LCP ≤ 2,5 sn, INP ≤ 200 ms, CLS ≤ 0,1.</li>
 <li><strong>Güncel tutun ve tarih verin.</strong> Görünür bir güncelleme tarihi ve şemada <code>dateModified</code> kullanın.</li>
-</ol>`,
+</ol>
+<p>Bu listenin teknik kısmı <a href="{svc:seo}">SEO</a>, hız kısmı <a href="{svc:speed}">site hızlandırma</a>, gerisi <a href="{svc:aeo-geo}">AEO ve GEO</a> işidir.</p>`,
       },
       {
         id: 'core-web-vitals',
@@ -374,7 +388,8 @@ export default {
 <tr><th scope="row">LCP</th><td>Sayfanın ana içeriğinin ne kadar hızlı göründüğü</td><td>≤ 2,5 sn</td></tr>
 <tr><th scope="row">INP</th><td>Tıklama ve dokunuşlara ne kadar hızlı tepki verildiği</td><td>≤ 200 ms</td></tr>
 <tr><th scope="row">CLS</th><td>Sayfa yüklenirken içeriğin ne kadar kaydığı</td><td>≤ 0,1</td></tr>
-</tbody></table></div>`,
+</tbody></table></div>
+<p>Üç eşiğin altına nasıl inileceği <a href="{svc:speed}">site hızlandırma</a> sayfasında.</p>`,
       },
       {
         id: 'bu-sitede',

@@ -45,6 +45,7 @@ export default {
     paletteEmpty: 'Nothing here. WhatsApp might be quicker.',
     paletteHint: 'navigate · select · close',
     copied: 'Number copied',
+    opening: 'Opening WhatsApp…',
     whatsapp: 'Message me on WhatsApp',
     whatsappShort: 'WhatsApp',
     call: 'Call',
@@ -90,7 +91,7 @@ export default {
     a: 'Eyüp DevArt is a developer and digital artist who both designs and builds websites; DevArt is Eyüp’s stage name. Working with brands and businesses, Eyüp keeps design, code, speed and search visibility in a single pair of hands, so visitors, Google and AI assistants all understand the result at first glance.',
     facts: [
       ['Name', 'Eyüp · stage name DevArt'],
-      ['Expertise', 'Web design · Web development · SEO, AEO, GEO · Performance'],
+      ['Expertise', '<a href="{svc:web}">Web design</a> · <a href="{svc:fullstack}">Web development</a> · <a href="{svc:seo}">SEO</a>, <a href="{svc:aeo-geo}">AEO, GEO</a> · <a href="{svc:speed}">Performance</a>'],
       ['Approach', 'No templates; every site written from scratch, by hand'],
       ['Based', 'Türkiye, working with clients anywhere, remotely'],
       ['Languages', 'Turkish · English'],
@@ -256,7 +257,7 @@ export default {
       },
       {
         q: 'Can you speed up my current site or fix its SEO?',
-        a: 'Yes. I measure first: Core Web Vitals, crawlability, indexing and structured data. Then I rank the problems by impact and start with whatever will win you the most.',
+        a: 'Yes. I measure first: Core Web Vitals, crawlability, indexing and structured data. Then I rank the problems by impact and start with whatever will win you the most. More on the <a href="{svc:speed}">speed</a> and <a href="{svc:seo}">SEO</a> pages.',
       },
       {
         q: 'Why don’t you use templates?',
@@ -282,6 +283,17 @@ export default {
     assure: 'A message commits you to nothing. I listen first, and we decide together whether we’re a good fit.',
     qr: 'Point your phone’s camera here and the chat opens there.',
     clock: 'Local time in Türkiye',
+    // Beside the clock: what the hour means, never a promise of speed.
+    hours: {
+      open: 'It’s working hours here.',
+      closed: 'Outside working hours; write anyway, I’ll reply at the first chance.',
+      weekend: 'It’s the weekend here; write anyway, I’ll reply at the first chance.',
+    },
+    // What happens after the message: uncertainty is what makes people hesitate.
+    next: {
+      label: 'What happens next?',
+      steps: ['You write; two sentences will do.', 'I listen and ask a few questions.', 'I come back with a clear scope and a quote.'],
+    },
   },
 
   footer: {
@@ -291,6 +303,7 @@ export default {
     glossary: 'Glossary',
     llms: 'llms.txt',
     sitemap: 'Sitemap',
+    resources: 'Resources',
     palette: 'Command palette',
     menu: 'Menu',
   },
@@ -361,7 +374,8 @@ export default {
 <li><strong>Serve content in HTML.</strong> Many AI crawlers don’t execute JavaScript; critical text belongs in the HTML your server sends.</li>
 <li><strong>Be fast.</strong> Pass the Core Web Vitals thresholds: LCP ≤ 2.5 s, INP ≤ 200 ms, CLS ≤ 0.1.</li>
 <li><strong>Stay current and date it.</strong> Show a visible “updated” date and use <code>dateModified</code> in your schema.</li>
-</ol>`,
+</ol>
+<p>The technical part of this list is <a href="{svc:seo}">SEO</a>, the speed part is <a href="{svc:speed}">speed optimization</a>, and the rest is <a href="{svc:aeo-geo}">AEO &amp; GEO</a>.</p>`,
       },
       {
         id: 'core-web-vitals',
@@ -373,7 +387,8 @@ export default {
 <tr><th scope="row">LCP</th><td>How fast the main content appears</td><td>≤ 2.5 s</td></tr>
 <tr><th scope="row">INP</th><td>How quickly the page responds to taps and clicks</td><td>≤ 200 ms</td></tr>
 <tr><th scope="row">CLS</th><td>How much content shifts while loading</td><td>≤ 0.1</td></tr>
-</tbody></table></div>`,
+</tbody></table></div>
+<p>How to get under all three thresholds: <a href="{svc:speed}">website speed optimization</a>.</p>`,
       },
       {
         id: 'on-this-site',

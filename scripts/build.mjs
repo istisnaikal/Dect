@@ -246,9 +246,13 @@ async function build() {
     ],
   });
 
-  const preloads = ['geist.woff2', 'geist-mono.woff2', 'instrument-serif-italic.woff2']
+  const fontPreloads = ['geist.woff2', 'geist-mono.woff2', 'instrument-serif-italic.woff2'];
+  const preloads = fontPreloads
     .map((f) => `<link rel="preload" href="${fontUrls[f]}" as="font" type="font/woff2" crossorigin>`)
     .join('');
+  // The same preloads as an HTTP Link header: the browser starts the fonts from the response
+  // headers, before parsing a byte of HTML, and the edge can replay them as 103 Early Hints.
+  const linkHeader = fontPreloads.map((f) => `<${fontUrls[f]}>; rel=preload; as=font; type="font/woff2"; crossorigin`).join(', ');
 
   const head = (p) => {
     const c = p.lang;
@@ -493,6 +497,8 @@ ${Object.entries(security).map(([k, v]) => `  ${k}: ${v}`).join('\n')}
 
 /.well-known/security.txt
   Content-Type: text/plain; charset=utf-8
+
+${pages.map((p) => `${p.url.slice(O.length)}\n  Link: ${linkHeader}`).join('\n\n')}
 `,
   );
   await write(

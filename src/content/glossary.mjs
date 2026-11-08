@@ -2,33 +2,34 @@
 // Every term opens with a single, self-contained sentence — the passage search
 // engines and AI assistants can quote as-is. Detail follows. Ids are shared
 // across languages so anchors match (…/sozluk/#lcp ↔ …/en/glossary/#lcp).
+// `service`: the service page that puts the term to work (knowledge → practice, one link each).
 
 export const terms = [
   // ── Visibility ──
-  { id: 'seo', group: 'visibility', name: 'SEO' },
-  { id: 'aeo', group: 'visibility', name: 'AEO' },
-  { id: 'geo', group: 'visibility', name: 'GEO' },
-  { id: 'ai-overviews', group: 'visibility', name: 'Google AI Overviews' },
-  { id: 'featured-snippet', group: 'visibility' },
-  { id: 'rag', group: 'visibility', name: 'RAG' },
-  { id: 'eeat', group: 'visibility', name: 'E-E-A-T' },
+  { id: 'seo', group: 'visibility', name: 'SEO', service: 'seo' },
+  { id: 'aeo', group: 'visibility', name: 'AEO', service: 'aeo-geo' },
+  { id: 'geo', group: 'visibility', name: 'GEO', service: 'aeo-geo' },
+  { id: 'ai-overviews', group: 'visibility', name: 'Google AI Overviews', service: 'aeo-geo' },
+  { id: 'featured-snippet', group: 'visibility', service: 'aeo-geo' },
+  { id: 'rag', group: 'visibility', name: 'RAG', service: 'aeo-geo' },
+  { id: 'eeat', group: 'visibility', name: 'E-E-A-T', service: 'seo' },
   // ── The layer machines read ──
-  { id: 'structured-data', group: 'machines' },
-  { id: 'json-ld', group: 'machines', name: 'JSON-LD' },
-  { id: 'entity', group: 'machines' },
-  { id: 'llms-txt', group: 'machines', name: 'llms.txt' },
-  { id: 'robots-txt', group: 'machines', name: 'robots.txt' },
-  { id: 'sitemap', group: 'machines' },
-  { id: 'canonical', group: 'machines' },
-  { id: 'hreflang', group: 'machines', name: 'hreflang' },
-  { id: 'crawl-budget', group: 'machines' },
-  { id: 'indexnow', group: 'machines', name: 'IndexNow' },
+  { id: 'structured-data', group: 'machines', service: 'seo' },
+  { id: 'json-ld', group: 'machines', name: 'JSON-LD', service: 'seo' },
+  { id: 'entity', group: 'machines', service: 'aeo-geo' },
+  { id: 'llms-txt', group: 'machines', name: 'llms.txt', service: 'aeo-geo' },
+  { id: 'robots-txt', group: 'machines', name: 'robots.txt', service: 'seo' },
+  { id: 'sitemap', group: 'machines', service: 'seo' },
+  { id: 'canonical', group: 'machines', service: 'seo' },
+  { id: 'hreflang', group: 'machines', name: 'hreflang', service: 'seo' },
+  { id: 'crawl-budget', group: 'machines', service: 'seo' },
+  { id: 'indexnow', group: 'machines', name: 'IndexNow', service: 'seo' },
   // ── Speed & experience ──
-  { id: 'core-web-vitals', group: 'experience', name: 'Core Web Vitals' },
-  { id: 'lcp', group: 'experience', name: 'LCP' },
-  { id: 'inp', group: 'experience', name: 'INP' },
-  { id: 'cls', group: 'experience', name: 'CLS' },
-  { id: 'wcag', group: 'experience', name: 'WCAG' },
+  { id: 'core-web-vitals', group: 'experience', name: 'Core Web Vitals', service: 'speed' },
+  { id: 'lcp', group: 'experience', name: 'LCP', service: 'speed' },
+  { id: 'inp', group: 'experience', name: 'INP', service: 'speed' },
+  { id: 'cls', group: 'experience', name: 'CLS', service: 'speed' },
+  { id: 'wcag', group: 'experience', name: 'WCAG', service: 'uiux' },
 ];
 
 export const tr = {

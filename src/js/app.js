@@ -393,14 +393,46 @@ function pointer() {
   );
 }
 
-/* ── Local time in Türkiye (fixed UTC+3 since 2016 — no timezone tables needed) ── */
+/* ── After a tap on WhatsApp the button answers: "opening…" ──────────────────
+   The app switch takes a moment on phones; a silent button feels broken, a
+   button that confirms feels safe. The width is held, so nothing around it moves. */
+function relief() {
+  const label = $('[data-toast]')?.dataset.opening;
+  if (!label) return;
+  d.addEventListener('click', (e) => {
+    const a = e.target.closest?.('a.btn[data-wa]');
+    if (!a || a.classList.contains('is-opening')) return;
+    // The small header button has no room for words: there only the icon breathes.
+    const text = a.classList.contains('btn--sm') ? null : $('span:last-of-type', a);
+    const was = text?.textContent;
+    a.style.minWidth = `${a.offsetWidth}px`;
+    a.classList.add('is-opening');
+    if (text) text.textContent = label;
+    const done = () => {
+      if (text) text.textContent = was;
+      a.classList.remove('is-opening');
+      a.style.minWidth = '';
+    };
+    setTimeout(done, 2600);
+  });
+}
+
+/* ── Local time in Türkiye (fixed UTC+3 since 2016 — no timezone tables needed) ──
+   Beside it, one honest line on what the hour means: no countdowns, no promises of speed. */
 function clock() {
   const el = $('[data-clock]');
   if (!el) return;
+  const note = $('[data-clock-note]');
+  const hours = note ? JSON.parse(note.dataset.hours) : null;
   const pad = (n) => String(n).padStart(2, '0');
   const tick = () => {
     const t = new Date(Date.now() + 3 * 3600e3);
-    el.textContent = `${pad(t.getUTCHours())}:${pad(t.getUTCMinutes())}`;
+    const h = t.getUTCHours();
+    el.textContent = `${pad(h)}:${pad(t.getUTCMinutes())}`;
+    if (!hours) return;
+    const weekend = t.getUTCDay() === 0 || t.getUTCDay() === 6;
+    note.textContent = weekend ? hours.weekend : h >= 9 && h < 19 ? hours.open : hours.closed;
+    note.hidden = false;
   };
   tick();
   setInterval(tick, 10_000);
@@ -537,4 +569,4 @@ header();
 palette();
 vitals();
 seam();
-for (const fn of [dock, pointer, clock, thread, hello]) idle(fn);
+for (const fn of [dock, pointer, clock, thread, relief, hello]) idle(fn);

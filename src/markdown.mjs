@@ -86,7 +86,7 @@ export function guideMd(c, dateLabel) {
   L.push(`# ${plain(g.h1)}`, '', `> ${g.meta.description}`, '');
   L.push(`${g.byline} ${site.name} · ${g.updated} ${dateLabel} · URL: ${url}`, '');
   L.push(`## ${g.tldrLabel}`, '', g.tldr, '');
-  for (const s of g.sections) L.push(`## ${s.h2}`, '', htmlToMd(s.html), '');
+  for (const s of g.sections) L.push(`## ${s.h2}`, '', htmlToMd(fill(s.html, c)), '');
   L.push(`## ${g.faqTitle}`, '');
   for (const it of g.faq) L.push(`### ${it.q}`, '', inline(fill(it.a, c)), '');
   L.push(`## ${plain(g.cta.title)}`, '', `${g.cta.text} → ${wa(c.wa.audit)}`, '');
@@ -100,7 +100,9 @@ export function glossaryMd(c, g, terms, dateLabel) {
     L.push(`## ${g.groups[group]}`, '');
     for (const t of terms.filter((x) => x.group === group)) {
       const x = g.terms[t.id];
-      L.push(`### ${x.name || t.name} (${x.aka})`, '', x.short, '', x.body, '', `Link: ${url}#${t.id}`, '');
+      L.push(`### ${x.name || t.name} (${x.aka})`, '', x.short, '', x.body, '', `Link: ${url}#${t.id}`);
+      if (t.service) L.push(`${svcContent(c.lang).ui.inPractice}: [${svcContent(c.lang).items[t.service].crumb}](${abs(svcPath(c.lang, t.service))})`);
+      L.push('');
     }
   }
   return L.join('\n');
