@@ -54,7 +54,7 @@ Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic 
 - Fonts subset to Latin + Turkish (~54 KB for three families) and preloaded, with **metric-matched fallbacks** (`size-adjust`, `ascent-override`… computed from the real font files) so the font swap shifts nothing.
 - `content-visibility: auto` skips rendering below-the-fold sections; `:root:has(:target)` turns it off the moment a fragment is targeted, so anchor jumps land pixel-exact.
 - Every animation is CSS-only or compositor-only, and all of it is progressive: content is complete without JavaScript.
-- Font preloads are sent twice: as `<link rel=preload>` in the HTML and as an HTTP `Link` header on every page, so the fonts start from the response headers and the edge can replay them as 103 Early Hints.
+- Font preloads are sent twice: as `<link rel=preload>` in the HTML and as an HTTP `Link` header on every page, so the fonts start from the response headers, and Cloudflare replays them as **103 Early Hints** before the page itself (verified on eyupdevart.com).
 
 **SEO · AEO · GEO.**
 - One connected JSON-LD `@graph` per page: `WebSite`, `Person` (Eyüp), `Organization` (DevArt) with an `OfferCatalog` of services, `ProfilePage` with `SpeakableSpecification`, an `ItemList` of portfolio sites (each with `creator` → Eyüp), `FAQPage`; the guide adds `TechArticle`, `BreadcrumbList`, `DefinedTermSet` and scholarly `citation`s.
