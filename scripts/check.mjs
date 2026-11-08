@@ -36,6 +36,11 @@ for (const [url, src] of pages) {
   if (!desc) fail(f, 'missing meta description');
   if ([...desc].length > 165) warn.push(`${f}: description ${[...desc].length} chars (>165 may truncate)`);
   if (!is404 && !src.includes('rel="canonical"') && !src.includes('rel=canonical')) fail(f, 'missing canonical');
+  // Identity: canonical, og:url and hreflang alternates name this origin only, never a fragment.
+  for (const m of src.matchAll(/<link\b[^>]*\srel="?(?:canonical|alternate)"?[^>]*>|<meta\b[^>]*\sproperty="?og:url"?[^>]*>/g)) {
+    const u = attr(m[0], 'href') ?? attr(m[0], 'content');
+    if (u && /^https?:/.test(u) && (!u.startsWith(`${ORIGIN}/`) || u.includes('#'))) fail(f, `identity URL outside ${ORIGIN}: ${u}`);
+  }
   const h1s = (src.match(/<h1[\s>]/g) || []).length;
   if (h1s !== 1) fail(f, `expected exactly one <h1>, found ${h1s}`);
 
@@ -171,6 +176,12 @@ const exp = sec.match(/^Expires: (.+)$/m)?.[1];
 if (!exp || !(new Date(exp) > new Date())) fail('.well-known/security.txt', `Expires missing or in the past (${exp})`);
 const sitemap = fs.readFileSync(path.join(DIST, 'sitemap.xml'), 'utf8');
 for (const m of sitemap.matchAll(/<loc>(.*?)<\/loc>/g)) if (!exists(m[1].replace(ORIGIN, '') || '/')) fail('sitemap.xml', `dead URL ${m[1]}`);
+// Identity: every URL the sitemap names (pages, hreflang alternates, images) is on this origin,
+// with no fragment and no query, and robots.txt points only at this origin's sitemap.
+for (const m of sitemap.matchAll(/(?:<loc>|<image:loc>|\shref=")([^<"]+)/g))
+  if (!m[1].startsWith(`${ORIGIN}/`) || /[#?]/.test(m[1])) fail('sitemap.xml', `URL outside ${ORIGIN} or with a fragment/query: ${m[1]}`);
+for (const m of fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8').matchAll(/^Sitemap:\s*(\S+)/gim))
+  if (m[1] !== `${ORIGIN}/sitemap.xml`) fail('robots.txt', `Sitemap line outside this origin: ${m[1]}`);
 const llms = fs.readFileSync(path.join(DIST, 'llms.txt'), 'utf8');
 for (const m of llms.matchAll(/\]\((https:\/\/eyupdevart\.com[^)]*)\)/g)) if (!exists(m[1].replace(ORIGIN, '') || '/')) fail('llms.txt', `dead link ${m[1]}`);
 if (!/Sitemap: https:\/\/eyupdevart\.com\/sitemap\.xml/.test(fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8'))) fail('robots.txt', 'no Sitemap line');
@@ -184,5 +195,5 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(
-  `  ✓ ${pages.size} pages · links, fragments, JSON-LD @id graph, speakable, hreflang, unique titles, sitemap ⇄ pages, crawl depth ≤ ${deepest}, OG cards, Markdown twins, llms.txt, security.txt — all good.`,
+  `  ✓ ${pages.size} pages · links, fragments, JSON-LD @id graph, speakable, hreflang, unique titles, sitemap ⇄ pages (one origin, no fragments), crawl depth ≤ ${deepest}, OG cards, Markdown twins, llms.txt, security.txt — all good.`,
 );

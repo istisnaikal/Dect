@@ -422,6 +422,12 @@ ${[p.ogImage, ...(p.bodyClass === 'is-home' ? work.filter((w) => w.shot).map((w)
   .join('\n')}
 </urlset>
 `;
+  // The sitemap names only this site's own canonical pages, their language alternates and
+  // their images: one origin, no fragments, no queries. Anything else fails the build.
+  const stray = [...sitemap.matchAll(/(?:<loc>|<image:loc>|\shref=")([^<"]+)/g)]
+    .map((m) => m[1])
+    .filter((u) => !u.startsWith(`${O}/`) || /[#?]/.test(u));
+  if (stray.length) throw new Error(`sitemap.xml would name URLs outside ${O} or with a fragment/query: ${stray.join(', ')}`);
   await write('sitemap.xml', sitemap);
 
   await write(
