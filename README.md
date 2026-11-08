@@ -134,6 +134,8 @@ npx wrangler rollback <version-id> --name eyupdevart -m "why"    # instant rollb
 
 The build also emits `_redirects` (301 for slashless URLs) and `.assetsignore` (keeps `.htaccess` off the edge).
 
+**From GitHub (no local token).** *Actions → deploy → Run workflow*, with the commit, branch or tag to ship. One build, the same bytes to staging, a smoke test (`.github/smoke.sh`: the edge serves this exact build, every sitemap URL answers 200, a missing page 404, security headers present), then production, the same smoke test, and the IndexNow ping. It needs one repository secret, `CLOUDFLARE_API_TOKEN`; the account is resolved from the token. This is also the way to deploy from a cloud development session: wrangler uploads assets with a short-lived ticket in the `Authorization` header, and a credential-injecting proxy overwrites that header, so the upload is refused there.
+
 ### Edge features (Cloudflare dashboard)
 
 | Zone feature | Effect on this site | CSP flag (`site.config.mjs → edge`) |

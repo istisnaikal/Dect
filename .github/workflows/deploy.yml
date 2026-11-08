@@ -1,0 +1,127 @@
+# Ships eyupdevart.com to Cloudflare: one build, the same bytes to staging, a smoke test,
+# then the same bytes to production, a smoke test, and an IndexNow ping. Run by hand
+# (Actions → deploy → Run workflow), with the commit to ship.
+#
+# Why on GitHub's runners: wrangler uploads static assets with a short-lived upload
+# ticket in the Authorization header. A credential-injecting proxy (as in cloud
+# development sessions) overwrites that header and every upload is refused. Runners
+# have no such proxy, so the standard wrangler flow works unchanged.
+#
+# Needs one repository secret: CLOUDFLARE_API_TOKEN (Workers Scripts: Edit on the
+# account). The account is resolved from the token, so no ID lives in this file.
+name: deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Commit, branch or tag to ship
+        required: true
+        default: ccr-57dad226-nl0g0j
+      target:
+        description: Where to ship
+        type: choice
+        options: [staging-then-production, staging-only]
+        default: staging-then-production
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash # -eo pipefail: a failed deploy piped through tee still fails the step
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      sha: ${{ steps.sha.outputs.sha }}
+      account: ${{ steps.account.outputs.id }}
+    steps:
+      - name: Token and account
+        id: account
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::error::Repository secret CLOUDFLARE_API_TOKEN is not set (Settings → Secrets and variables → Actions)."
+            exit 1
+          fi
+          api() { curl -sS --fail-with-body --max-time 30 -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" "https://api.cloudflare.com/client/v4/$1"; }
+          api user/tokens/verify | jq -e '.success and .result.status == "active"' > /dev/null || { echo "::error::The token is not active."; exit 1; }
+          ids=$(api 'accounts?per_page=50' | jq -r '.result[].id')
+          [ "$(printf '%s\n' "$ids" | grep -c .)" = 1 ] || { echo "::error::The token must reach exactly one account."; exit 1; }
+          echo "id=$ids" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+      - name: Commit
+        id: sha
+        run: echo "sha=$(git rev-parse HEAD)" | tee -a "$GITHUB_OUTPUT"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm run check
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          include-hidden-files: true # .assetsignore, .htaccess, .well-known/security.txt
+          if-no-files-found: error
+          retention-days: 14
+
+  staging:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build.outputs.sha }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - name: Deploy to staging
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ needs.build.outputs.account }}
+        run: npx --yes wrangler@4 deploy --env staging 2>&1 | tee deploy.log
+      - name: Smoke test
+        run: |
+          base=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1)
+          bash .github/smoke.sh "$base"
+
+  production:
+    needs: [build, staging]
+    if: inputs.target == 'staging-then-production'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.build.outputs.sha }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deploy to production
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ needs.build.outputs.account }}
+        run: npx --yes wrangler@4 deploy --env="" 2>&1 | tee deploy.log
+      - name: Smoke test
+        run: bash .github/smoke.sh https://eyupdevart.com
+      - name: IndexNow
+        run: node scripts/indexnow.mjs
