@@ -37,7 +37,8 @@ export const site = {
     // cache) into every page. It can only be switched off in the dashboard (Web Analytics → the
     // site → disable); Cache-Control: no-transform would stop it, but also stops the edge from
     // compressing HTML (131 KB instead of 25 KB on the wire). Turn this off with the dashboard.
-    cloudflareWebAnalytics: true,
+    // Off since 2026-11-08 (switched off in the dashboard): no third-party script remains.
+    cloudflareWebAnalytics: false,
     // Bot protection "JavaScript Detections" → an inline script with per-request values; no
     // hash can match it, so script-src would need 'unsafe-inline'. Off since 2026-11-08 (Bot Fight
     // Mode and JS detections disabled on the zone), so script-src is hash-locked and Trusted

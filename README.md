@@ -26,7 +26,7 @@ Every push runs `build` + `check` on GitHub Actions (`.github/workflows/ci.yml`)
 
 Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic browsing* category is 100 too. Mobile: FCP / LCP 0.8–1.0 s, CLS 0, TBT 0–20 ms (a cold first run can read higher). Home page critical path: **~82 KB total** (HTML + inlined CSS + JS brotli + all three font families). The same 100s, all five categories, were measured on eyupdevart.com itself after the 2026-11-08 deploy.
 
-**On eyupdevart.com**, Bot Fight Mode and its JavaScript Detections were switched off on 2026-11-08 (they cost Best Practices 81 and a ~250 ms mobile long task). With nothing injected at the edge but the cookieless analytics beacon, the CSP is hash-locked and enforces Trusted Types; see *Edge features* below.
+**On eyupdevart.com**, Bot Fight Mode and its JavaScript Detections were switched off on 2026-11-08 (they cost Best Practices 81 and a ~250 ms mobile long task). Web Analytics was switched off the same day, so the edge injects nothing at all: no third-party script, and the CSP allows only `'self'` and build-time hashes, with Trusted Types enforced; see *Edge features* below.
 
 ## What's inside
 
@@ -86,7 +86,7 @@ Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic 
 
 **Semantic HTML.** One `<h1>` per page, no skipped heading levels (enforced by `npm run check`), landmarks, `aria-current` on the breadcrumb and the current nav item, `<address>` for contact, `<dl>` for definitions and fact sheets, and `<time>` for dates.
 
-**Security.** Edge-aware CSP, HSTS, `nosniff`, `frame-ancestors 'none'`, a locked-down `Permissions-Policy`, all generated into `_headers` (Cloudflare / Netlify) and `.htaccess` (Apache / cPanel) at build time, plus `/.well-known/security.txt` (RFC 9116) whose `Expires` renews with every build. Styles are locked to a build-time hash; scripts to `'self'`, build-time hashes and the analytics origin. **Trusted Types are enforced** (`require-trusted-types-for 'script'; trusted-types 'none'`): DOM XSS sinks such as `innerHTML` refuse plain strings and no policy may be created, which the site's own code never needs. The Cloudflare analytics beacon was tested under this exact policy with zero violations. If the zone ever injects JavaScript Detections again, set `site.config.mjs → edge.cloudflareJsDetections` and the build relaxes `script-src` to `'unsafe-inline'` and drops Trusted Types (that script changes on every request, so no hash can match it).
+**Security.** Edge-aware CSP, HSTS, `nosniff`, `frame-ancestors 'none'`, a locked-down `Permissions-Policy`, all generated into `_headers` (Cloudflare / Netlify) and `.htaccess` (Apache / cPanel) at build time, plus `/.well-known/security.txt` (RFC 9116) whose `Expires` renews with every build. Styles are locked to a build-time hash; scripts to `'self'` and build-time hashes, with no third-party origin. **Trusted Types are enforced** (`require-trusted-types-for 'script'; trusted-types 'none'`): DOM XSS sinks such as `innerHTML` refuse plain strings and no policy may be created, which the site's own code never needs. While Cloudflare's analytics beacon was on, it ran under this exact policy with zero violations; it has been off since 2026-11-08. If the zone ever injects JavaScript Detections again, set `site.config.mjs → edge.cloudflareJsDetections` and the build relaxes `script-src` to `'unsafe-inline'` and drops Trusted Types (that script changes on every request, so no hash can match it).
 
 ## Editing
 
@@ -134,13 +134,13 @@ npx wrangler rollback <version-id> --name eyupdevart -m "why"    # instant rollb
 
 The build also emits `_redirects` (301 for slashless URLs) and `.assetsignore` (keeps `.htaccess` off the edge).
 
-**From GitHub (no local token).** *Actions → deploy → Run workflow*, with the commit, branch or tag to ship. One build, the same bytes to staging, a smoke test (`.github/smoke.sh`: the edge serves this exact build, every sitemap URL answers 200, a missing page 404, security headers present), then production, the same smoke test, and the IndexNow ping. It needs one repository secret, `CLOUDFLARE_API_TOKEN`; the account is resolved from the token. This is also the way to deploy from a cloud development session: wrangler uploads assets with a short-lived ticket in the `Authorization` header, and a credential-injecting proxy overwrites that header, so the upload is refused there.
+**From GitHub (no local token).** *Actions → deploy → Run workflow*, with the commit, branch or tag to ship. One build, the same bytes to staging, a smoke test (`.github/smoke.sh`: the edge serves this exact build, every sitemap URL answers 200, a missing page 404, security headers present), an edge preflight (`.github/edge-preflight.sh`: if the zone injects a script, such as the Web Analytics beacon, from an origin the new CSP would block, production is left untouched), then production, the same smoke test, and the IndexNow ping. It needs one repository secret, `CLOUDFLARE_API_TOKEN`; the account is resolved from the token. This is also the way to deploy from a cloud development session: wrangler uploads assets with a short-lived ticket in the `Authorization` header, and a credential-injecting proxy overwrites that header, so the upload is refused there.
 
 ### Edge features (Cloudflare dashboard)
 
 | Zone feature | Effect on this site | CSP flag (`site.config.mjs → edge`) |
 | --- | --- | --- |
-| Web Analytics | Cookieless page analytics, but the site's only third-party script: 10 KB with legacy polyfills and a 1-day cache, and a branch in the dependency tree. Switch it off in the dashboard (Web Analytics → the site → disable), then set the flag to `false`; edge analytics remain. (`Cache-Control: no-transform` would also stop the injection, but it stops the edge compressing HTML: 131 KB instead of 25 KB.) | `cloudflareWebAnalytics` |
+| Web Analytics | **Off since 2026-11-08.** Cookieless page analytics, but it was the site's only third-party script: 10 KB with legacy polyfills and a 1-day cache, and a branch in the dependency tree. Switch it off in the dashboard (Web Analytics → the site → disable), then set the flag to `false`; edge analytics remain. (`Cache-Control: no-transform` would also stop the injection, but it stops the edge compressing HTML: 131 KB instead of 25 KB.) | `cloudflareWebAnalytics` |
 | Bot Fight Mode / JS Detections | **Off since 2026-11-08.** Cost Best Practices (deprecated API) and ~200 ms mobile TBT; can challenge AI agents that fetch pages (bad for GEO) | `cloudflareJsDetections` |
 
 If you turn a feature off in the dashboard, set its flag to `false` and redeploy: the CSP tightens back automatically.
