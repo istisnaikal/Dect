@@ -14,8 +14,8 @@
   --fg: #141317;
   --fg-2: #4e4a45;
   --fg-3: #625d56;
-  --line: rgb(20 19 23 / 0.09);
-  --line-2: rgb(20 19 23 / 0.16);
+  --line: rgb(30 36 62 / 0.1);
+  --line-2: rgb(30 36 62 / 0.17);
   --tint: rgb(20 19 23 / 0.04);
   /* Night blue: one accent in three strengths, precise rather than loud. */
   --night: #14204a;          /* fills: the primary action, selection (text on it: 12.9:1) */
@@ -25,12 +25,19 @@
   --night-deep: #0f1838;     /* accent words under the hand */
   --on-night: #f6f4ef;       /* paper, for words on a night fill */
   --mist: #e3e9f6;
+  /* The night has more than one blue. Indigo in the distance, slate at the edges, a faint
+     violet warmth where the light hesitates. Washes, lines and shadows draw on these;
+     words and fills stay on the accents above, so contrast never moves. */
+  --indigo: #2c2f78;
+  --slate: #3c4a68;
+  --violet: #8a76c4;
+  --moon: #d6dcf3;
   --sky: #dfe9f6;
   --lilac: #ebe5f7;
   --ok: #146c36;
   --warn: #8f5606;
   --bad: #b91c1c;
-  --shadow: 0 1px 2px rgb(20 19 23 / 0.04), 0 22px 48px -30px rgb(20 19 23 / 0.22);
+  --shadow: 0 1px 2px rgb(30 36 62 / 0.05), 0 22px 48px -30px rgb(36 42 92 / 0.28); /* shadows carry the sky */
 
   --sans: Geist, 'Geist Fallback', ui-sans-serif, system-ui, sans-serif;
   --mono: 'Geist Mono', 'Geist Mono Fallback', ui-monospace, 'SFMono-Regular', monospace;
@@ -73,7 +80,7 @@ body {
   margin: 0;
   min-height: 100vh;
   /* A tailor's pattern paper: a dot grid you only notice on the second look. */
-  background: radial-gradient(rgb(20 19 23 / 0.07) 0.8px, transparent 1.2px) 0 0 / 26px 26px, var(--bg);
+  background: radial-gradient(rgb(36 44 80 / 0.075) 0.8px, transparent 1.2px) 0 0 / 26px 26px, var(--bg);
   color: var(--fg);
   font: 400 1.0625rem/1.6 var(--sans);
   font-synthesis: none;
@@ -184,13 +191,13 @@ address { font-style: normal; }
   -webkit-tap-highlight-color: transparent;
 }
 .btn--primary {
-  background: var(--night);
+  background: linear-gradient(180deg, #222d66 0%, var(--night) 58%, #111a3e 100%);
   color: var(--on-night);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.28), 0 0 0 0 rgb(53 87 184 / 0);
+  box-shadow: inset 0 1px 0 rgb(214 220 243 / 0.2), inset 0 -1px 0 rgb(0 0 0 / 0.2), 0 0 0 0 rgb(44 47 120 / 0);
 }
 @media (hover: hover) { .btn--primary:hover {
-  background: var(--night-hi);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.16), 0 16px 40px -14px rgb(20 32 74 / 0.6);
+  background: linear-gradient(180deg, #2a3778 0%, var(--night-hi) 58%, #16214c 100%);
+  box-shadow: inset 0 1px 0 rgb(214 220 243 / 0.26), inset 0 -1px 0 rgb(0 0 0 / 0.2), 0 16px 40px -14px rgb(44 47 120 / 0.55), 0 6px 18px -10px rgb(138 118 196 / 0.45);
 } }
 .btn--ghost {
   border-color: var(--line-2);
@@ -327,7 +334,9 @@ main { position: relative; }
 .thread path { fill: none; stroke-linecap: round; }
 .thread__route path { stroke: rgb(20 19 23 / 0.16); stroke-width: 1; stroke-dasharray: 1 7; }
 .thread__stitch { clip-path: inset(0 0 calc(100% - var(--head, 0px)) 0); }
-.thread__stitch path { stroke: var(--night-line); stroke-width: 1.6; stroke-dasharray: 7 6; }
+/* The thread crosses the whole night: indigo where it begins, night blue on the way,
+   a violet warmth where it reaches the WhatsApp button. */
+.thread__stitch path { stroke: url(#thread-ink) var(--night-line); stroke-width: 1.6; stroke-dasharray: 7 6; }
 .thread__knot {
   position: absolute;
   top: -4px;
@@ -433,7 +442,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: radial-gradient(520px circle at var(--px, 50%) var(--py, 0%), rgb(110 140 215 / 0.1), transparent 62%);
+  background: radial-gradient(520px circle at var(--px, 50%) var(--py, 0%), rgb(138 118 196 / 0.1), rgb(80 96 190 / 0.05) 38%, transparent 62%);
   opacity: 0;
   transition: opacity 0.5s var(--ease);
   pointer-events: none;
@@ -464,9 +473,9 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(44% 48% at 70% 40%, rgb(110 140 215 / 0.2), transparent 70%),
-    radial-gradient(42% 54% at 24% 50%, rgb(150 182 232 / 0.26), transparent 72%),
-    radial-gradient(30% 40% at 50% 10%, rgb(205 190 240 / 0.22), transparent 70%),
+    radial-gradient(44% 48% at 70% 40%, rgb(44 47 120 / 0.13), transparent 70%),
+    radial-gradient(42% 54% at 24% 50%, rgb(140 165 220 / 0.24), transparent 72%),
+    radial-gradient(30% 40% at 50% 10%, rgb(138 118 196 / 0.17), transparent 70%),
     var(--bg);
 }
 .hero__canvas {
@@ -666,7 +675,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
 }
 .marquee__track { display: flex; width: max-content; }
 .marquee__run { display: flex; align-items: center; gap: 32px; padding-right: 32px; }
-.marquee__star { color: var(--night-line); font-style: normal; font-size: 0.6em; }
+.marquee__star { color: var(--violet); font-style: normal; font-size: 0.6em; }
 @media (prefers-reduced-motion: no-preference) {
   .marquee__track { animation: marquee 48s linear infinite; }
   @media (hover: hover) { .marquee:hover .marquee__track { animation-play-state: paused; } }
@@ -819,7 +828,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   display: grid;
   place-items: center;
   color: rgb(53 87 184 / 0.45);
-  background: radial-gradient(70% 90% at 50% 100%, rgb(110 140 215 / 0.18), transparent 70%), #fbfaf7;
+  background: radial-gradient(70% 90% at 50% 100%, rgb(138 118 196 / 0.15), rgb(44 47 120 / 0.06) 50%, transparent 72%), #fbfaf7;
 }
 .cover { position: absolute; inset: 0; width: 100%; height: 100%; }
 .cover__mono {
@@ -864,27 +873,75 @@ main > section, main > .marquee { position: relative; z-index: 1; }
 .work-card:has(.work-card__title a:focus-visible) { outline: 2px solid var(--night-text); outline-offset: 3px; }
 .work-card__text { color: var(--fg-2); }
 
-.work-card--next {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  grid-template-areas: 'kind kind' 'title text' 'title cta';
-  align-items: end;
-  gap: 18px clamp(24px, 5vw, 80px);
-  padding: clamp(28px, 4vw, 56px);
+/* ── The invitation: the last frame is empty, and it is waiting ──────────
+   The same browser frame as the work before it, holding a small night: indigo in the
+   distance, slate rising from the edge, a violet light that breathes. When the hand comes,
+   the breath holds and the light turns toward it; the cursor in the empty address steadies. */
+@property --lx { syntax: '<percentage>'; inherits: true; initial-value: 30%; }
+@property --ly { syntax: '<percentage>'; inherits: true; initial-value: 36%; }
+.invite__frame { border-color: rgb(30 36 62 / 0.14); }
+.invite__url { min-width: 10.5em; text-align: left; transform: none; }
+.invite__caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.05em;
+  vertical-align: -0.2em;
+  border-radius: 1px;
+  background: var(--night-line);
+}
+.invite__sky {
+  isolation: isolate;
   background:
-    radial-gradient(60% 120% at 100% 100%, rgb(53 87 184 / 0.14), transparent 70%),
-    var(--bg-1);
+    radial-gradient(90% 80% at 86% -6%, rgb(44 47 120 / 0.9), transparent 70%),
+    radial-gradient(120% 90% at 50% 125%, rgb(60 74 104 / 0.6), transparent 70%),
+    linear-gradient(180deg, #19225a 0%, #121a42 55%, #0d1433 100%);
+  box-shadow: inset 0 0 90px rgb(8 12 32 / 0.55);
 }
-.work-card--next .work-card__kind { grid-area: kind; }
-.work-card__next-title {
-  grid-area: title;
-  font-size: clamp(2.2rem, 1.2rem + 4vw, 5rem);
-  line-height: 0.95;
-  letter-spacing: -0.055em;
+.invite__light {
+  position: absolute;
+  inset: -20%;
+  z-index: -1;
+  background: radial-gradient(34% 40% at var(--lx) var(--ly), rgb(160 140 228 / 0.46), rgb(110 122 222 / 0.15) 48%, transparent 72%);
+  transition: --lx 1.6s var(--ease-out), --ly 1.6s var(--ease-out), opacity 0.6s var(--ease);
 }
-.work-card--next .work-card__text { grid-area: text; max-width: 36ch; }
-.work-card--next .btn { grid-area: cta; justify-self: start; }
+.invite__horizon {
+  position: absolute;
+  inset: 68% 9% auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(214 220 243 / 0.24), transparent);
+}
+.invite__title {
+  font-size: clamp(2rem, 1.1rem + 3.4vw, 4.4rem);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+.invite__title .art { color: var(--night-text); }
+.invite__body .btn { align-self: flex-start; margin-top: 6px; }
+.invite__note { color: var(--fg-3); font: 400 12px/1.5 var(--mono); }
+@media (min-width: 900px) {
+  .invite {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+    align-items: center;
+  }
+  .invite__media { order: 2; padding: 12px; }
+  .invite__frame { border-bottom: 1px solid rgb(30 36 62 / 0.14); border-radius: 14px; box-shadow: 0 24px 50px -30px rgb(36 42 92 / 0.45); }
+  .invite__body { padding: clamp(32px, 4vw, 64px); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .invite__light { animation: breath 8s var(--ease) infinite alternate; }
+  .invite__caret { animation: caret 1.2s steps(1) infinite; }
+  @media (hover: hover) {
+    .invite { transition: transform 0.7s var(--ease-out), box-shadow 0.7s var(--ease-out); }
+    .invite:hover { transform: translateY(-4px); box-shadow: 0 1px 2px rgb(30 36 62 / 0.05), 0 34px 60px -32px rgb(36 42 92 / 0.38); }
+    .invite:hover .invite__light { animation-play-state: paused; }
+    .invite:hover .invite__caret { animation: none; box-shadow: 0 0 8px rgb(53 87 184 / 0.6); }
+  }
+}
+.invite:active .invite__light { opacity: 1; }
+@keyframes breath { from { opacity: 0.7; transform: scale(0.95); } to { opacity: 1; transform: scale(1.05); } }
+@keyframes caret { 50% { opacity: 0; } }
 
 .rail-progress { display: none; }
 @media (max-width: 899px) {
@@ -904,18 +961,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   .work__list::-webkit-scrollbar { display: none; }
   /* Scale anchors at the snap edge, so the depth effect can never shift where a card lands. */
   .work__list > li { flex: 0 0 min(86%, 460px); scroll-snap-align: start; scroll-snap-stop: always; transform-origin: 0 50%; }
-  .work-card--next { display: flex; flex-direction: column; justify-content: flex-end; gap: 18px; }
-  .work-card--next .btn { align-self: stretch; }
-  .work-card--next::after {
-    content: '+';
-    position: absolute;
-    top: 8px;
-    left: 22px;
-    color: var(--night-line);
-    font: 200 clamp(7rem, 34vw, 10rem)/1 var(--sans);
-    text-shadow: 0 0 40px rgb(53 87 184 / 0.45);
-    pointer-events: none;
-  }
+  .invite__body .btn { align-self: stretch; }
   .work-card__text { font-size: 1rem; }
   .rail-progress {
     display: block;
@@ -966,7 +1012,10 @@ main > section, main > .marquee { position: relative; z-index: 1; }
 .proof {
   padding-block: var(--sec-pad);
   border-top: 1px solid var(--line);
-  background: radial-gradient(60% 50% at 50% 0%, rgb(110 140 215 / 0.12), transparent 70%), var(--bg-1);
+  background:
+    radial-gradient(60% 50% at 50% 0%, rgb(44 47 120 / 0.09), transparent 70%),
+    radial-gradient(40% 40% at 88% 26%, rgb(138 118 196 / 0.07), transparent 70%),
+    var(--bg-1);
 }
 .proof__grid {
   display: grid;
@@ -1145,7 +1194,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   background: var(--line-2);
 }
 .steps::after {
-  background: linear-gradient(90deg, var(--night), var(--night-line));
+  background: linear-gradient(90deg, var(--indigo), var(--night-line) 62%, var(--violet));
   box-shadow: 0 0 12px var(--night-line);
   transform-origin: 0 50%;
 }
@@ -1269,7 +1318,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   inset: auto -20% -55% -20%;
   height: 110%;
   z-index: -1;
-  background: radial-gradient(50% 50% at 50% 50%, rgb(110 140 215 / 0.32), rgb(160 182 235 / 0.1) 45%, transparent 70%);
+  background: radial-gradient(50% 50% at 50% 50%, rgb(138 118 196 / 0.22), rgb(110 140 215 / 0.12) 40%, rgb(44 47 120 / 0.04) 60%, transparent 72%);
   pointer-events: none;
 }
 .contact__title {
@@ -1396,7 +1445,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
 }
 .ftr__sign path {
   fill: none;
-  stroke: rgb(20 19 23 / 0.34);
+  stroke: rgb(60 74 104 / 0.42);
   stroke-width: 1.25;
   stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
@@ -1453,7 +1502,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   box-shadow:
     inset 0 1px 0 rgb(255 255 255 / 0.85),
     0 1px 2px rgb(20 32 74 / 0.06),
-    0 22px 44px -24px rgb(20 32 74 / 0.5);
+    0 22px 44px -24px rgb(36 42 92 / 0.5);
   opacity: 0;
   transform: translate3d(0, calc(100% + 28px), 0) scale(0.96);
   transition: transform 0.7s var(--ease-out), opacity 0.4s var(--ease);
@@ -1475,8 +1524,8 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   height: 48px;
   padding: 0 18px 0 6px;
   border-radius: 999px;
-  background: linear-gradient(180deg, #1d2c5f 0%, var(--night) 100%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14), inset 0 -1px 0 rgb(0 0 0 / 0.22), 0 6px 16px -8px rgb(20 32 74 / 0.7);
+  background: linear-gradient(180deg, #232f6a 0%, var(--night) 60%, #10183a 100%);
+  box-shadow: inset 0 1px 0 rgb(214 220 243 / 0.2), inset 0 -1px 0 rgb(0 0 0 / 0.22), 0 6px 16px -8px rgb(44 47 120 / 0.7);
   color: var(--on-night);
   text-decoration: none;
   transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease);
@@ -1490,8 +1539,8 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgb(255 255 255 / 0.1);
-  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.12);
+  background: radial-gradient(circle at 35% 30%, rgb(214 220 243 / 0.22), rgb(138 118 196 / 0.12) 62%, rgb(255 255 255 / 0.04));
+  box-shadow: inset 0 0 0 1px rgb(214 220 243 / 0.14);
 }
 .dock__ic .i { width: 19px; height: 19px; }
 .dock__txt { display: grid; min-width: 0; gap: 3px; line-height: 1; }
@@ -1687,7 +1736,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   inset: 0 0 auto;
   z-index: 60;
   height: 2px;
-  background: linear-gradient(90deg, var(--night), var(--night-line));
+  background: linear-gradient(90deg, var(--indigo), var(--night-line) 62%, var(--violet));
   transform: scaleX(0);
   transform-origin: 0 50%;
 }
@@ -1790,9 +1839,11 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   box-shadow: var(--shadow);
   padding: 26px 30px;
   border: 1px solid var(--line);
-  border-left: 2px solid var(--night-line);
+  border-left: 2px solid transparent;
   border-radius: 0 18px 18px 0;
-  background: var(--bg-1);
+  background:
+    linear-gradient(180deg, var(--indigo), var(--night-line) 55%, var(--violet)) border-box 0 0 / 2px 100% no-repeat,
+    var(--bg-1) padding-box;
 }
 .prose .tldr h2 {
   margin-bottom: 10px;
@@ -1824,7 +1875,14 @@ main > section, main > .marquee { position: relative; z-index: 1; }
 .prose tr:last-child > * { border-bottom: 0; }
 .prose .faq__list { margin-top: 8px; }
 .prose .qa__q { color: var(--fg); }
-.cta-box { margin-top: 80px; padding: clamp(28px, 4vw, 52px); background: radial-gradient(70% 120% at 100% 100%, rgb(53 87 184 / 0.15), transparent 70%), var(--bg-1); }
+.cta-box {
+  margin-top: 80px;
+  padding: clamp(28px, 4vw, 52px);
+  background:
+    radial-gradient(70% 120% at 100% 100%, rgb(138 118 196 / 0.14), transparent 65%),
+    radial-gradient(60% 90% at 0% 0%, rgb(44 47 120 / 0.06), transparent 70%),
+    var(--bg-1);
+}
 .prose .cta-box__title {
   margin-bottom: 14px;
   font-size: clamp(1.8rem, 1.2rem + 2.2vw, 3.2rem);
@@ -1883,8 +1941,8 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   }
   @media (hover: hover) {
     .btn--primary:hover::before { transform: translateX(120%); transition: transform 0.9s var(--ease-out); }
-    .work-card:not(.work-card--next) { transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out); }
-    .work-card:not(.work-card--next):hover { transform: translateY(-6px); box-shadow: 0 1px 2px rgb(20 19 23 / 0.05), 0 34px 60px -32px rgb(20 19 23 / 0.32); }
+    .work-card:not(.invite) { transition: transform 0.6s var(--ease-out), box-shadow 0.6s var(--ease-out); }
+    .work-card:not(.invite):hover { transform: translateY(-6px); box-shadow: 0 1px 2px rgb(30 36 62 / 0.05), 0 34px 60px -32px rgb(36 42 92 / 0.34); }
   }
 }
 @keyframes exhale { from { translate: 0 16px; } }
@@ -1937,7 +1995,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
 .gterm__svc a { display: inline-flex; align-items: center; gap: 6px; min-height: 28px; color: var(--night-text) !important; font: 500 13px/1.3 var(--mono); text-decoration: none !important; }
 .gterm__svc a span { transition: transform 0.4s var(--ease-out); }
 @media (hover: hover) { .gterm__svc a:hover span { transform: translateX(4px); } }
-.gterm:target { background: linear-gradient(90deg, rgb(110 140 215 / 0.12), transparent 70%); box-shadow: -20px 0 0 rgb(110 140 215 / 0.12); }
+.gterm:target { background: linear-gradient(90deg, rgb(138 118 196 / 0.12), rgb(44 47 120 / 0.04) 45%, transparent 75%); box-shadow: -20px 0 0 rgb(138 118 196 / 0.12); }
 .gterm:target .gterm__name::after { opacity: 1; }
 .toc__out { color: var(--night-text) !important; }
 @media (max-width: 699px) {
@@ -2005,7 +2063,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
 /* ── The calm path: what happens next, the hour, the button that answers ── */
 .next { margin-top: 26px; }
 .next__label { color: var(--fg-3); font: 500 11px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
-.next__steps { display: flex; flex-wrap: wrap; gap: 8px 22px; margin: 12px 0 0 !important; padding: 0 !important; list-style: none; counter-reset: n; }
+.next__steps { display: grid; gap: 9px; margin: 14px 0 0 !important; padding: 0 !important; list-style: none; counter-reset: n; }
 .next__steps li { position: relative; margin: 0 !important; padding-left: 26px; color: var(--fg-2); font-size: 15px; line-height: 1.45; counter-increment: n; }
 .next__steps li::before {
   content: counter(n);
@@ -2023,7 +2081,6 @@ main > section, main > .marquee { position: relative; z-index: 1; }
 }
 .cta-box .next { margin-top: 30px; padding-top: 22px; border-top: 1px solid var(--line); }
 .contact .next { max-width: 52ch; }
-.contact .next__steps { flex-direction: column; }
 .clock__note { max-width: 22ch; color: var(--fg-3); font: 400 12px/1.45 var(--sans); letter-spacing: 0; text-align: right; text-wrap: balance; }
 @media (max-width: 899px) { .clock__note { max-width: 36ch; text-align: left; } }
 @media (prefers-reduced-motion: no-preference) {

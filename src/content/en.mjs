@@ -130,6 +130,7 @@ export default {
       title: 'The next one could be *yours.*',
       text: 'Tell me what you do and what you’re after, in two sentences. We’ll think the rest through together.',
       cta: 'Send two sentences',
+      note: 'A message commits you to nothing.',
     },
   },
 

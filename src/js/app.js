@@ -417,6 +417,24 @@ function relief() {
   });
 }
 
+/* ── The invitation's light turns toward the hand ─────────────────────────
+   Only the position is set here; @property lets CSS ease it, so it drifts like breath. */
+function invite() {
+  const card = $('[data-invite]');
+  const sky = card && $('.invite__sky', card);
+  if (!sky || !finePointer.matches || reduced.matches) return;
+  const clamp = (v) => Math.max(-10, Math.min(110, v));
+  card.addEventListener('pointermove', (e) => {
+    const r = sky.getBoundingClientRect();
+    card.style.setProperty('--lx', `${clamp(((e.clientX - r.left) / r.width) * 100).toFixed(1)}%`);
+    card.style.setProperty('--ly', `${clamp(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
+  });
+  card.addEventListener('pointerleave', () => {
+    card.style.removeProperty('--lx');
+    card.style.removeProperty('--ly');
+  });
+}
+
 /* ── Local time in Türkiye (fixed UTC+3 since 2016 — no timezone tables needed) ──
    Beside it, one honest line on what the hour means: no countdowns, no promises of speed. */
 function clock() {
@@ -569,4 +587,4 @@ header();
 palette();
 vitals();
 seam();
-for (const fn of [dock, pointer, clock, thread, relief, hello]) idle(fn);
+for (const fn of [dock, pointer, clock, thread, relief, invite, hello]) idle(fn);

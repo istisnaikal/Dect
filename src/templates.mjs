@@ -378,11 +378,18 @@ function workSection(c) {
 ${secHead(c.work, 3)}
 <ol class="work__list" aria-label="${esc(c.ui.rail)}">
 ${work.map((p, i) => workCard(p, c, i)).join('\n')}
-<li class="work-card work-card--next card" data-spot>
-<p class="work-card__kind"><span class="work-card__n">${pad(work.length + 1)}</span>${n.label}</p>
-<h3 class="work-card__next-title">${rich(n.title)}</h3>
+<li class="work-card invite card" data-spot data-invite>
+<div class="work-card__media invite__media" aria-hidden="true">
+<div class="browser invite__frame"><div class="browser__bar"><i></i><i></i><i></i><span class="browser__url invite__url"><span class="invite__caret"></span></span></div>
+<div class="browser__view invite__sky"><span class="invite__light"></span><span class="invite__horizon"></span></div></div>
+</div>
+<div class="work-card__body invite__body">
+<p class="work-card__kind"><span class="work-card__n">${pad(work.length + 1)}</span><span>${n.label}</span></p>
+<h3 class="invite__title">${rich(n.title)}</h3>
 <p class="work-card__text">${n.text}</p>
 <a class="btn btn--primary btn--lg" href="${esc(wa(c.wa.project))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${n.cta}</span></a>
+<p class="invite__note">${n.note}</p>
+</div>
 </li>
 </ol>
 <div class="rail-progress" aria-hidden="true"><i></i></div>
@@ -516,7 +523,7 @@ ${nextSteps(c)}
 export function homeBody(c, { qr }) {
   return `${header(c, { home: true })}
 <main id="main">
-<div class="thread" aria-hidden="true" data-thread><svg class="thread__route"><path/></svg><svg class="thread__stitch"><path/></svg><span class="thread__knot"></span></div>
+<div class="thread" aria-hidden="true" data-thread><svg class="thread__route"><path/></svg><svg class="thread__stitch"><defs><linearGradient id="thread-ink" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="100%"><stop offset="0" stop-color="#2c2f78"/><stop offset=".6" stop-color="#3557b8"/><stop offset="1" stop-color="#8a76c4"/></linearGradient></defs><path/></svg><span class="thread__knot"></span></div>
 ${hero(c)}
 ${marquee(c)}
 ${short(c)}

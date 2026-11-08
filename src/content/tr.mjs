@@ -131,6 +131,7 @@ export default {
       title: 'Sıradaki iş *sizinki.*',
       text: 'Ne yaptığınızı ve ne istediğinizi iki cümleyle yazın; gerisini birlikte düşünürüz.',
       cta: 'İki cümle yazın',
+      note: 'Bir mesaj sizi hiçbir şeye bağlamaz.',
     },
   },
 
