@@ -8,18 +8,18 @@ import { logoMark } from '../src/templates.mjs';
 
 const OUT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'src', 'static');
 
-// An ink tile, the emblem in paper, the needle in ember. Small sizes get the solid stem (cells
+// A night-blue tile, the emblem in paper, the needle in moonlight blue. Small sizes get the solid stem (cells
 // would blur below ~48px); the large ones get the cell stem and the needle's eye.
 // `inset` leaves room for maskable safe zones.
 const tile = (size, inset = 0.16, radius = 0.22) => {
   const box = 32 * (1 - inset * 2);
   const o = 32 * inset;
   // The emblem's own (tight) viewBox in a square box: a nested <svg> centres it exactly.
-  const mark = logoMark('m', '', { size, ink: '#f6f4ef', seam: '#ff5b22' })
+  const mark = logoMark('m', '', { size, ink: '#f6f4ef', seam: '#9fb6ee' })
     .replace(/^<svg class="m" /, `<svg x="${o}" y="${o}" width="${box}" height="${box}" `)
     .replace(' aria-hidden="true" focusable="false"', '');
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-<rect width="32" height="32" rx="${32 * radius}" fill="#141317"/>
+<rect width="32" height="32" rx="${32 * radius}" fill="#14204a"/>
 ${mark}
 </svg>`;
 };

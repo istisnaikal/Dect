@@ -19,6 +19,7 @@ import zlib from 'node:zlib';
 import { build as esbuild, transform } from 'esbuild';
 import { minify } from 'html-minifier-terser';
 import QRCode from 'qrcode';
+import sharp from 'sharp';
 
 import tr from '../src/content/tr.mjs';
 import en from '../src/content/en.mjs';
@@ -103,7 +104,14 @@ async function build() {
   const appUrl = `/${path.relative(DIST, path.resolve(ROOT, appOut)).split(path.sep).join('/')}`;
 
   // ── CSS: font faces + design system, minified and inlined ─────────────────
-  const rawCss = fontCss + (await fs.readFile(path.join(SRC, 'styles/main.css'), 'utf8'));
+  // Work screenshots load lazily; until they do, each shows its own 24px preview, scaled up soft
+  // and riding the same scroll-peek transform as the real image (it is the image's background).
+  let lqipCss = '';
+  for (const p of work.filter((w) => w.shot)) {
+    const tiny = await sharp(path.join(SRC, `assets/work/${p.shot}-640.webp`)).resize(24).webp({ quality: 42 }).toBuffer();
+    lqipCss += `.browser__view .shot-${p.shot}{background-image:url(data:image/webp;base64,${tiny.toString('base64')})}`;
+  }
+  const rawCss = fontCss + (await fs.readFile(path.join(SRC, 'styles/main.css'), 'utf8')) + lqipCss;
   const css = (await transform(rawCss, { loader: 'css', minify: true, logLevel: 'error' })).code.trim();
 
   // ── Static assets ─────────────────────────────────────────────────────────

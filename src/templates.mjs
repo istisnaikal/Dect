@@ -81,7 +81,7 @@ export const icon = {
 // ── The emblem: DevArt's "D" ──────────────────────────────────────────────────
 // The letter is split down its spine. Left, the stem is built from cells on a grid:
 // the developer, discrete and computed. Right, the bowl is one continuous superelliptic
-// curve, heavier where a pen would press: the artist. Between them runs an ember needle,
+// curve, heavier where a pen would press: the artist. Between them runs a night-blue needle,
 // the tailor who joins the two halves (and, standing upright, a developer's caret).
 // Construction on a 32-unit square: cap line 4, baseline 28, spine x = 16.
 //   needle  1.5 wide, eye 0.5 × 3, head at y 1, point at y 31.2 (it passes through the letter)
@@ -129,7 +129,7 @@ const EMBLEM = (() => {
 })();
 
 /**
- * The emblem as inline SVG (fill: currentColor; the needle takes the ember from CSS).
+ * The emblem as inline SVG (fill: currentColor; the needle takes its night blue from CSS).
  * size: 'auto' carries both stems and lets CSS choose by screen resolution;
  * 'large' is the cell stem with the needle's eye; 'small' is the solid stem.
  */
@@ -244,10 +244,14 @@ ${svc.map(opt).join('')}
 <div class="toast" role="status" aria-live="polite" data-toast data-phone="${phoneFor(c)}" data-msg="${esc(c.ui.copied)}" data-opening="${esc(c.ui.opening)}"></div>`;
 }
 
+// The phone's dock: a glass capsule, a night-blue pill whose second line removes the effort
+// ("the first line is written"), and a weightless call button behind a hairline.
 function dock(c) {
+  const d = c.ui.dock;
   return `<div class="dock" data-dock>
-<a class="btn btn--primary dock__wa" href="${esc(wa(c.wa.default))}" data-wa target="_blank" rel="noopener">${icon.wa}<span>${c.ui.whatsapp}</span></a>
-<a class="btn btn--ghost btn--icon" href="tel:${site.phone.e164}" aria-label="${esc(c.ui.call)}: ${phoneFor(c)}">${icon.phone}</a>
+<a class="dock__wa" href="${esc(wa(c.wa.default))}" data-wa target="_blank" rel="noopener"><span class="dock__ic">${icon.wa}</span><span class="dock__txt"><span class="dock__label" data-label>${d.label}</span><span class="dock__sub" aria-hidden="true">${d.sub}</span></span></a>
+<span class="dock__rule" aria-hidden="true"></span>
+<a class="dock__call" href="tel:${site.phone.e164}" aria-label="${esc(c.ui.call)}: ${phoneFor(c)}">${icon.phone}</a>
 </div>`;
 }
 
@@ -351,7 +355,7 @@ function workCard(p, c, i) {
     ? `<picture>
 <source type="image/avif" srcset="/assets/work/${p.shot}-640.avif 640w, /assets/work/${p.shot}-960.avif 960w, /assets/work/${p.shot}-1280.avif 1280w" sizes="(min-width: 1000px) 46vw, 92vw">
 <source type="image/webp" srcset="/assets/work/${p.shot}-640.webp 640w, /assets/work/${p.shot}-960.webp 960w, /assets/work/${p.shot}-1280.webp 1280w" sizes="(min-width: 1000px) 46vw, 92vw">
-<img src="/assets/work/${p.shot}-960.webp" alt="${esc(t.alt || p.name)}" width="1280" height="${p.shotHeight || 2400}" loading="lazy" decoding="async">
+<img class="shot-${p.shot}" src="/assets/work/${p.shot}-960.webp" alt="${esc(t.alt || p.name)}" width="1280" height="${p.shotHeight || 2400}" loading="lazy" decoding="async">
 </picture>`
     : workCover(p);
   return `<li class="work-card card${p.shot ? '' : ' work-card--gen'}" data-spot>

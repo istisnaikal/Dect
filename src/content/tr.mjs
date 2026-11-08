@@ -46,6 +46,7 @@ export default {
     paletteHint: 'gezin · seç · kapat',
     copied: 'Numara kopyalandı',
     opening: 'WhatsApp açılıyor…',
+    dock: { label: 'WhatsApp’tan yazın', sub: 'İlk satırı ben yazdım' },
     whatsapp: 'WhatsApp’tan yazın',
     whatsappShort: 'WhatsApp',
     call: 'Arayın',

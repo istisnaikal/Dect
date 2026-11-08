@@ -4,7 +4,7 @@
 //  One living field, rendered twice. Left of the seam the developer sees it as
 //  code: ASCII glyphs on a grid. Right of the seam the artist sees it as fire:
 //  liquid mother-of-pearl in morning light. The DevArt wordmark is set into both:
-//  ember LED blocks on the code side, ink lacquer on the art side.
+//  night-blue LED blocks on the code side, ink lacquer on the art side.
 //  Drag the seam and the word itself changes hands.
 //
 //  Budget-aware: adaptive resolution, pauses off-screen / in background tabs,
@@ -35,11 +35,12 @@ out vec4 outColor;
 
 const vec3 BG = vec3(0.965, 0.957, 0.937);     // paper  #f6f4ef
 const vec3 INK = vec3(0.078, 0.075, 0.09);      // ink    #141317
-const vec3 EMBER = vec3(1.0, 0.357, 0.133);     // ember  #ff5b22
+const vec3 NIGHT = vec3(0.078, 0.125, 0.29);    // night  #14204a
+const vec3 NIGHTLINE = vec3(0.208, 0.341, 0.722); // night-line #3557b8
 const vec3 PEARL = vec3(0.995, 0.985, 0.965);
 const vec3 LILAC = vec3(0.86, 0.84, 0.93);
 const vec3 SKY = vec3(0.84, 0.89, 0.96);
-const vec3 PEACH = vec3(1.0, 0.82, 0.72);
+const vec3 MOON = vec3(0.86, 0.89, 0.97);       // moonlit tint (was a warm peach)
 const mat2 ROT = mat2(1.6, 1.2, -1.2, 1.6);
 
 float h21(vec2 p) {
@@ -118,13 +119,13 @@ void main() {
   float heat = smoothstep(0.62, 0.95, f + 0.3 * r.x - 0.12);
   // Valleys cool to lilac and sky, crests stay pearl-white, warm currents blush peach.
   vec3 base = mix(PEARL, mix(LILAC, SKY, q.x), smoothstep(0.3, 0.85, f) * 0.75);
-  base = mix(base, PEACH, heat * 0.55);
+  base = mix(base, MOON, heat * 0.55);
   vec3 iri = 0.6 + 0.4 * cos(6.2831 * (vec3(0.0, 0.33, 0.67) + f * 1.4 + n.x * 0.8 + n.y * 0.35));
   vec3 art = base * (0.86 + 0.2 * dif) + spec * 0.28 + fres * (mix(iri, PEARL, 0.35) - 0.5) * 0.32;
-  // The word itself: ink lacquer, a sliver of sky in its gloss, an ember rim where it turns away.
+  // The word itself: ink lacquer, a sliver of sky in its gloss, a night-blue rim where it turns away.
   float env = smoothstep(-0.5, 0.9, n.y * 0.8 + n.x * 0.35);
   vec3 lacquer = mix(INK, vec3(0.3, 0.29, 0.35), env * 0.55) + spec * vec3(1.0, 0.97, 0.94) * 0.85;
-  lacquer = mix(lacquer, EMBER, fres * 0.32);
+  lacquer = mix(lacquer, NIGHTLINE, fres * 0.32);
   art = mix(art, lacquer, lm);
 
   // ── DEV: the same field, printed as code on paper ──
@@ -144,16 +145,16 @@ void main() {
   float gch = glyph(ch, lp);
   float typed = step(h21(cell) * 0.3 + (seamX - cc.x) / uRes.x * 0.9, uIntro * 1.35);
   float ink = gch * typed * mix(0.1 + 0.32 * g, 1.0, letter);
-  vec3 devc = mix(BG, mix(INK, EMBER, letter), ink);
+  vec3 devc = mix(BG, mix(INK, NIGHT, letter), ink);
 
   float reveal = smoothstep(0.0, 0.12, uIntro * 1.25 - (fc.x - seamX) / uRes.x);
   vec3 col = dev ? devc : mix(BG, art, reveal);
 
-  // ── The seam: an ember thread with a warm haze (mixed, not added — light can't glow on light) ──
+  // ── The seam: a night-blue thread in a moonlit haze (mixed, not added — light can't glow on light) ──
   float dx = abs(fc.x - seamX) / uPx;
-  col = mix(col, mix(EMBER, PEACH, 0.35), exp(-dx * 0.06) * 0.14 * uIntro);
-  col = mix(col, EMBER, (exp(-dx * 0.55) * 0.95) * uIntro);
-  col = mix(col, vec3(1.0, 0.93, 0.88), exp(-dx * 2.2) * 0.7 * uIntro);
+  col = mix(col, mix(NIGHTLINE, MOON, 0.35), exp(-dx * 0.06) * 0.14 * uIntro);
+  col = mix(col, NIGHTLINE, (exp(-dx * 0.55) * 0.95) * uIntro);
+  col = mix(col, vec3(0.86, 0.9, 1.0), exp(-dx * 2.2) * 0.35 * uIntro); // a cool, quiet core: precise, not a filament
 
   // Edges dissolve into paper, the copy below sits on a clean scrim, a whisper of grain.
   vec2 uv = fc / uRes;
@@ -176,8 +177,11 @@ export function start(canvas) {
   const og = new URLSearchParams(location.search).has('og');
   // No real GPU (software rasteriser) → keep the CSS wordmark. Burning a visitor's
   // CPU on a shader is not art. `?og` lifts the gate for social-card rendering.
+  // alpha: true on purpose. An opaque canvas shows solid black whenever its buffer is empty
+  // (before the first frame, after any resize); a transparent one shows the paper behind it.
+  // Every pixel the shader writes is opaque anyway, so the picture is identical.
   const gl = canvas.getContext('webgl2', {
-    alpha: false,
+    alpha: true,
     antialias: false,
     depth: false,
     stencil: false,
@@ -413,10 +417,10 @@ export function start(canvas) {
 
     function frame(now) {
       raf = 0;
-      const dt = (now - prev) / 1000;
-      draw(now);
-      // Adaptive resolution: hold ~60fps, trade pixels for smoothness.
-      acc += dt;
+      // Adaptive resolution: hold ~60fps, trade pixels for smoothness. Resizing clears the
+      // drawing buffer, so it happens *before* this frame's draw: a cleared buffer is never
+      // what reaches the screen.
+      acc += (now - prev) / 1000;
       if (++frames === 45) {
         const avg = acc / frames;
         const early = now - t0 < 9000;
@@ -430,6 +434,7 @@ export function start(canvas) {
         frames = 0;
         acc = 0;
       }
+      draw(now);
       loop();
     }
 
@@ -451,12 +456,16 @@ export function start(canvas) {
       loop();
     });
 
+    // Only a real change of size re-allocates the buffer (the observer also fires once on
+    // observe), and the redraw follows in the same task, so no empty frame is ever presented.
     let rt = 0;
     new ResizeObserver(() => {
       clearTimeout(rt);
       rt = setTimeout(() => {
+        const r = canvas.getBoundingClientRect();
+        if (Math.abs(r.width - cssW) < 0.5 && Math.abs(r.height - cssH) < 0.5) return;
         resize();
-        if (!animate && !still) still = requestAnimationFrame(() => ((still = 0), draw(performance.now())));
+        draw(performance.now());
       }, 120);
     }).observe(canvas);
 

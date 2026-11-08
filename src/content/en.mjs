@@ -46,6 +46,7 @@ export default {
     paletteHint: 'navigate · select · close',
     copied: 'Number copied',
     opening: 'Opening WhatsApp…',
+    dock: { label: 'Message on WhatsApp', sub: 'The first line is written' },
     whatsapp: 'Message me on WhatsApp',
     whatsappShort: 'WhatsApp',
     call: 'Call',

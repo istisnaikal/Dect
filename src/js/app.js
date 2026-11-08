@@ -400,10 +400,10 @@ function relief() {
   const label = $('[data-toast]')?.dataset.opening;
   if (!label) return;
   d.addEventListener('click', (e) => {
-    const a = e.target.closest?.('a.btn[data-wa]');
+    const a = e.target.closest?.('a.btn[data-wa], a.dock__wa');
     if (!a || a.classList.contains('is-opening')) return;
     // The small header button has no room for words: there only the icon breathes.
-    const text = a.classList.contains('btn--sm') ? null : $('span:last-of-type', a);
+    const text = a.classList.contains('btn--sm') ? null : $('[data-label]', a) || $('span:last-of-type', a);
     const was = text?.textContent;
     a.style.minWidth = `${a.offsetWidth}px`;
     a.classList.add('is-opening');
@@ -553,7 +553,7 @@ function hello() {
   console.log(
     '%cDev%c+%cArt',
     'font:400 34px ui-monospace,monospace;color:#ece8df',
-    'font:300 22px system-ui;color:#ff5b22',
+    'font:300 22px system-ui;color:#3557b8',
     'font:italic 400 40px Georgia,serif;color:#ece8df',
   );
   console.log(

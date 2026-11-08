@@ -47,10 +47,10 @@ for (const card of cards.filter((x) => !only || x.file.includes(only))) {
       .hero__in{grid-template-rows:1fr!important;padding-bottom:120px!important}
       .og{position:fixed;inset:0;padding:44px 56px;display:flex;flex-direction:column;justify-content:space-between;z-index:9;font-family:Geist,sans-serif;color:#141317}
       .og__top{display:flex;justify-content:space-between;align-items:center;font:500 18px/1 "Geist Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
-      .og__top b{color:#ff5b22;font-weight:500}
-      .og__brand{display:flex;align-items:center;gap:14px}.og__mark{width:auto;height:46px;fill:#141317}.og__mark .logo__seam{fill:#ff5b22}.og__mark .logo__cells{display:inline!important}
+      .og__top b{color:#3557b8;font-weight:500}
+      .og__brand{display:flex;align-items:center;gap:14px}.og__mark{width:auto;height:46px;fill:#141317}.og__mark .logo__seam{fill:#3557b8}.og__mark .logo__cells{display:inline!important}
       .og__title{font-size:${/guide|glossary|svc|services/.test(card.file) ? 46 : 40}px;line-height:1.05;letter-spacing:-.04em;font-weight:500;max-width:1000px;text-wrap:balance}
-      .og__kicker{display:block;margin-bottom:12px;font:italic 400 34px/1 "Instrument Serif",serif;letter-spacing:0;color:#b73d0b}`;
+      .og__kicker{display:block;margin-bottom:12px;font:italic 400 34px/1 "Instrument Serif",serif;letter-spacing:0;color:#2a4590}`;
   await page.addInitScript((css) => {
     document.addEventListener('DOMContentLoaded', () => {
       const s = document.createElement('style');
