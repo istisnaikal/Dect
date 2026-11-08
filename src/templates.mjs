@@ -250,9 +250,8 @@ ${svc.map(opt).join('')}
 function dock(c) {
   const d = c.ui.dock;
   return `<div class="dock" data-dock>
-<a class="dock__wa" href="${esc(wa(c.wa.default))}" data-wa target="_blank" rel="noopener"><span class="dock__ic">${icon.wa}</span><span class="dock__txt"><span class="dock__label" data-label>${d.label}</span><span class="dock__sub" aria-hidden="true">${d.sub}</span></span></a>
-<span class="dock__rule" aria-hidden="true"></span>
-<a class="dock__call" href="tel:${site.phone.e164}" aria-label="${esc(c.ui.call)}: ${phoneFor(c)}">${icon.phone}</a>
+<a class="btn btn--primary dock__wa" href="${esc(wa(c.wa.default))}" data-wa target="_blank" rel="noopener">${icon.wa}<span class="dock__txt"><span class="dock__label" data-label>${d.label}</span><span class="dock__sub" aria-hidden="true">${d.sub}</span></span></a>
+<a class="btn btn--ghost dock__call" href="tel:${site.phone.e164}" aria-label="${esc(c.ui.call)}: ${phoneFor(c)}">${icon.phone}</a>
 </div>`;
 }
 
