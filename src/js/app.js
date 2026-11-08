@@ -77,13 +77,21 @@ function toast(msg) {
   toast.t = setTimeout(() => t.classList.remove('is-on'), 2400);
 }
 
-async function copyPhone() {
+async function copyPhone(e) {
   const t = $('[data-toast]');
   const phone = t?.dataset.phone || '';
+  // Read the button now: once the event has been dispatched, currentTarget is gone.
+  const b = e?.currentTarget;
   try {
     await navigator.clipboard.writeText(phone);
     navigator.vibrate?.(12); // a single haptic tick where supported
     toast(`${t.dataset.msg} — ${phone}`);
+    // The button itself confirms: the copy icon gives way to a check for a moment.
+    if (b?.classList) {
+      b.classList.add('is-done');
+      clearTimeout(b.doneTimer);
+      b.doneTimer = setTimeout(() => b.classList.remove('is-done'), 1800);
+    }
   } catch {
     location.href = `tel:${phone.replace(/\s/g, '')}`;
   }
@@ -367,8 +375,30 @@ function vitals() {
 }
 
 /* ── Pointer delight: magnetic CTAs + card spotlight (fine pointers only) ── */
+// Where the light gathers inside a button: the point under the hand (or the finger).
+const lightAt = (b, e) => {
+  const r = b.getBoundingClientRect();
+  b.style.setProperty('--bx', `${(((e.clientX - r.left) / r.width) * 100).toFixed(1)}%`);
+  b.style.setProperty('--by', `${(((e.clientY - r.top) / r.height) * 100).toFixed(1)}%`);
+};
+
+/* ── Press: every button answers the finger where it lands. An empty touchstart
+   listener is what lets iOS Safari apply :active at all. ─────────────────── */
+function press() {
+  d.addEventListener('touchstart', () => {}, { passive: true });
+  d.addEventListener(
+    'pointerdown',
+    (e) => {
+      const b = e.target.closest?.('.btn');
+      if (b) lightAt(b, e);
+    },
+    { passive: true },
+  );
+}
+
 function pointer() {
   if (!finePointer.matches || reduced.matches) return;
+  $$('.btn--primary, .btn--ghost').forEach((b) => b.addEventListener('pointermove', (e) => lightAt(b, e), { passive: true }));
   $$('[data-magnetic]').forEach((b) => {
     b.addEventListener('pointermove', (e) => {
       const r = b.getBoundingClientRect();
@@ -584,6 +614,7 @@ function hello() {
 // Critical: what the first interaction may need. Everything else waits for idle,
 // each in its own task, so no single task ever blocks the main thread for long.
 header();
+press();
 palette();
 vitals();
 seam();

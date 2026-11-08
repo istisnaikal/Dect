@@ -75,6 +75,7 @@ export const icon = {
   globe: `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path fill="none" stroke="currentColor" stroke-width="1.7" d="M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5S9.7 5.9 12 3.5Z"/></svg>`,
   file: `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M13.5 3.5H7a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9l-5.5-5.5Zm0 0V9H19M8.5 13h7m-7 3.5h5"/></svg>`,
   up: `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 19.5v-15m0 0-6 6m6-6 6 6"/></svg>`,
+  check: `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7.5"/></svg>`,
   scan: `<svg class="i" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M4 9V6a2 2 0 0 1 2-2h3m6 0h3a2 2 0 0 1 2 2v3m0 6v3a2 2 0 0 1-2 2h-3m-6 0H6a2 2 0 0 1-2-2v-3m3-3h10"/></svg>`,
 };
 
@@ -277,7 +278,7 @@ function hero(c) {
 <h1 class="hero__title" id="hero-title">${rich(h.h1)}</h1>
 <p class="hero__lead">${h.lead}</p>
 <div class="hero__ctas">
-<a class="btn btn--primary btn--lg" href="${esc(wa(c.wa.default))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${c.ui.whatsapp}</span></a>
+<a class="btn btn--primary btn--lg btn--breath" href="${esc(wa(c.wa.default))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${c.ui.whatsapp}</span></a>
 <a class="btn btn--ghost btn--lg" href="#${c.work.id}"><span>${h.ctaSecondary}</span>${icon.arrowDown}</a>
 </div>
 </div>
@@ -507,7 +508,7 @@ function contact(c, qr) {
 <p class="contact__lead">${k.lead}</p>
 <address class="contact__actions">
 <a class="btn btn--primary btn--xl" href="${esc(wa(c.wa.default))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${c.ui.whatsapp}</span></a>
-<span class="contact__phone-row"><a class="contact__phone" href="tel:${site.phone.e164}">${icon.phone}<span>${phoneFor(c)}</span></a><button class="icon-btn" type="button" data-copy aria-label="${esc(c.ui.copyNumber)}">${icon.copy}</button></span>
+<span class="contact__phone-row"><a class="contact__phone" href="tel:${site.phone.e164}">${icon.phone}<span>${phoneFor(c)}</span></a><button class="icon-btn" type="button" data-copy aria-label="${esc(c.ui.copyNumber)}"><span class="icon-btn__copy">${icon.copy}</span><span class="icon-btn__done">${icon.check}</span></button></span>
 </address>
 <p class="contact__note">${k.prefilled}</p>
 <p class="contact__assure">${k.assure}</p>
