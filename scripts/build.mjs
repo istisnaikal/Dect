@@ -21,6 +21,8 @@ import { minify } from 'html-minifier-terser';
 import QRCode from 'qrcode';
 import sharp from 'sharp';
 
+import { htmlClasses, purgeCss, scriptClasses } from './purge-css.mjs';
+
 import tr from '../src/content/tr.mjs';
 import en from '../src/content/en.mjs';
 import { en as glossEn, terms as glossTerms, tr as glossTr } from '../src/content/glossary.mjs';
@@ -102,6 +104,10 @@ async function build() {
   const measured = (s, c) =>
     s.replaceAll('{jsKB}', new Intl.NumberFormat(c.dateLocale, { maximumFractionDigits: 1 }).format(jsBr / 1024));
   const appUrl = `/${path.relative(DIST, path.resolve(ROOT, appOut)).split(path.sep).join('/')}`;
+  // The hero's shader is a lazy chunk; on the home pages it is announced up front, so the
+  // dependency tree is flat (HTML → app, shader, fonts) instead of HTML → app → shader.
+  const seamOut = Object.keys(js.metafile.outputs).find((o) => /[\\/]seam\.[^/\\]+\.js$/.test(o));
+  const seamUrl = seamOut && `/${path.relative(DIST, path.resolve(ROOT, seamOut)).split(path.sep).join('/')}`;
 
   // ── CSS: font faces + design system, minified and inlined ─────────────────
   // Work screenshots load lazily; until they do, each shows its own 24px preview, scaled up soft
@@ -279,7 +285,7 @@ async function build() {
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(p.title)}</title>
 ${preloads}
-<style>${css}</style>
+<style>${p.css ?? css}</style>
 <meta name="description" content="${esc(p.description)}">
 <link rel="canonical" href="${p.url}">
 ${alternates}
@@ -316,6 +322,7 @@ ${article}
 ${p.jsonld ? `<script type="application/ld+json">${JSON.stringify(p.jsonld).replace(/</g, '\\u003c')}</script>` : ''}
 <script type="speculationrules">${speculation}</script>
 <script type="module" src="${appUrl}"></script>
+${p.bodyClass === 'is-home' && seamUrl ? `<link rel="modulepreload" href="${seamUrl}">` : ''}
 </head>`;
   };
 
@@ -343,8 +350,12 @@ ${p.body}
 
   const hashes = { style: new Set(), script: new Set() };
   const report = [];
+  // Each page carries only the CSS that can ever apply to it (classes in its own HTML, plus
+  // every class the scripts may add). NO_PURGE=1 builds with the full stylesheet, for comparison.
+  const jsClasses = scriptClasses(await Promise.all(['app.js', 'seam.js'].map((f) => fs.readFile(path.join(SRC, 'js', f), 'utf8'))));
   for (const p of [...pages, notFound]) {
     if (p.md) p.md = measured(p.md, p.lang);
+    if (!process.env.NO_PURGE) p.css = purgeCss(css, new Set([...htmlClasses(htmlFor(p)), ...jsClasses]));
     const html = await minify(measured(htmlFor(p), p.lang), {
       collapseWhitespace: true,
       removeComments: true,
@@ -506,7 +517,12 @@ ${Object.entries(security).map(([k, v]) => `  ${k}: ${v}`).join('\n')}
 /.well-known/security.txt
   Content-Type: text/plain; charset=utf-8
 
-${pages.map((p) => `${p.url.slice(O.length)}\n  Link: ${linkHeader}`).join('\n\n')}
+${pages
+  .map(
+    (p) =>
+      `${p.url.slice(O.length)}\n  Link: ${linkHeader}${p.bodyClass === 'is-home' && seamUrl ? `, <${seamUrl}>; rel=modulepreload` : ''}`,
+  )
+  .join('\n\n')}
 `,
   );
   await write(

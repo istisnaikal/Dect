@@ -67,6 +67,28 @@ function dock() {
   [hero, ...away].forEach((t) => io.observe(t));
 }
 
+/* ── The message follows the reader ─────────────────────────────────────────
+   While a section crosses the middle of the screen, the always-present WhatsApp buttons
+   (header, dock) carry the first line that fits it: the work and the services open with
+   "here it is in two sentences", the live measurements with "could you look at my site's
+   speed?". Elsewhere, the plain greeting. The visitor still writes the rest. */
+function intent() {
+  const zones = $$('[data-wa-intent]');
+  const targets = $$('.dock__wa, .hdr__wa');
+  if (!zones.length || !targets.length || !('IntersectionObserver' in window)) return;
+  const base = targets.map((a) => a.getAttribute('href'));
+  const seen = new Map();
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => seen.set(e.target, e.isIntersecting));
+      const z = zones.find((x) => seen.get(x));
+      targets.forEach((a, i) => a.setAttribute('href', z ? z.dataset.waIntent : base[i]));
+    },
+    { rootMargin: '-38% 0px -38% 0px' },
+  );
+  zones.forEach((z) => io.observe(z));
+}
+
 /* ── Toast + copy ─────────────────────────────────────────────────────────── */
 function toast(msg) {
   const t = $('[data-toast]');
@@ -618,4 +640,4 @@ press();
 palette();
 vitals();
 seam();
-for (const fn of [dock, pointer, clock, thread, relief, invite, hello]) idle(fn);
+for (const fn of [dock, pointer, clock, thread, relief, invite, intent, hello]) idle(fn);

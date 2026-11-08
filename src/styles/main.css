@@ -724,24 +724,30 @@ main > section, main > .marquee { position: relative; z-index: 1; }
 }
 
 /* ── Marquee ────────────────────────────────────────────────────────────── */
+/* The horizon. The services pass behind the content like a far skyline: no border, no strip,
+   soft at both ends, in slate at half strength. It drifts slower than anyone reads, and it
+   shifts with the scroll, so it keeps time with the reader instead of asking for attention. */
 .marquee {
-  overflow: hidden;
-  padding-block: 20px;
-  border-block: 1px solid var(--line);
-  color: var(--fg-2);
-  font: italic 400 clamp(20px, 2.2vw, 30px)/1 var(--serif);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  overflow: clip; /* clip, not hidden: hidden would make it a scroll container and freeze its view() timeline */
+  padding-block: clamp(26px, 3.4vw, 44px);
+  color: rgb(60 74 104 / 0.5);
+  font: italic 400 clamp(22px, 2.5vw, 34px)/1 var(--serif);
+  letter-spacing: 0.005em;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 18%, #000 82%, transparent);
 }
 .marquee__track { display: flex; width: max-content; }
-.marquee__run { display: flex; align-items: center; gap: 32px; padding-right: 32px; }
-.marquee__star { color: var(--violet); font-style: normal; font-size: 0.6em; }
+.marquee__run { display: flex; align-items: center; gap: 52px; padding-right: 52px; }
+.marquee__star { color: rgb(138 118 196 / 0.55); font-style: normal; font-size: 0.48em; }
 @media (prefers-reduced-motion: no-preference) {
-  .marquee__track { animation: marquee 48s linear infinite; }
-  @media (hover: hover) { .marquee:hover .marquee__track { animation-play-state: paused; } }
+  .marquee__track { animation: marquee 150s linear infinite; }
+  @supports (animation-timeline: view()) {
+    .marquee__run { animation: horizon linear both; animation-timeline: view(); animation-range: cover; }
+  }
   @media (hover: hover) { .marquee:hover .marquee__track { animation-play-state: paused; } }
 }
 @keyframes marquee { to { transform: translate3d(-50%, 0, 0); } }
+@keyframes horizon { from { translate: 5vw 0; } to { translate: -5vw 0; } }
 
 /* ── 01 In short ────────────────────────────────────────────────────────── */
 .short { padding-block: var(--sec-pad) calc(var(--sec-pad) * 0.6); }
@@ -1559,7 +1565,7 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   position: fixed;
   left: max(12px, calc(50% - 220px));
   right: max(12px, calc(50% - 220px));
-  bottom: calc(14px + env(safe-area-inset-bottom));
+  bottom: calc(20px + env(safe-area-inset-bottom));
   z-index: 40;
   display: none;
   align-items: center;

@@ -375,7 +375,7 @@ function workCard(p, c, i) {
 
 function workSection(c) {
   const n = c.work.next;
-  return `<section class="work wrap" id="${c.work.id}" aria-labelledby="${c.work.id}-title">
+  return `<section class="work wrap" id="${c.work.id}" aria-labelledby="${c.work.id}-title" data-wa-intent="${esc(wa(c.wa.project))}">
 ${secHead(c.work, 3)}
 <ol class="work__list" aria-label="${esc(c.ui.rail)}">
 ${work.map((p, i) => workCard(p, c, i)).join('\n')}
@@ -410,7 +410,7 @@ function svcLinks(links, c) {
 
 function servicesSection(c) {
   const s = c.services;
-  return `<section class="services wrap" id="${s.id}" aria-labelledby="${s.id}-title">
+  return `<section class="services wrap" id="${s.id}" aria-labelledby="${s.id}-title" data-wa-intent="${esc(wa(c.wa.project))}">
 ${secHead(s, 4)}
 <ol class="svc">
 ${s.items
@@ -432,7 +432,7 @@ function proof(c) {
   const m = p.metrics;
   const row = (key, abbr, unit, extra = '') =>
     `<div class="metric" data-metric="${key}"${extra}><dt><abbr title="${esc(m[key])}">${abbr}</abbr><span>${m[key]}</span></dt><dd><span class="metric__val"><span data-val>—</span><small>${unit}</small></span><span class="metric__status" data-status>${p.status.wait}</span><span class="metric__bar" aria-hidden="true"><i data-bar></i></span></dd></div>`;
-  return `<section class="proof" id="${p.id}" aria-labelledby="${p.id}-title">
+  return `<section class="proof" id="${p.id}" aria-labelledby="${p.id}-title" data-wa-intent="${esc(wa(c.wa.audit))}">
 <div class="wrap">
 ${secHead(p, 5)}
 <div class="proof__grid">

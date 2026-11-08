@@ -32,7 +32,11 @@ export const site = {
   // What the Cloudflare zone injects into every HTML response at the edge. The CSP is
   // generated to match: with both off, script-src is locked to 'self' + build-time hashes.
   edge: {
-    // Web Analytics (cookieless) → allows static.cloudflareinsights.com + cloudflareinsights.com
+    // Web Analytics (cookieless) → allows static.cloudflareinsights.com + cloudflareinsights.com.
+    // The zone injects its beacon (10 KB of third-party script with legacy polyfills and a 1-day
+    // cache) into every page. It can only be switched off in the dashboard (Web Analytics → the
+    // site → disable); Cache-Control: no-transform would stop it, but also stops the edge from
+    // compressing HTML (131 KB instead of 25 KB on the wire). Turn this off with the dashboard.
     cloudflareWebAnalytics: true,
     // Bot protection "JavaScript Detections" → an inline script with per-request values; no
     // hash can match it, so script-src would need 'unsafe-inline'. Off since 2026-11-08 (Bot Fight

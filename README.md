@@ -38,6 +38,10 @@ Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic 
 
 **The invitation.** The last card in the work rail is the next project, and it is built like the others: the same browser frame, but empty. Its address bar holds only a cursor; inside, a small night (indigo in the distance, slate rising from the edge, a horizon line) and a violet light that breathes on an eight-second cycle. When the hand comes, the breath holds and the light turns toward it, eased by `@property` so it drifts rather than jumps, and the cursor steadies as if listening. Below: the title, two sentences, the button, and one line that takes the weight off ("a message commits you to nothing"). Reduced motion keeps the sky still.
 
+**The horizon.** The band of services under the hero is not a strip: no border, soft at both ends, slate at half strength. It drifts slower than anyone reads (150 s a loop) and shifts with the scroll through a `view()` timeline (it is `overflow: clip`, not `hidden`, because `hidden` would make it its own scroll container and freeze that timeline), so it keeps time with the reader instead of asking for attention. It pauses under the hand and stands still for reduced motion.
+
+**The message follows the reader.** While the work, the services or the live measurements cross the middle of the screen, the always-present WhatsApp buttons (header and dock) carry the first line that fits: "here it is in two sentences" for the work and the services, "could you look at my site's speed?" over the measurements; elsewhere, the plain greeting. The visitor still writes the rest. On phones the dock sits a breath higher, 20px above the safe area.
+
 **The thread.** A tailor's stitch drawn down the left margin as you read: a faint dotted route shows where it will go, the night-blue thread follows the reading position, passing each section marker, and ends tied to the WhatsApp button, which answers with a single pulse. Built from section boxes only (never forcing layout inside `content-visibility`-skipped sections), static for reduced motion, absent without JS. Two quiet invitations sit where the thought naturally occurs: after the measured numbers, and at the end of the FAQ.
 
 **The signature.** The page signs itself. As the footer comes into view, a pen writes *DevArt* stroke by stroke, left to right, and lifts the moment the word is fully seen: nine contours, each on its own slice of a scroll-driven `view-timeline` (no JavaScript). The strokes are real type, Geist Mono *Dev* and Instrument Serif *Art*, converted to 2 KB of SVG by `scripts/signature.py`. Reduced motion shows it already signed. View the source and there's a note at the very top for whoever reads it.
@@ -54,7 +58,8 @@ Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic 
 
 **Performance engineering.**
 - Zero frameworks. ~4.5 KB of core JS (brotli); the shader is a separate ~4.7 KB chunk loaded on idle, on the home pages only. The front-end service page quotes the total, and the build measures it: the number in the copy is never typed by hand.
-- All CSS inlined: zero render-blocking requests.
+- All CSS inlined: zero render-blocking requests. And each page carries only the CSS that can ever apply to it: `scripts/purge-css.mjs` (no dependency) keeps a rule only if every class it requires exists in that page's HTML or can be added by the site's own scripts, keeps anything it cannot judge (`:is`, `:where`, `:has`), and drops keyframes nothing animates with. A service page went from 64 KB of CSS to 35 KB (23.2 → 18.0 KB compressed), the 404 to 15 KB. Proven safe, not assumed: every page at desktop and phone width, plus the open palette and the dock, is captured with the full stylesheet and with the purged one, and the 54 captures are pixel-identical. `NO_PURGE=1 npm run build` builds the full version.
+- A flat dependency tree: on the home pages the lazily-imported shader is announced with `modulepreload` (in the HTML and in the `Link` header, so it can travel in the 103 Early Hints too), so nothing waits on `app.js` to discover it.
 - Fonts subset to Latin + Turkish (~54 KB for three families) and preloaded, with **metric-matched fallbacks** (`size-adjust`, `ascent-override`… computed from the real font files) so the font swap shifts nothing.
 - `content-visibility: auto` skips rendering below-the-fold sections; `:root:has(:target)` turns it off the moment a fragment is targeted, so anchor jumps land pixel-exact.
 - Every animation is CSS-only or compositor-only, and all of it is progressive: content is complete without JavaScript.
@@ -131,7 +136,7 @@ The build also emits `_redirects` (301 for slashless URLs) and `.assetsignore` (
 
 | Zone feature | Effect on this site | CSP flag (`site.config.mjs → edge`) |
 | --- | --- | --- |
-| Web Analytics | Cookieless page analytics; light (~50 ms script) | `cloudflareWebAnalytics` |
+| Web Analytics | Cookieless page analytics, but the site's only third-party script: 10 KB with legacy polyfills and a 1-day cache, and a branch in the dependency tree. Switch it off in the dashboard (Web Analytics → the site → disable), then set the flag to `false`; edge analytics remain. (`Cache-Control: no-transform` would also stop the injection, but it stops the edge compressing HTML: 131 KB instead of 25 KB.) | `cloudflareWebAnalytics` |
 | Bot Fight Mode / JS Detections | **Off since 2026-11-08.** Cost Best Practices (deprecated API) and ~200 ms mobile TBT; can challenge AI agents that fetch pages (bad for GEO) | `cloudflareJsDetections` |
 
 If you turn a feature off in the dashboard, set its flag to `false` and redeploy: the CSP tightens back automatically.
