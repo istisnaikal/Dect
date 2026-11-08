@@ -21,8 +21,10 @@ Every push runs `build` + `check` on GitHub Actions (`.github/workflows/ci.yml`)
 | `/` · `/en/` | 100 · 100 · 100 · 100 | 100 · 100 · 100 · 100 |
 | `/rehber/aeo-geo/` · `/en/guide/aeo-geo/` | 100 · 100 · 100 · 100 | 100 · 100 · 100 · 100 |
 | `/sozluk/` · `/en/glossary/` | 100 · 100 · 100 · 100 | 100 · 100 · 100 · 100 |
+| `/hizmetler/` · `/en/services/` | 100 · 100 · 100 · 100 | 100 · 100 · 100 · 100 |
+| 14 service pages (7 × TR / EN) | 100 · 100 · 100 · 100 | 100 · 100 · 100 · 100 |
 
-Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic browsing* category is 100 too. Mobile: FCP / LCP 0.8 s, CLS 0, TBT 0–70 ms. Home page critical path: **~77 KB total** (HTML + inlined CSS + JS brotli + all three font families). The same 100s were measured on Cloudflare's edge (staging Worker).
+Performance · Accessibility · Best Practices · SEO. Lighthouse 13's *agentic browsing* category is 100 too. Mobile: FCP / LCP 0.8–1.0 s, CLS 0, TBT 0–20 ms (a cold first run can read higher). Home page critical path: **~82 KB total** (HTML + inlined CSS + JS brotli + all three font families). The same 100s, all five categories, were measured on eyupdevart.com itself after the 2026-11-08 deploy.
 
 **On eyupdevart.com**, Bot Fight Mode and its JavaScript Detections were switched off on 2026-11-08 (they cost Best Practices 81 and a ~250 ms mobile long task). With nothing injected at the edge but the cookieless analytics beacon, the CSP is hash-locked and enforces Trusted Types; see *Edge features* below.
 
