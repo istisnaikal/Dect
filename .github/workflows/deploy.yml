@@ -86,6 +86,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ needs.build.outputs.sha }}
+      # The deploy tooling comes from this workflow's own commit, not from the commit
+      # being shipped (which may predate it).
+      - uses: actions/checkout@v4
+        with:
+          path: .deploy-tools
+          sparse-checkout: .github
       - uses: actions/download-artifact@v4
         with:
           name: dist
@@ -98,7 +104,7 @@ jobs:
       - name: Smoke test
         run: |
           base=$(grep -oE 'https://[a-z0-9.-]+\.workers\.dev' deploy.log | head -1)
-          bash .github/smoke.sh "$base"
+          bash .deploy-tools/.github/smoke.sh "$base"
 
   production:
     needs: [build, staging]
@@ -109,6 +115,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ needs.build.outputs.sha }}
+      # The deploy tooling comes from this workflow's own commit, not from the commit
+      # being shipped (which may predate it).
+      - uses: actions/checkout@v4
+        with:
+          path: .deploy-tools
+          sparse-checkout: .github
       - uses: actions/download-artifact@v4
         with:
           name: dist
@@ -122,6 +134,6 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ needs.build.outputs.account }}
         run: npx --yes wrangler@4 deploy --env="" 2>&1 | tee deploy.log
       - name: Smoke test
-        run: bash .github/smoke.sh https://eyupdevart.com
+        run: bash .deploy-tools/.github/smoke.sh https://eyupdevart.com
       - name: IndexNow
         run: node scripts/indexnow.mjs
