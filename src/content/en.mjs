@@ -80,6 +80,7 @@ export default {
     h1: 'I design like an *artist* and code like an `engineer`.',
     lead: 'I build websites by hand, made to measure. They earn trust the moment they open, they’re easy to find on Google, and they come up when people ask ChatGPT.',
     ctaSecondary: 'See the work first',
+    ctaSecondaryNote: '{n} live sites, real businesses',
     hint: 'Move your cursor — the line is yours',
     hintTouch: 'Drag it — the line is yours',
     chip: 'Opened in {t} seconds on your device',

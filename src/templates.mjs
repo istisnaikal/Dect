@@ -282,8 +282,8 @@ function hero(c) {
 <h1 class="hero__title" id="hero-title">${rich(h.h1)}</h1>
 <p class="hero__lead">${h.lead}</p>
 <div class="hero__ctas">
-<a class="btn btn--primary btn--lg btn--breath" href="${esc(wa(c.wa.default))}" data-wa data-magnetic target="_blank" rel="noopener">${icon.wa}<span>${c.ui.whatsapp}</span></a>
-<a class="btn btn--ghost btn--lg" href="#${c.work.id}"><span>${h.ctaSecondary}</span>${icon.arrowDown}</a>
+<a class="btn btn--primary btn--lg btn--breath hero__wa" href="${esc(wa(c.wa.default))}" data-wa data-magnetic target="_blank" rel="noopener"><span class="hero__lamp" aria-hidden="true">${icon.wa}</span><span class="hero__wa-txt"><span class="hero__wa-label" data-label>${c.ui.whatsapp}</span><span class="hero__wa-sub" aria-hidden="true">${c.ui.dock.sub}</span></span><span class="hero__wa-go" aria-hidden="true">${icon.arrowRight}</span></a>
+<a class="hero__guide" href="#${c.work.id}"><span class="hero__ring" aria-hidden="true">${icon.arrowDown}</span><span class="hero__guide-txt"><span class="hero__guide-label">${h.ctaSecondary}</span><span class="hero__guide-note">${h.ctaSecondaryNote.replace('{n}', work.length)}</span></span></a>
 </div>
 </div>
 <div class="hero__meta">

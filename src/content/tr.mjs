@@ -80,6 +80,7 @@ export default {
     h1: '*Sanatçı* gibi tasarlar, `mühendis` gibi kodlarım.',
     lead: 'Web sitelerini elle, ölçüye göre yapıyorum: açıldığı anda güven veren, Google’da kolayca bulunan, ChatGPT’nin bile adını andığı siteler.',
     ctaSecondary: 'Önce işlere bakın',
+    ctaSecondaryNote: '{n} canlı site, gerçek işletmeler',
     hint: 'İmleci gezdirin — çizgi sizin elinizde',
     hintTouch: 'Sürükleyin — çizgi sizin elinizde',
     chip: 'Bu sayfa cihazınızda {t} saniyede açıldı',
