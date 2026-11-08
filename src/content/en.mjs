@@ -11,6 +11,7 @@ export default {
   guidePath: '/en/guide/aeo-geo/',
   glossaryPath: '/en/glossary/',
   servicesPath: '/en/services/',
+  areaPath: '/en/service-area/',
   alt: { lang: 'tr', label: 'Türkçe', short: 'TR' },
   dateLocale: 'en-GB',
 
@@ -67,6 +68,7 @@ export default {
     audit: 'Have me look at your site',
     guide: 'The AEO & GEO guide',
     glossary: 'Glossary: SEO, AEO, GEO terms',
+    area: 'Service area: 81 provinces, 973 districts',
     lang: 'Türkçe sürüm',
     llms: 'llms.txt — the site, summarised for AI',
     top: 'Back to top',
@@ -94,7 +96,7 @@ export default {
       ['Name', 'Eyüp · stage name DevArt'],
       ['Expertise', '<a href="{svc:web}">Web design</a> · <a href="{svc:fullstack}">Web development</a> · <a href="{svc:seo}">SEO</a>, <a href="{svc:aeo-geo}">AEO, GEO</a> · <a href="{svc:speed}">Performance</a>'],
       ['Approach', 'No templates; every site written from scratch, by hand'],
-      ['Based', 'Türkiye, working with clients anywhere, remotely'],
+      ['Based', '<a href="{area}">Türkiye</a>, working with clients anywhere, remotely'],
       ['Languages', 'Turkish · English'],
       ['Contact', 'WhatsApp or phone: <a href="{wa}">{phone}</a>'],
     ],
@@ -115,7 +117,7 @@ export default {
       aksu: {
         kind: 'Local service · Company site',
         summary:
-          'A tow company in Maltepe, Istanbul, that works around the clock. Built so that someone stranded by the roadside can reach them in a single tap: a short path to WhatsApp, a page for every district, and the calm trust of marble textures and serif type.',
+          'A tow company in Maltepe, Istanbul, that works around the clock. Built so that someone stranded by the roadside can reach them in a single tap: a short path to WhatsApp, a page for each of Istanbul’s 39 districts, and the calm trust of marble textures and serif type.',
         tags: ['Local SEO', 'Schema.org', 'Next.js', 'AVIF'],
         alt: 'Home page of the Aksu Oto Çekici website: marble texture background, serif headline and a photo of the tow-truck fleet',
       },
@@ -303,6 +305,7 @@ export default {
     built: 'Written by hand, line by line. No framework was used, and none was needed.',
     guide: 'AEO & GEO guide',
     glossary: 'Glossary',
+    area: 'Service area',
     llms: 'llms.txt',
     sitemap: 'Sitemap',
     resources: 'Resources',

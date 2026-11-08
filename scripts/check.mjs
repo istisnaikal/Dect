@@ -116,7 +116,7 @@ for (const [url, src] of pages) {
   if (og && !exists(og.replace(ORIGIN, ''))) fail(f, `og:image missing: ${og}`);
 
   // No template placeholder survives the build
-  const left = src.match(/\{(?:wa|tel|phone|guide|glossary|services|jsKB|svc:[\w-]+)\}/);
+  const left = src.match(/\{(?:wa|tel|phone|guide|glossary|services|area|jsKB|svc:[\w-]+)\}/);
   if (left) fail(f, `unfilled placeholder ${left[0]}`);
 
   // hreflang: every alternate exists and links back (reciprocity)
@@ -164,7 +164,7 @@ for (const [url, src] of pages) {
   if (!md) continue;
   const file = path.join(DIST, md.replace(ORIGIN, ''));
   if (!fs.existsSync(file)) fail(url, `Markdown twin missing: ${md}`);
-  else if (/\{(?:wa|tel|phone|guide|glossary|services|jsKB|svc:[\w-]+)\}/.test(fs.readFileSync(file, 'utf8'))) fail(md, 'unfilled placeholder');
+  else if (/\{(?:wa|tel|phone|guide|glossary|services|area|jsKB|svc:[\w-]+)\}/.test(fs.readFileSync(file, 'utf8'))) fail(md, 'unfilled placeholder');
 }
 
 // Machine-readable files
@@ -185,6 +185,24 @@ for (const m of fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8').matchAll(
 const llms = fs.readFileSync(path.join(DIST, 'llms.txt'), 'utf8');
 for (const m of llms.matchAll(/\]\((https:\/\/eyupdevart\.com[^)]*)\)/g)) if (!exists(m[1].replace(ORIGIN, '') || '/')) fail('llms.txt', `dead link ${m[1]}`);
 if (!/Sitemap: https:\/\/eyupdevart\.com\/sitemap\.xml/.test(fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8'))) fail('robots.txt', 'no Sitemap line');
+// Coverage: each service-area page names all 81 provinces, the district file it loads holds
+// all 973 districts, and its Markdown twin lists every one of them. No half-coverage.
+for (const u of ['/hizmet-bolgesi/', '/en/service-area/']) {
+  const src = pages.get(u);
+  if (!src) { fail(u, 'service-area page missing'); continue; }
+  const provs = (src.match(/<details class="?prov\b/g) || []).length;
+  if (provs !== 81) fail(u, `expected 81 provinces, found ${provs}`);
+  const data = src.match(/\sdata-src="?([^"\s>]+)/)?.[1];
+  if (!data || !exists(data)) fail(u, `district data missing: ${data}`);
+  else {
+    const rows = JSON.parse(fs.readFileSync(path.join(DIST, data), 'utf8'));
+    const n = rows.reduce((t, r) => t + r[3].length, 0);
+    if (rows.length !== 81 || n !== 973) fail(data, `${rows.length} provinces and ${n} districts (expected 81 and 973)`);
+  }
+  const twin = fs.readFileSync(path.join(DIST, u, 'index.html.md'), 'utf8');
+  const listed = [...twin.matchAll(/^### \d\d · .*\n\n(.+)$/gm)].reduce((t, m) => t + m[1].split(' · ').length, 0);
+  if (listed !== 973) fail(`${u}index.html.md`, `lists ${listed} districts (expected 973)`);
+}
 const manifest = JSON.parse(fs.readFileSync(path.join(DIST, 'manifest.webmanifest'), 'utf8'));
 for (const i of manifest.icons) if (!exists(i.src)) fail('manifest', `missing icon ${i.src}`);
 
@@ -195,5 +213,5 @@ if (errors.length) {
   process.exit(1);
 }
 console.log(
-  `  ✓ ${pages.size} pages · links, fragments, JSON-LD @id graph, speakable, hreflang, unique titles, sitemap ⇄ pages (one origin, no fragments), crawl depth ≤ ${deepest}, OG cards, Markdown twins, llms.txt, security.txt — all good.`,
+  `  ✓ ${pages.size} pages · links, fragments, JSON-LD @id graph, speakable, hreflang, unique titles, sitemap ⇄ pages (one origin, no fragments), crawl depth ≤ ${deepest}, 81 provinces / 973 districts, OG cards, Markdown twins, llms.txt, security.txt — all good.`,
 );

@@ -634,6 +634,13 @@ function rest() {
   els.forEach((el) => io.observe(el));
 }
 
+/* ── Service area: the search and the district lists live in their own small
+   module, loaded only on that page, when the main thread is idle. ────────── */
+function area() {
+  const root = $('[data-area]');
+  if (root) idle(() => import('./area.js').then((m) => m.start(root)).catch(() => {}));
+}
+
 /* ── The Seam: WebGL hero, loaded only when the main thread is idle ───────── */
 function seam() {
   const canvas = $('[data-seam]');
@@ -668,4 +675,4 @@ press();
 palette();
 vitals();
 seam();
-for (const fn of [dock, pointer, clock, thread, relief, invite, intent, rest, hello]) idle(fn);
+for (const fn of [dock, pointer, clock, thread, relief, invite, intent, rest, area, hello]) idle(fn);

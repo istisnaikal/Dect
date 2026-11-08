@@ -2,6 +2,7 @@
 // into /llms-full.txt, so LLMs read clean prose instead of scraping HTML.
 
 import { services } from './content/services.mjs';
+import { area } from './content/area.mjs';
 import { site, work, wa } from './site.config.mjs';
 import { fill, phoneFor, plain, svcContent, svcPath, termName } from './templates.mjs';
 
@@ -127,6 +128,19 @@ export function servicesHubMd(c) {
   return L.join('\n');
 }
 
+// The complete list, readable without JavaScript and by any agent: every province, every district.
+export function areaMd(c, provinces) {
+  const a = area[c.lang];
+  const f = a.find;
+  const L = [`# ${plain(a.h1)}`, '', `> ${a.meta.description}`, '', `URL: ${abs(a.path)}`, '', a.intro, ''];
+  L.push(`## ${a.answerLabel}`, '', a.answer, '', a.note, '');
+  L.push(`## ${a.all.h}`, '');
+  for (const p of provinces)
+    L.push(`### ${p.plate} · ${p.name}${p.metro ? ` (${a.all.metro})` : ''} · ${f.count.replace('{n}', p.districts.length)}`, '', p.districts.join(' · '), '');
+  L.push(`## ${plain(a.cta.title)}`, '', `${a.cta.text} → ${wa(c.wa.default)}`, '');
+  return L.join('\n');
+}
+
 export function serviceMd(c, id, dateLabel) {
   const sv = svcContent(c.lang);
   const s = services.find((x) => x.id === id);
@@ -172,6 +186,8 @@ Key facts:
 - [Glossary — English](${O}/en/glossary/index.html.md): the same 22 terms in English; anchors match across languages (e.g. #lcp)
 - [Hizmetler — Türkçe](${O}${tr.servicesPath}index.html.md): every service, what it covers and who it is for
 - [Services — English](${O}${en.servicesPath}index.html.md): the same, in English
+- [Hizmet bölgesi — Türkçe](${O}${tr.areaPath}index.html.md): Türkiye’nin 81 ili ve 973 ilçesinin tam listesi; uzaktan, hepsi kapsamda
+- [Service area — English](${O}${en.areaPath}index.html.md): all 81 provinces and 973 districts of Türkiye, listed in full; all served remotely
 
 ## Services
 

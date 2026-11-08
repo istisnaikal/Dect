@@ -2204,6 +2204,125 @@ main > section, main > .marquee { position: relative; z-index: 1; }
   .hero { min-height: 0; }
 }
 
+/* ── Service area ─────────────────────────────────────────────────────────
+   The 81 provinces in licence-plate order, their districts on demand. The search is the
+   palette's field, set into the page; a province opens the way an answer does in the FAQ,
+   and a district, once chosen, becomes the place the message is written from. */
+.area__in { padding-bottom: var(--sec-pad); }
+.area__find, .area__all { margin-top: clamp(56px, 7vw, 96px); }
+.area__h { margin-bottom: 14px; font-size: clamp(1.6rem, 1.15rem + 1.5vw, 2.4rem); line-height: 1.12; letter-spacing: -0.035em; }
+.area__lead { max-width: 60ch; margin-bottom: 28px; color: var(--fg-2); }
+.area__search { max-width: 640px; }
+.area__label { display: block; margin: 22px 0 10px; color: var(--fg-2); font: 500 12px/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; }
+.area__box { position: relative; }
+.area__field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 60px;
+  padding: 0 22px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--bg-1);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.9), 0 10px 30px -22px rgb(36 42 92 / 0.45);
+  transition: border-color 0.3s var(--ease), box-shadow 0.4s var(--ease);
+}
+.area__field:focus-within { border-color: var(--night-line); box-shadow: 0 0 0 4px rgb(53 87 184 / 0.12), 0 14px 34px -22px rgb(36 42 92 / 0.55); }
+.area__field .i { flex: none; width: 20px; height: 20px; color: var(--night-text); }
+.area__input { flex: 1; min-width: 0; height: 100%; border: 0; background: none; color: var(--fg); font: 400 1.125rem/1 var(--sans); letter-spacing: -0.01em; outline: none; }
+.area__input::placeholder { color: var(--fg-3); }
+.area__hint { margin-top: 10px; color: var(--fg-3); font-size: 14px; }
+.area__hint a { color: var(--fg); }
+.area__opts {
+  position: absolute;
+  inset-inline: 0;
+  top: calc(100% + 8px);
+  z-index: 5;
+  max-height: min(360px, 52svh);
+  overflow-y: auto;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  border: 1px solid var(--line-2);
+  border-radius: 18px;
+  background: var(--bg-1);
+  box-shadow: 0 30px 80px -30px rgb(20 19 23 / 0.35), 0 0 0 1px rgb(53 87 184 / 0.05);
+}
+.area__opt { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 12px 14px; border-radius: 12px; cursor: pointer; }
+.area__opt[aria-selected="true"] { background: rgb(44 47 120 / 0.06); }
+.area__opt[aria-selected="true"] .area__opt-name { color: var(--night-deep); }
+@media (hover: hover) { .area__opt:hover { background: rgb(44 47 120 / 0.04); } }
+.area__opt-name { color: var(--fg); font-size: 1.05rem; letter-spacing: -0.01em; }
+.area__opt-meta { color: var(--fg-3); font: 400 12px/1.2 var(--mono); letter-spacing: 0.04em; text-align: right; }
+.area__result:not(:empty) { margin-top: 18px; }
+/* A card that appears keeps clear of the header above and the floating buttons below. */
+.area__card { padding: 22px 24px 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--bg-1); box-shadow: var(--shadow); scroll-margin: calc(var(--hdr-h) + 16px) 0 calc(96px + env(safe-area-inset-bottom)); }
+.area__ok { display: flex; align-items: center; gap: 10px; color: var(--fg); font-size: 1.15rem; letter-spacing: -0.015em; }
+.area__mark { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--night-line); box-shadow: 0 0 0 4px rgb(53 87 184 / 0.14); }
+.area__sub { margin: 6px 0 18px 19px; color: var(--fg-2); font-size: 15px; }
+.area__actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.area__none { color: var(--fg-2); font-size: 15px; }
+.area__none a { color: var(--fg); overflow-wrap: anywhere; }
+@media (prefers-reduced-motion: no-preference) {
+  .area__opts:not([hidden]), .area__card { animation: pop 0.34s var(--ease-out); }
+}
+
+.area__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  column-gap: clamp(24px, 4vw, 64px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.area__grid > li { border-bottom: 1px solid var(--line); }
+@media (max-width: 899px) { .area__grid { grid-template-columns: minmax(0, 1fr); } }
+.prov summary { display: flex; align-items: center; gap: 14px; min-height: 64px; padding: 10px 2px; list-style: none; cursor: pointer; border-radius: 6px; }
+.prov summary::-webkit-details-marker { display: none; }
+.prov__n { flex: none; width: 2.2em; color: var(--night-text); font: 500 13px/1 var(--mono); }
+.prov__name { color: var(--fg); font-size: 1.125rem; letter-spacing: -0.015em; transition: color 0.3s var(--ease); }
+.prov__tag { padding: 4px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--fg-3); font: 400 10.5px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; }
+.prov__count { margin-left: auto; color: var(--fg-3); font: 400 12px/1 var(--mono); white-space: nowrap; }
+.prov__icon { width: 28px; height: 28px; }
+.prov[open] .prov__icon { transform: rotate(45deg); border-color: var(--night); background: var(--night); color: var(--on-night); }
+@media (hover: hover) {
+  .prov summary:hover .prov__name { color: var(--night-deep); }
+  .prov summary:hover .prov__icon { border-color: var(--night-line); scale: 1.08; }
+}
+.prov summary:active .prov__icon { scale: 0.92; transition-duration: 0.1s; }
+.prov__body { padding: 0 0 22px calc(2.2em + 14px); }
+.prov__list { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.prov__d {
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.55);
+  color: var(--fg-2);
+  font: 400 14px/1 var(--sans);
+  cursor: pointer;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease), background-color 0.3s var(--ease), transform 0.35s var(--ease-spring);
+}
+@media (hover: hover) { .prov__d:hover { border-color: var(--night-line); background: var(--bg-1); color: var(--night-deep); } }
+.prov__d:active { transform: scale(0.96); transition-duration: 0.1s; }
+.prov__d[aria-pressed="true"] { border-color: var(--night); background: var(--night); color: var(--on-night); }
+.prov__result:not(:empty) { margin-top: 16px; }
+@supports selector(::details-content) {
+  @media (prefers-reduced-motion: no-preference) {
+    .prov { interpolate-size: allow-keywords; }
+    .prov::details-content { block-size: 0; overflow: clip; transition: block-size 0.5s var(--ease-out), content-visibility 0.5s allow-discrete; }
+    .prov[open]::details-content { block-size: auto; }
+  }
+}
+@media (max-width: 599px) {
+  .area__field { height: 56px; padding: 0 18px; }
+  .prov__tag { display: none; }
+  .prov__body { padding-left: 0; }
+}
+.area__note { margin-top: clamp(48px, 6vw, 72px); color: var(--fg-3) !important; font-size: 15px; line-height: 1.7; }
+
 /* ── Render only what's near the viewport ───────────────────────────────── */
 /* Below-the-fold sections skip style/layout/paint until they approach the
    viewport (TBT ≈ 0). The moment the URL targets a fragment — a nav click, the

@@ -5,6 +5,7 @@ import { site, work, wa } from './site.config.mjs';
 import { en as glossEn, terms as glossTerms, tr as glossTr } from './content/glossary.mjs';
 import { services, en as svcEn, tr as svcTr } from './content/services.mjs';
 import signature from './assets/signature.json' with { type: 'json' };
+import { area } from './content/area.mjs';
 // One path per contour, so each stroke can be drawn in turn (a compound path restarts its dash pattern per contour).
 const strokes = signature.d.split(/(?=M)/).map((d) => `<path pathLength="1" d="${d.trim()}"/>`).join('');
 
@@ -51,6 +52,7 @@ export const fill = (s, c) =>
     .replaceAll('{guide}', c.guidePath)
     .replaceAll('{glossary}', c.glossaryPath)
     .replaceAll('{services}', c.servicesPath)
+    .replaceAll('{area}', c.areaPath)
     .replace(/\{svc:([\w-]+)\}/g, (_, id) => svcPath(c.lang, id));
 
 const pad = (n) => String(n).padStart(2, '0');
@@ -180,6 +182,7 @@ ${services.map((s) => `<li><a href="${svcPath(c.lang, s.id)}">${svcContent(c.lan
 <nav class="ftr__nav" aria-labelledby="ftr-res"><p class="ftr__h" id="ftr-res">${c.footer.resources}</p><ul>
 <li><a href="${c.guidePath}">${c.footer.guide}</a></li>
 <li><a href="${c.glossaryPath}">${c.footer.glossary}</a></li>
+<li><a href="${c.areaPath}">${c.footer.area}</a></li>
 <li><a href="/llms.txt">${c.footer.llms}</a></li>
 <li><a href="/sitemap.xml">${c.footer.sitemap}</a></li>
 <li><a href="${c.altPath}" hreflang="${c.alt.lang}" lang="${c.alt.lang}">${c.alt.label}</a></li>
@@ -208,6 +211,7 @@ function palette(c) {
   const more = [
     { id: 'guide', label: k.guide, href: c.guidePath, ic: icon.book, kw: 'aeo geo seo rehber guide' },
     { id: 'glossary', label: k.glossary, href: c.glossaryPath, ic: icon.file, kw: 'sözlük glossary terim term lcp inp cls schema' },
+    { id: 'area', label: k.area, href: c.areaPath, ic: icon.globe, kw: 'il ilçe şehir bölge nerede province district city where area türkiye' },
     { id: 'lang', label: k.lang, href: c.altPath, ic: icon.globe, kw: 'english türkçe language dil' },
     { id: 'llms', label: k.llms, href: '/llms.txt', ic: icon.file, kw: 'ai llm yapay zeka' },
     { id: 'share', label: k.share, action: 'share', ic: icon.arrowOut, kw: 'share paylaş gönder', hidden: true },
@@ -722,6 +726,66 @@ ${items}
 <div class="faq__list">${faqList(h.faq, c, 'hfaq')}</div>
 </section>
 ${ctaBox(h.cta, wa(c.wa.default), c)}
+</div>
+</div>
+</article>
+</main>
+${footer(c)}
+${dock(c)}
+${palette(c)}`;
+}
+
+// ── Service area ─────────────────────────────────────────────────────────────
+// The 81 provinces are in the page; their 973 districts arrive only when asked for
+// (js/area.js fetches one small JSON on first use). Without JavaScript, the complete list
+// is one link away in the Markdown twin.
+export function areaBody(c, { provinces, dataUrl }) {
+  const a = area[c.lang];
+  const f = a.find;
+  const md = `${a.path}index.html.md`;
+  const strings = { ...f, md, merkez: 'Merkez' };
+  const provs = provinces
+    .map(
+      (p) => `<li><details class="prov" name="prov" id="il-${p.plate}">
+<summary><span class="prov__n">${p.plate}</span><span class="prov__name">${p.name}</span>${p.metro ? `<span class="prov__tag">${a.all.metro}</span>` : ''}<span class="prov__count">${f.count.replace('{n}', p.districts.length)}</span><span class="qa__icon prov__icon" aria-hidden="true"></span></summary>
+<div class="prov__body" data-prov="${p.plate}"></div>
+</details></li>`,
+    )
+    .join('\n');
+  return `${header(c, { home: false })}
+<main id="main">
+<article class="guide area" data-area data-src="${dataUrl}" data-wa-to="${site.whatsapp}" data-t="${esc(JSON.stringify(strings))}">
+<header class="guide__head wrap">
+${crumbs(c, [[a.crumb]])}
+<p class="sec-label"><span class="sec-label__n">${provinces.length}</span>${a.label}</p>
+<h1 class="guide__title">${rich(a.h1)}</h1>
+<p class="gloss__intro">${a.intro}</p>
+</header>
+<div class="wrap area__in">
+<div class="prose">${answerBox(a.answerLabel, a.answer)}</div>
+<section class="area__find" aria-labelledby="area-find-h">
+<h2 class="area__h" id="area-find-h">${f.h}</h2>
+<div class="area__search">
+<label class="area__label" for="area-q">${f.label}</label>
+<div class="area__box">
+<div class="area__field">${icon.search}<input class="area__input" id="area-q" type="text" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="area-opts" aria-describedby="area-hint" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" placeholder="${esc(f.placeholder)}"></div>
+<ul class="area__opts" id="area-opts" role="listbox" aria-label="${esc(f.label)}" hidden></ul>
+</div>
+<p class="area__hint" id="area-hint">${f.hint}</p>
+<noscript><p class="area__hint">${a.all.noscript}</p></noscript>
+<div class="area__result" data-area-result aria-live="polite"></div>
+</div>
+</section>
+<section class="area__all" aria-labelledby="area-all-h">
+<h2 class="area__h" id="area-all-h">${a.all.h}</h2>
+<p class="area__lead">${a.all.lead}</p>
+<ol class="area__grid">
+${provs}
+</ol>
+</section>
+<div class="prose">
+<p class="area__note">${a.note}</p>
+${ctaBox(a.cta, wa(c.wa.default), c)}
 </div>
 </div>
 </article>

@@ -27,10 +27,13 @@ import tr from '../src/content/tr.mjs';
 import en from '../src/content/en.mjs';
 import { en as glossEn, terms as glossTerms, tr as glossTr } from '../src/content/glossary.mjs';
 import { services } from '../src/content/services.mjs';
-import { glossaryMd, guideMd, homeMd, llmsTxt, serviceMd, servicesHubMd } from '../src/markdown.mjs';
-import { glossaryGraph, guideGraph, homeGraph, serviceGraph, servicesHubGraph } from '../src/schema.mjs';
+import { area } from '../src/content/area.mjs';
+import turkiye from '../src/data/turkiye.json' with { type: 'json' };
+import { areaMd, glossaryMd, guideMd, homeMd, llmsTxt, serviceMd, servicesHubMd } from '../src/markdown.mjs';
+import { areaGraph, glossaryGraph, guideGraph, homeGraph, serviceGraph, servicesHubGraph } from '../src/schema.mjs';
 import { site, wa, work } from '../src/site.config.mjs';
 import {
+  areaBody,
   esc,
   glossaryBody,
   guideBody,
@@ -135,6 +138,39 @@ async function build() {
     .replace(/<\?xml[^>]*>/, '')
     .replace('<svg', '<svg role="img" aria-label="WhatsApp QR"')
     .trim();
+
+  // ── Türkiye: every province and district, held to the official totals ─────
+  // The dataset (src/data/turkiye.json) records the Ministry of Interior's counts; if the
+  // list ever disagrees with any of them, the build stops rather than publish a wrong claim.
+  // Districts in Turkish alphabetical order, the central district (Merkez) first.
+  const trOrder = new Intl.Collator('tr').compare;
+  const provinces = turkiye.provinces.map((p) => ({
+    ...p,
+    districts: [...p.districts].sort((a, b) => (b === 'Merkez') - (a === 'Merkez') || trOrder(a, b)),
+  }));
+  {
+    const o = turkiye.official;
+    const metro = provinces.filter((p) => p.metro);
+    const other = provinces.filter((p) => !p.metro);
+    const n = (ps) => ps.reduce((s, p) => s + p.districts.length, 0);
+    const keys = provinces.flatMap((p) => p.districts.map((d) => `${p.plate}/${d}`));
+    const checks = [
+      ['provinces', provinces.length, o.provinces],
+      ['metropolitan provinces', metro.length, o.metropolitanProvinces],
+      ['districts in metropolitan provinces', n(metro), o.metropolitanDistricts],
+      ['districts elsewhere (central excluded)', n(other) - other.length, o.otherDistricts],
+      ['central districts', other.filter((p) => p.districts[0] === 'Merkez').length, o.centralDistricts],
+      ['districts in all', n(provinces), o.districts],
+      ['unique districts per province', new Set(keys).size, o.districts],
+      ['unique plates', new Set(provinces.map((p) => p.plate)).size, o.provinces],
+    ];
+    const bad = checks.filter(([, got, want]) => got !== want);
+    if (bad.length) throw new Error(`turkiye.json disagrees with the official totals: ${bad.map(([k, g, w]) => `${k} ${g} ≠ ${w}`).join('; ')}`);
+  }
+  // Served on demand: one compact file, content-hashed (immutable), fetched on first use.
+  const areaJson = JSON.stringify(provinces.map((p) => [p.plate, p.name, p.metro ? 1 : 0, p.districts]));
+  const areaData = `/assets/turkiye.${hash(areaJson)}.json`;
+  await write(areaData.slice(1), areaJson);
 
   // ── Pages ─────────────────────────────────────────────────────────────────
   const pages = [];
@@ -245,6 +281,29 @@ async function build() {
     }
   }
 
+  // The service area, once per language.
+  for (const c0 of [tr, en]) {
+    const other = c0 === tr ? en : tr;
+    const a = area[c0.lang];
+    const ac = { ...c0, altPath: area[other.lang].path, selfPath: a.path };
+    pages.push({
+      file: `${a.path}index.html`,
+      url: O + a.path,
+      lang: c0,
+      alt: { [c0.lang]: O + a.path, [other.lang]: O + area[other.lang].path, 'x-default': O + area.tr.path },
+      title: a.meta.title,
+      description: a.meta.description,
+      ogType: 'website',
+      ogImage: `${O}/og/og-${c0.lang}-area.jpg`,
+      ogAlt: a.meta.ogAlt,
+      jsonld: areaGraph(ac, O + a.path, { homeUrl: O + c0.path, provinces }),
+      body: areaBody(ac, { provinces, dataUrl: areaData }),
+      bodyClass: 'is-guide is-area',
+      md: areaMd(ac, provinces),
+      priority: '0.7',
+    });
+  }
+
   const speculation = JSON.stringify({
     prerender: [
       {
@@ -352,7 +411,7 @@ ${p.body}
   const report = [];
   // Each page carries only the CSS that can ever apply to it (classes in its own HTML, plus
   // every class the scripts may add). NO_PURGE=1 builds with the full stylesheet, for comparison.
-  const jsClasses = scriptClasses(await Promise.all(['app.js', 'seam.js'].map((f) => fs.readFile(path.join(SRC, 'js', f), 'utf8'))));
+  const jsClasses = scriptClasses(await Promise.all(['app.js', 'seam.js', 'area.js'].map((f) => fs.readFile(path.join(SRC, 'js', f), 'utf8'))));
   for (const p of [...pages, notFound]) {
     if (p.md) p.md = measured(p.md, p.lang);
     if (!process.env.NO_PURGE) p.css = purgeCss(css, new Set([...htmlClasses(htmlFor(p)), ...jsClasses]));

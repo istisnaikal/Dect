@@ -100,7 +100,7 @@ export const tr = {
       },
       {
         q: 'Hangi şehirlerde hizmet veriyorsunuz?',
-        a: 'İşin tamamı uzaktan yürüdüğü için İstanbul’dan Ankara’ya, İzmir’den Van’a, Türkiye’nin her ilinden ve yurt dışından müşterilerle çalışıyorum. Konuşmalar WhatsApp’ta ya da görüntülü görüşmede; Türkçe ya da İngilizce.',
+        a: 'İşin tamamı uzaktan yürüdüğü için İstanbul’dan Ankara’ya, İzmir’den Van’a, <a href="{area}">Türkiye’nin her ilinden</a> ve yurt dışından müşterilerle çalışıyorum. Konuşmalar WhatsApp’ta ya da görüntülü görüşmede; Türkçe ya da İngilizce.',
       },
       {
         q: 'Hizmetleri ayrı ayrı alabilir miyim?',
@@ -697,7 +697,7 @@ export const en = {
       },
       {
         q: 'Where do you work?',
-        a: 'Everywhere, remotely: from Istanbul to Ankara, İzmir to Van, every province of Türkiye, and abroad. We talk on WhatsApp or a video call, in English or Turkish.',
+        a: 'Everywhere, remotely: from Istanbul to Ankara, İzmir to Van, <a href="{area}">every province of Türkiye</a>, and abroad. We talk on WhatsApp or a video call, in English or Turkish.',
       },
       {
         q: 'Can I hire you for just one service?',

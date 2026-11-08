@@ -3,6 +3,7 @@
 // a single, unambiguous entity.
 
 import { services } from './content/services.mjs';
+import { area } from './content/area.mjs';
 import { site, work, wa } from './site.config.mjs';
 import { fill, plain, svcContent, svcPath, termName } from './templates.mjs';
 
@@ -384,6 +385,50 @@ export function servicesHubGraph(c, url, { homeUrl }) {
       },
       crumbList(url, [[c.ui.home, homeUrl], [h.crumb, url]]),
       faqNode(url, h.faq, c, c.inLanguage),
+    ],
+  };
+}
+
+const AREA_PAGE = { tr: `${O}${area.tr.path}`, en: `${O}${area.en.path}` };
+// The service area: the page, and the 81 provinces it covers, each tied to Wikidata.
+export function areaGraph(c, url, { homeUrl, provinces }) {
+  const a = area[c.lang];
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      ...core(c),
+      image(url, c, a.meta.ogAlt, 'area'),
+      {
+        '@type': 'WebPage',
+        '@id': `${url}#webpage`,
+        url,
+        name: a.meta.title,
+        description: a.meta.description,
+        inLanguage: c.inLanguage,
+        isPartOf: { '@id': ID.website },
+        about: [{ '@id': ID.org }, AREA[0]],
+        mainEntity: { '@id': `${url}#provinces` },
+        primaryImageOfPage: { '@id': `${url}#primaryimage` },
+        breadcrumb: { '@id': `${url}#breadcrumb` },
+        datePublished: site.updated,
+        dateModified: site.updated,
+        speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '#answer'] },
+        ...twin(c, 'WebPage', AREA_PAGE.tr, AREA_PAGE.en, '#webpage'),
+      },
+      {
+        '@type': 'ItemList',
+        '@id': `${url}#provinces`,
+        name: a.all.h,
+        about: AREA[0],
+        numberOfItems: provinces.length,
+        itemListOrder: 'https://schema.org/ItemListOrderAscending',
+        itemListElement: provinces.map((p, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          item: { '@type': 'AdministrativeArea', name: p.name, sameAs: WD(p.wikidata) },
+        })),
+      },
+      crumbList(url, [[c.ui.home, homeUrl], [a.crumb, url]]),
     ],
   };
 }

@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 import en from '../src/content/en.mjs';
 import { services } from '../src/content/services.mjs';
+import { area } from '../src/content/area.mjs';
 import tr from '../src/content/tr.mjs';
 import { logoMark, plain, svcContent } from '../src/templates.mjs';
 
@@ -34,6 +35,8 @@ const cards = [
       ...services.map((s) => ({ file: `og-${c.lang}-svc-${s.id}.jpg`, c, kicker: sv.ui.label, title: plain(sv.items[s.id].h1) })),
     ];
   }),
+  // The service area, in both languages.
+  ...[tr, en].map((c) => ({ file: `og-${c.lang}-area.jpg`, c, kicker: area[c.lang].label, title: area[c.lang].og })),
 ];
 // `node scripts/og.mjs svc` renders only the cards whose file name contains "svc" (or any other filter).
 const only = process.argv[2];
@@ -49,7 +52,7 @@ for (const card of cards.filter((x) => !only || x.file.includes(only))) {
       .og__top{display:flex;justify-content:space-between;align-items:center;font:500 18px/1 "Geist Mono",monospace;letter-spacing:.12em;text-transform:uppercase}
       .og__top b{color:#3557b8;font-weight:500}
       .og__brand{display:flex;align-items:center;gap:14px}.og__mark{width:auto;height:46px;fill:#141317}.og__mark .logo__seam{fill:#3557b8}.og__mark .logo__cells{display:inline!important}
-      .og__title{font-size:${/guide|glossary|svc|services/.test(card.file) ? 46 : 40}px;line-height:1.05;letter-spacing:-.04em;font-weight:500;max-width:1000px;text-wrap:balance}
+      .og__title{font-size:${/guide|glossary|svc|services|area/.test(card.file) ? 46 : 40}px;line-height:1.05;letter-spacing:-.04em;font-weight:500;max-width:1000px;text-wrap:balance}
       .og__kicker{display:block;margin-bottom:12px;font:italic 400 34px/1 "Instrument Serif",serif;letter-spacing:0;color:#2a4590}`;
   await page.addInitScript((css) => {
     document.addEventListener('DOMContentLoaded', () => {

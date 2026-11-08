@@ -11,6 +11,7 @@ export default {
   guidePath: '/rehber/aeo-geo/',
   glossaryPath: '/sozluk/',
   servicesPath: '/hizmetler/',
+  areaPath: '/hizmet-bolgesi/',
   alt: { lang: 'en', label: 'English', short: 'EN' },
   dateLocale: 'tr-TR',
 
@@ -67,6 +68,7 @@ export default {
     audit: 'Sitenize bir göz atayım',
     guide: 'AEO ve GEO rehberi',
     glossary: 'Sözlük: SEO, AEO, GEO terimleri',
+    area: 'Hizmet bölgesi: 81 il, 973 ilçe',
     lang: 'English version',
     llms: 'llms.txt — yapay zekâ için site özeti',
     top: 'Başa dön',
@@ -94,7 +96,7 @@ export default {
       ['Ad', 'Eyüp · sahne adı DevArt'],
       ['Uzmanlık', '<a href="{svc:web}">Web tasarım</a> · <a href="{svc:fullstack}">Web geliştirme</a> · <a href="{svc:seo}">SEO</a>, <a href="{svc:aeo-geo}">AEO, GEO</a> · <a href="{svc:speed}">Performans</a>'],
       ['Yaklaşım', 'Hazır şablon yok; her site sıfırdan, elle yazılır'],
-      ['Hizmet alanı', 'Türkiye’den dünyanın her yerine, uzaktan'],
+      ['Hizmet alanı', '<a href="{area}">Türkiye’den dünyanın her yerine</a>, uzaktan'],
       ['Dil', 'Türkçe · İngilizce'],
       ['İletişim', 'WhatsApp ya da telefon: <a href="{wa}">{phone}</a>'],
     ],
@@ -116,7 +118,7 @@ export default {
       aksu: {
         kind: 'Yerel hizmet · Kurumsal site',
         summary:
-          'Maltepe’de gece gündüz çalışan bir oto çekici firması. Yolda kalan biri onlara tek dokunuşla ulaşabilsin diye tasarlandı: WhatsApp’a giden kısa bir yol, her ilçe için ayrı bir sayfa ve mermer dokusuyla, serif harfleriyle sakin bir güven.',
+          'Maltepe’de gece gündüz çalışan bir oto çekici firması. Yolda kalan biri onlara tek dokunuşla ulaşabilsin diye tasarlandı: WhatsApp’a giden kısa bir yol, İstanbul’un 39 ilçesinin her biri için ayrı bir sayfa ve mermer dokusuyla, serif harfleriyle sakin bir güven.',
         tags: ['Yerel SEO', 'Schema.org', 'Next.js', 'AVIF'],
         alt: 'Aksu Oto Çekici web sitesinin ana sayfası: mermer dokulu arka plan, serif başlık ve çekici filosu fotoğrafı',
       },
@@ -304,6 +306,7 @@ export default {
     built: 'Bu site satır satır, elle yazıldı. Framework kullanılmadı; gerek de olmadı.',
     guide: 'AEO & GEO rehberi',
     glossary: 'Sözlük',
+    area: 'Hizmet bölgesi',
     llms: 'llms.txt',
     sitemap: 'Site haritası',
     resources: 'Kaynaklar',

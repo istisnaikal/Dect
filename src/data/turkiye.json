@@ -1,0 +1,1643 @@
+{
+ "about": "Türkiye: 81 provinces and all 973 districts (922 district municipalities + 51 central districts of non-metropolitan provinces). Built by the eyupdevart.com build from this file; the build fails if any official total below does not hold.",
+ "official": {
+  "source": "T.C. İçişleri Bakanlığı, Mülki İdare Bölümleri (e-icisleri.gov.tr), snapshot of 2025-02-01",
+  "url": "https://www.e-icisleri.gov.tr/Anasayfa/MulkiIdariBolumleri.aspx",
+  "provinces": 81,
+  "metropolitanProvinces": 30,
+  "districtMunicipalities": 922,
+  "metropolitanDistricts": 519,
+  "otherDistricts": 403,
+  "centralDistricts": 51,
+  "districts": 973,
+  "neighbourhoods": 32270
+ },
+ "sources": [
+  "Names and structure: OCHA Humanitarian Data Exchange (HDX) administrative boundaries, via github.com/ttezer/turkiye-harita-verisi (MIT) at 83eeb7a1",
+  "Cross-checked district by district against Wikipedia, \"Districts of Turkey\" (all 973 agree); 8 old-orthography spellings replaced by the current official form, 6 of them confirmed on the district governorship's own site (kahta, marmaraereglisi, bahsili, lacin, gaziosmanpasa, onikisubat .gov.tr)",
+  "Province names identical to the official e-İçişleri list; province identifiers from Wikidata"
+ ],
+ "provinces": [
+  {
+   "plate": "01",
+   "name": "Adana",
+   "wikidata": "Q40549",
+   "metro": true,
+   "districts": [
+    "Aladağ",
+    "Ceyhan",
+    "Çukurova",
+    "Feke",
+    "İmamoğlu",
+    "Karaisalı",
+    "Karataş",
+    "Kozan",
+    "Pozantı",
+    "Saimbeyli",
+    "Sarıçam",
+    "Seyhan",
+    "Tufanbeyli",
+    "Yumurtalık",
+    "Yüreğir"
+   ]
+  },
+  {
+   "plate": "02",
+   "name": "Adıyaman",
+   "wikidata": "Q43924",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Besni",
+    "Çelikhan",
+    "Gerger",
+    "Gölbaşı",
+    "Kahta",
+    "Samsat",
+    "Sincik",
+    "Tut"
+   ]
+  },
+  {
+   "plate": "03",
+   "name": "Afyonkarahisar",
+   "wikidata": "Q45220",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Başmakçı",
+    "Bayat",
+    "Bolvadin",
+    "Çay",
+    "Çobanlar",
+    "Dazkırı",
+    "Dinar",
+    "Emirdağ",
+    "Evciler",
+    "Hocalar",
+    "İhsaniye",
+    "İscehisar",
+    "Kızılören",
+    "Sandıklı",
+    "Sinanpaşa",
+    "Sultandağı",
+    "Şuhut"
+   ]
+  },
+  {
+   "plate": "04",
+   "name": "Ağrı",
+   "wikidata": "Q80051",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Diyadin",
+    "Doğubayazıt",
+    "Eleşkirt",
+    "Hamur",
+    "Patnos",
+    "Taşlıçay",
+    "Tutak"
+   ]
+  },
+  {
+   "plate": "05",
+   "name": "Amasya",
+   "wikidata": "Q80036",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Göynücek",
+    "Gümüşhacıköy",
+    "Hamamözü",
+    "Merzifon",
+    "Suluova",
+    "Taşova"
+   ]
+  },
+  {
+   "plate": "06",
+   "name": "Ankara",
+   "wikidata": "Q2297724",
+   "metro": true,
+   "districts": [
+    "Akyurt",
+    "Altındağ",
+    "Ayaş",
+    "Bala",
+    "Beypazarı",
+    "Çamlıdere",
+    "Çankaya",
+    "Çubuk",
+    "Elmadağ",
+    "Etimesgut",
+    "Evren",
+    "Gölbaşı",
+    "Güdül",
+    "Haymana",
+    "Kahramankazan",
+    "Kalecik",
+    "Keçiören",
+    "Kızılcahamam",
+    "Mamak",
+    "Nallıhan",
+    "Polatlı",
+    "Pursaklar",
+    "Sincan",
+    "Şereflikoçhisar",
+    "Yenimahalle"
+   ]
+  },
+  {
+   "plate": "07",
+   "name": "Antalya",
+   "wikidata": "Q40249",
+   "metro": true,
+   "districts": [
+    "Akseki",
+    "Aksu",
+    "Alanya",
+    "Demre",
+    "Döşemealtı",
+    "Elmalı",
+    "Finike",
+    "Gazipaşa",
+    "Gündoğmuş",
+    "İbradı",
+    "Kaş",
+    "Kemer",
+    "Kepez",
+    "Konyaaltı",
+    "Korkuteli",
+    "Kumluca",
+    "Manavgat",
+    "Muratpaşa",
+    "Serik"
+   ]
+  },
+  {
+   "plate": "08",
+   "name": "Artvin",
+   "wikidata": "Q43745",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Ardanuç",
+    "Arhavi",
+    "Borçka",
+    "Hopa",
+    "Kemalpaşa",
+    "Murgul",
+    "Şavşat",
+    "Yusufeli"
+   ]
+  },
+  {
+   "plate": "09",
+   "name": "Aydın",
+   "wikidata": "Q79846",
+   "metro": true,
+   "districts": [
+    "Bozdoğan",
+    "Buharkent",
+    "Çine",
+    "Didim",
+    "Efeler",
+    "Germencik",
+    "İncirliova",
+    "Karacasu",
+    "Karpuzlu",
+    "Koçarlı",
+    "Köşk",
+    "Kuşadası",
+    "Kuyucak",
+    "Nazilli",
+    "Söke",
+    "Sultanhisar",
+    "Yenipazar"
+   ]
+  },
+  {
+   "plate": "10",
+   "name": "Balıkesir",
+   "wikidata": "Q47117",
+   "metro": true,
+   "districts": [
+    "Altıeylül",
+    "Ayvalık",
+    "Balya",
+    "Bandırma",
+    "Bigadiç",
+    "Burhaniye",
+    "Dursunbey",
+    "Edremit",
+    "Erdek",
+    "Gömeç",
+    "Gönen",
+    "Havran",
+    "İvrindi",
+    "Karesi",
+    "Kepsut",
+    "Manyas",
+    "Marmara",
+    "Savaştepe",
+    "Sındırgı",
+    "Susurluk"
+   ]
+  },
+  {
+   "plate": "11",
+   "name": "Bilecik",
+   "wikidata": "Q46763",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Bozüyük",
+    "Gölpazarı",
+    "İnhisar",
+    "Osmaneli",
+    "Pazaryeri",
+    "Söğüt",
+    "Yenipazar"
+   ]
+  },
+  {
+   "plate": "12",
+   "name": "Bingöl",
+   "wikidata": "Q79760",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Adaklı",
+    "Genç",
+    "Karlıova",
+    "Kiğı",
+    "Solhan",
+    "Yayladere",
+    "Yedisu"
+   ]
+  },
+  {
+   "plate": "13",
+   "name": "Bitlis",
+   "wikidata": "Q83239",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Adilcevaz",
+    "Ahlat",
+    "Güroymak",
+    "Hizan",
+    "Mutki",
+    "Tatvan"
+   ]
+  },
+  {
+   "plate": "14",
+   "name": "Bolu",
+   "wikidata": "Q82089",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Dörtdivan",
+    "Gerede",
+    "Göynük",
+    "Kıbrıscık",
+    "Mengen",
+    "Mudurnu",
+    "Seben",
+    "Yeniçağa"
+   ]
+  },
+  {
+   "plate": "15",
+   "name": "Burdur",
+   "wikidata": "Q80088",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Ağlasun",
+    "Altınyayla",
+    "Bucak",
+    "Çavdır",
+    "Çeltikçi",
+    "Gölhisar",
+    "Karamanlı",
+    "Kemer",
+    "Tefenni",
+    "Yeşilova"
+   ]
+  },
+  {
+   "plate": "16",
+   "name": "Bursa",
+   "wikidata": "Q43690",
+   "metro": true,
+   "districts": [
+    "Büyükorhan",
+    "Gemlik",
+    "Gürsu",
+    "Harmancık",
+    "İnegöl",
+    "İznik",
+    "Karacabey",
+    "Keles",
+    "Kestel",
+    "Mudanya",
+    "Mustafakemalpaşa",
+    "Nilüfer",
+    "Orhaneli",
+    "Orhangazi",
+    "Osmangazi",
+    "Yenişehir",
+    "Yıldırım"
+   ]
+  },
+  {
+   "plate": "17",
+   "name": "Çanakkale",
+   "wikidata": "Q47813",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Ayvacık",
+    "Bayramiç",
+    "Biga",
+    "Bozcaada",
+    "Çan",
+    "Eceabat",
+    "Ezine",
+    "Gelibolu",
+    "Gökçeada",
+    "Lapseki",
+    "Yenice"
+   ]
+  },
+  {
+   "plate": "18",
+   "name": "Çankırı",
+   "wikidata": "Q272662",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Atkaracalar",
+    "Bayramören",
+    "Çerkeş",
+    "Eldivan",
+    "Ilgaz",
+    "Kızılırmak",
+    "Korgun",
+    "Kurşunlu",
+    "Orta",
+    "Şabanözü",
+    "Yapraklı"
+   ]
+  },
+  {
+   "plate": "19",
+   "name": "Çorum",
+   "wikidata": "Q272947",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Alaca",
+    "Bayat",
+    "Boğazkale",
+    "Dodurga",
+    "İskilip",
+    "Kargı",
+    "Laçin",
+    "Mecitözü",
+    "Oğuzlar",
+    "Ortaköy",
+    "Osmancık",
+    "Sungurlu",
+    "Uğurludağ"
+   ]
+  },
+  {
+   "plate": "20",
+   "name": "Denizli",
+   "wikidata": "Q82096",
+   "metro": true,
+   "districts": [
+    "Acıpayam",
+    "Babadağ",
+    "Baklan",
+    "Bekilli",
+    "Beyağaç",
+    "Bozkurt",
+    "Buldan",
+    "Çal",
+    "Çameli",
+    "Çardak",
+    "Çivril",
+    "Güney",
+    "Honaz",
+    "Kale",
+    "Merkezefendi",
+    "Pamukkale",
+    "Sarayköy",
+    "Serinhisar",
+    "Tavas"
+   ]
+  },
+  {
+   "plate": "21",
+   "name": "Diyarbakır",
+   "wikidata": "Q83081",
+   "metro": true,
+   "districts": [
+    "Bağlar",
+    "Bismil",
+    "Çermik",
+    "Çınar",
+    "Çüngüş",
+    "Dicle",
+    "Eğil",
+    "Ergani",
+    "Hani",
+    "Hazro",
+    "Kayapınar",
+    "Kocaköy",
+    "Kulp",
+    "Lice",
+    "Silvan",
+    "Sur",
+    "Yenişehir"
+   ]
+  },
+  {
+   "plate": "22",
+   "name": "Edirne",
+   "wikidata": "Q83102",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Enez",
+    "Havsa",
+    "İpsala",
+    "Keşan",
+    "Lalapaşa",
+    "Meriç",
+    "Süloğlu",
+    "Uzunköprü"
+   ]
+  },
+  {
+   "plate": "23",
+   "name": "Elazığ",
+   "wikidata": "Q483091",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Ağın",
+    "Alacakaya",
+    "Arıcak",
+    "Baskil",
+    "Karakoçan",
+    "Keban",
+    "Kovancılar",
+    "Maden",
+    "Palu",
+    "Sivrice"
+   ]
+  },
+  {
+   "plate": "24",
+   "name": "Erzincan",
+   "wikidata": "Q483173",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Çayırlı",
+    "İliç",
+    "Kemah",
+    "Kemaliye",
+    "Otlukbeli",
+    "Refahiye",
+    "Tercan",
+    "Üzümlü"
+   ]
+  },
+  {
+   "plate": "25",
+   "name": "Erzurum",
+   "wikidata": "Q376797",
+   "metro": true,
+   "districts": [
+    "Aşkale",
+    "Aziziye",
+    "Çat",
+    "Hınıs",
+    "Horasan",
+    "İspir",
+    "Karaçoban",
+    "Karayazı",
+    "Köprüköy",
+    "Narman",
+    "Oltu",
+    "Olur",
+    "Palandöken",
+    "Pasinler",
+    "Pazaryolu",
+    "Şenkaya",
+    "Tekman",
+    "Tortum",
+    "Uzundere",
+    "Yakutiye"
+   ]
+  },
+  {
+   "plate": "26",
+   "name": "Eskişehir",
+   "wikidata": "Q483053",
+   "metro": true,
+   "districts": [
+    "Alpu",
+    "Beylikova",
+    "Çifteler",
+    "Günyüzü",
+    "Han",
+    "İnönü",
+    "Mahmudiye",
+    "Mihalgazi",
+    "Mihalıççık",
+    "Odunpazarı",
+    "Sarıcakaya",
+    "Seyitgazi",
+    "Sivrihisar",
+    "Tepebaşı"
+   ]
+  },
+  {
+   "plate": "27",
+   "name": "Gaziantep",
+   "wikidata": "Q483154",
+   "metro": true,
+   "districts": [
+    "Araban",
+    "İslahiye",
+    "Karkamış",
+    "Nizip",
+    "Nurdağı",
+    "Oğuzeli",
+    "Şahinbey",
+    "Şehitkamil",
+    "Yavuzeli"
+   ]
+  },
+  {
+   "plate": "28",
+   "name": "Giresun",
+   "wikidata": "Q482779",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Alucra",
+    "Bulancak",
+    "Çamoluk",
+    "Çanakçı",
+    "Dereli",
+    "Doğankent",
+    "Espiye",
+    "Eynesil",
+    "Görele",
+    "Güce",
+    "Keşap",
+    "Piraziz",
+    "Şebinkarahisar",
+    "Tirebolu",
+    "Yağlıdere"
+   ]
+  },
+  {
+   "plate": "29",
+   "name": "Gümüşhane",
+   "wikidata": "Q482788",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Kelkit",
+    "Köse",
+    "Kürtün",
+    "Şiran",
+    "Torul"
+   ]
+  },
+  {
+   "plate": "30",
+   "name": "Hakkari",
+   "wikidata": "Q93209",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Çukurca",
+    "Şemdinli",
+    "Yüksekova",
+    "Derecik"
+   ]
+  },
+  {
+   "plate": "31",
+   "name": "Hatay",
+   "wikidata": "Q83274",
+   "metro": true,
+   "districts": [
+    "Altınözü",
+    "Antakya",
+    "Arsuz",
+    "Belen",
+    "Defne",
+    "Dörtyol",
+    "Erzin",
+    "Hassa",
+    "İskenderun",
+    "Kırıkhan",
+    "Kumlu",
+    "Payas",
+    "Reyhanlı",
+    "Samandağ",
+    "Yayladağı"
+   ]
+  },
+  {
+   "plate": "32",
+   "name": "Isparta",
+   "wikidata": "Q268043",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Aksu",
+    "Atabey",
+    "Eğirdir",
+    "Gelendost",
+    "Gönen",
+    "Keçiborlu",
+    "Senirkent",
+    "Sütçüler",
+    "Şarkikaraağaç",
+    "Uluborlu",
+    "Yalvaç",
+    "Yenişarbademli"
+   ]
+  },
+  {
+   "plate": "33",
+   "name": "Mersin",
+   "wikidata": "Q132637",
+   "metro": true,
+   "districts": [
+    "Akdeniz",
+    "Anamur",
+    "Aydıncık",
+    "Bozyazı",
+    "Çamlıyayla",
+    "Erdemli",
+    "Gülnar",
+    "Mezitli",
+    "Mut",
+    "Silifke",
+    "Tarsus",
+    "Toroslar",
+    "Yenişehir"
+   ]
+  },
+  {
+   "plate": "34",
+   "name": "İstanbul",
+   "wikidata": "Q534799",
+   "metro": true,
+   "districts": [
+    "Adalar",
+    "Arnavutköy",
+    "Ataşehir",
+    "Avcılar",
+    "Bağcılar",
+    "Bahçelievler",
+    "Bakırköy",
+    "Başakşehir",
+    "Bayrampaşa",
+    "Beşiktaş",
+    "Beykoz",
+    "Beylikdüzü",
+    "Beyoğlu",
+    "Büyükçekmece",
+    "Çatalca",
+    "Çekmeköy",
+    "Esenler",
+    "Esenyurt",
+    "Eyüpsultan",
+    "Fatih",
+    "Gaziosmanpaşa",
+    "Güngören",
+    "Kadıköy",
+    "Kağıthane",
+    "Kartal",
+    "Küçükçekmece",
+    "Maltepe",
+    "Pendik",
+    "Sancaktepe",
+    "Sarıyer",
+    "Silivri",
+    "Sultanbeyli",
+    "Sultangazi",
+    "Şile",
+    "Şişli",
+    "Tuzla",
+    "Ümraniye",
+    "Üsküdar",
+    "Zeytinburnu"
+   ]
+  },
+  {
+   "plate": "35",
+   "name": "İzmir",
+   "wikidata": "Q344490",
+   "metro": true,
+   "districts": [
+    "Aliağa",
+    "Balçova",
+    "Bayındır",
+    "Bayraklı",
+    "Bergama",
+    "Beydağ",
+    "Bornova",
+    "Buca",
+    "Çeşme",
+    "Çiğli",
+    "Dikili",
+    "Foça",
+    "Gaziemir",
+    "Güzelbahçe",
+    "Karabağlar",
+    "Karaburun",
+    "Karşıyaka",
+    "Kemalpaşa",
+    "Kınık",
+    "Kiraz",
+    "Konak",
+    "Menderes",
+    "Menemen",
+    "Narlıdere",
+    "Ödemiş",
+    "Seferihisar",
+    "Selçuk",
+    "Tire",
+    "Torbalı",
+    "Urla"
+   ]
+  },
+  {
+   "plate": "36",
+   "name": "Kars",
+   "wikidata": "Q83077",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Akyaka",
+    "Arpaçay",
+    "Digor",
+    "Kağızman",
+    "Sarıkamış",
+    "Selim",
+    "Susuz"
+   ]
+  },
+  {
+   "plate": "37",
+   "name": "Kastamonu",
+   "wikidata": "Q483191",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Abana",
+    "Ağlı",
+    "Araç",
+    "Azdavay",
+    "Bozkurt",
+    "Cide",
+    "Çatalzeytin",
+    "Daday",
+    "Devrekani",
+    "Doğanyurt",
+    "Hanönü",
+    "İhsangazi",
+    "İnebolu",
+    "Küre",
+    "Pınarbaşı",
+    "Seydiler",
+    "Şenpazar",
+    "Taşköprü",
+    "Tosya"
+   ]
+  },
+  {
+   "plate": "38",
+   "name": "Kayseri",
+   "wikidata": "Q483472",
+   "metro": true,
+   "districts": [
+    "Akkışla",
+    "Bünyan",
+    "Develi",
+    "Felahiye",
+    "Hacılar",
+    "İncesu",
+    "Kocasinan",
+    "Melikgazi",
+    "Özvatan",
+    "Pınarbaşı",
+    "Sarıoğlan",
+    "Sarız",
+    "Talas",
+    "Tomarza",
+    "Yahyalı",
+    "Yeşilhisar"
+   ]
+  },
+  {
+   "plate": "39",
+   "name": "Kırklareli",
+   "wikidata": "Q131597",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Babaeski",
+    "Demirköy",
+    "Kofçaz",
+    "Lüleburgaz",
+    "Pehlivanköy",
+    "Pınarhisar",
+    "Vize"
+   ]
+  },
+  {
+   "plate": "40",
+   "name": "Kırşehir",
+   "wikidata": "Q134187",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Akçakent",
+    "Akpınar",
+    "Boztepe",
+    "Çiçekdağı",
+    "Kaman",
+    "Mucur"
+   ]
+  },
+  {
+   "plate": "41",
+   "name": "Kocaeli",
+   "wikidata": "Q83965",
+   "metro": true,
+   "districts": [
+    "Başiskele",
+    "Çayırova",
+    "Darıca",
+    "Derince",
+    "Dilovası",
+    "Gebze",
+    "Gölcük",
+    "İzmit",
+    "Kandıra",
+    "Karamürsel",
+    "Kartepe",
+    "Körfez"
+   ]
+  },
+  {
+   "plate": "42",
+   "name": "Konya",
+   "wikidata": "Q81551",
+   "metro": true,
+   "districts": [
+    "Ahırlı",
+    "Akören",
+    "Akşehir",
+    "Altınekin",
+    "Beyşehir",
+    "Bozkır",
+    "Cihanbeyli",
+    "Çeltik",
+    "Çumra",
+    "Derbent",
+    "Derebucak",
+    "Doğanhisar",
+    "Emirgazi",
+    "Ereğli",
+    "Güneysınır",
+    "Hadim",
+    "Halkapınar",
+    "Hüyük",
+    "Ilgın",
+    "Kadınhanı",
+    "Karapınar",
+    "Karatay",
+    "Kulu",
+    "Meram",
+    "Sarayönü",
+    "Selçuklu",
+    "Seydişehir",
+    "Taşkent",
+    "Tuzlukçu",
+    "Yalıhüyük",
+    "Yunak"
+   ]
+  },
+  {
+   "plate": "43",
+   "name": "Kütahya",
+   "wikidata": "Q126874",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Altıntaş",
+    "Aslanapa",
+    "Çavdarhisar",
+    "Domaniç",
+    "Dumlupınar",
+    "Emet",
+    "Gediz",
+    "Hisarcık",
+    "Pazarlar",
+    "Simav",
+    "Şaphane",
+    "Tavşanlı"
+   ]
+  },
+  {
+   "plate": "44",
+   "name": "Malatya",
+   "wikidata": "Q131384",
+   "metro": true,
+   "districts": [
+    "Akçadağ",
+    "Arapgir",
+    "Arguvan",
+    "Battalgazi",
+    "Darende",
+    "Doğanşehir",
+    "Doğanyol",
+    "Hekimhan",
+    "Kale",
+    "Kuluncak",
+    "Pütürge",
+    "Yazıhan",
+    "Yeşilyurt"
+   ]
+  },
+  {
+   "plate": "45",
+   "name": "Manisa",
+   "wikidata": "Q130553",
+   "metro": true,
+   "districts": [
+    "Ahmetli",
+    "Akhisar",
+    "Alaşehir",
+    "Demirci",
+    "Gölmarmara",
+    "Gördes",
+    "Kırkağaç",
+    "Köprübaşı",
+    "Kula",
+    "Salihli",
+    "Sarıgöl",
+    "Saruhanlı",
+    "Selendi",
+    "Soma",
+    "Şehzadeler",
+    "Turgutlu",
+    "Yunusemre"
+   ]
+  },
+  {
+   "plate": "46",
+   "name": "Kahramanmaraş",
+   "wikidata": "Q482834",
+   "metro": true,
+   "districts": [
+    "Afşin",
+    "Andırın",
+    "Çağlayancerit",
+    "Dulkadiroğlu",
+    "Ekinözü",
+    "Elbistan",
+    "Göksun",
+    "Nurhak",
+    "Onikişubat",
+    "Pazarcık",
+    "Türkoğlu"
+   ]
+  },
+  {
+   "plate": "47",
+   "name": "Mardin",
+   "wikidata": "Q131293",
+   "metro": true,
+   "districts": [
+    "Artuklu",
+    "Dargeçit",
+    "Derik",
+    "Kızıltepe",
+    "Mazıdağı",
+    "Midyat",
+    "Nusaybin",
+    "Ömerli",
+    "Savur",
+    "Yeşilli"
+   ]
+  },
+  {
+   "plate": "48",
+   "name": "Muğla",
+   "wikidata": "Q123934",
+   "metro": true,
+   "districts": [
+    "Bodrum",
+    "Dalaman",
+    "Datça",
+    "Fethiye",
+    "Kavaklıdere",
+    "Köyceğiz",
+    "Marmaris",
+    "Menteşe",
+    "Milas",
+    "Ortaca",
+    "Seydikemer",
+    "Ula",
+    "Yatağan"
+   ]
+  },
+  {
+   "plate": "49",
+   "name": "Muş",
+   "wikidata": "Q131387",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Bulanık",
+    "Hasköy",
+    "Korkut",
+    "Malazgirt",
+    "Varto"
+   ]
+  },
+  {
+   "plate": "50",
+   "name": "Nevşehir",
+   "wikidata": "Q430693",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Acıgöl",
+    "Avanos",
+    "Derinkuyu",
+    "Gülşehir",
+    "Hacıbektaş",
+    "Kozaklı",
+    "Ürgüp"
+   ]
+  },
+  {
+   "plate": "51",
+   "name": "Niğde",
+   "wikidata": "Q155219",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Altunhisar",
+    "Bor",
+    "Çamardı",
+    "Çiftlik",
+    "Ulukışla"
+   ]
+  },
+  {
+   "plate": "52",
+   "name": "Ordu",
+   "wikidata": "Q483180",
+   "metro": true,
+   "districts": [
+    "Akkuş",
+    "Altınordu",
+    "Aybastı",
+    "Çamaş",
+    "Çatalpınar",
+    "Çaybaşı",
+    "Fatsa",
+    "Gölköy",
+    "Gülyalı",
+    "Gürgentepe",
+    "İkizce",
+    "Kabadüz",
+    "Kabataş",
+    "Korgan",
+    "Kumru",
+    "Mesudiye",
+    "Perşembe",
+    "Ulubey",
+    "Ünye"
+   ]
+  },
+  {
+   "plate": "53",
+   "name": "Rize",
+   "wikidata": "Q483481",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Ardeşen",
+    "Çamlıhemşin",
+    "Çayeli",
+    "Derepazarı",
+    "Fındıklı",
+    "Güneysu",
+    "Hemşin",
+    "İkizdere",
+    "İyidere",
+    "Kalkandere",
+    "Pazar"
+   ]
+  },
+  {
+   "plate": "54",
+   "name": "Sakarya",
+   "wikidata": "Q83069",
+   "metro": true,
+   "districts": [
+    "Adapazarı",
+    "Akyazı",
+    "Arifiye",
+    "Erenler",
+    "Ferizli",
+    "Geyve",
+    "Hendek",
+    "Karapürçek",
+    "Karasu",
+    "Kaynarca",
+    "Kocaali",
+    "Pamukova",
+    "Sapanca",
+    "Serdivan",
+    "Söğütlü",
+    "Taraklı"
+   ]
+  },
+  {
+   "plate": "55",
+   "name": "Samsun",
+   "wikidata": "Q483040",
+   "metro": true,
+   "districts": [
+    "19 Mayıs",
+    "Alaçam",
+    "Asarcık",
+    "Atakum",
+    "Ayvacık",
+    "Bafra",
+    "Canik",
+    "Çarşamba",
+    "Havza",
+    "İlkadım",
+    "Kavak",
+    "Ladik",
+    "Salıpazarı",
+    "Tekkeköy",
+    "Terme",
+    "Vezirköprü",
+    "Yakakent"
+   ]
+  },
+  {
+   "plate": "56",
+   "name": "Siirt",
+   "wikidata": "Q482825",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Baykan",
+    "Eruh",
+    "Kurtalan",
+    "Pervari",
+    "Şirvan",
+    "Tillo"
+   ]
+  },
+  {
+   "plate": "57",
+   "name": "Sinop",
+   "wikidata": "Q134413",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Ayancık",
+    "Boyabat",
+    "Dikmen",
+    "Durağan",
+    "Erfelek",
+    "Gerze",
+    "Saraydüzü",
+    "Türkeli"
+   ]
+  },
+  {
+   "plate": "58",
+   "name": "Sivas",
+   "wikidata": "Q483100",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Akıncılar",
+    "Altınyayla",
+    "Divriği",
+    "Doğanşar",
+    "Gemerek",
+    "Gölova",
+    "Gürün",
+    "Hafik",
+    "İmranlı",
+    "Kangal",
+    "Koyulhisar",
+    "Suşehri",
+    "Şarkışla",
+    "Ulaş",
+    "Yıldızeli",
+    "Zara"
+   ]
+  },
+  {
+   "plate": "59",
+   "name": "Tekirdağ",
+   "wikidata": "Q129387",
+   "metro": true,
+   "districts": [
+    "Çerkezköy",
+    "Çorlu",
+    "Ergene",
+    "Hayrabolu",
+    "Kapaklı",
+    "Malkara",
+    "Marmaraereğlisi",
+    "Muratlı",
+    "Saray",
+    "Süleymanpaşa",
+    "Şarköy"
+   ]
+  },
+  {
+   "plate": "60",
+   "name": "Tokat",
+   "wikidata": "Q483195",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Almus",
+    "Artova",
+    "Başçiftlik",
+    "Erbaa",
+    "Niksar",
+    "Pazar",
+    "Reşadiye",
+    "Sulusaray",
+    "Turhal",
+    "Yeşilyurt",
+    "Zile"
+   ]
+  },
+  {
+   "plate": "61",
+   "name": "Trabzon",
+   "wikidata": "Q388995",
+   "metro": true,
+   "districts": [
+    "Akçaabat",
+    "Araklı",
+    "Arsin",
+    "Beşikdüzü",
+    "Çarşıbaşı",
+    "Çaykara",
+    "Dernekpazarı",
+    "Düzköy",
+    "Hayrat",
+    "Köprübaşı",
+    "Maçka",
+    "Of",
+    "Ortahisar",
+    "Sürmene",
+    "Şalpazarı",
+    "Tonya",
+    "Vakfıkebir",
+    "Yomra"
+   ]
+  },
+  {
+   "plate": "62",
+   "name": "Tunceli",
+   "wikidata": "Q620742",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Çemişgezek",
+    "Hozat",
+    "Mazgirt",
+    "Nazımiye",
+    "Ovacık",
+    "Pertek",
+    "Pülümür"
+   ]
+  },
+  {
+   "plate": "63",
+   "name": "Şanlıurfa",
+   "wikidata": "Q388469",
+   "metro": true,
+   "districts": [
+    "Akçakale",
+    "Birecik",
+    "Bozova",
+    "Ceylanpınar",
+    "Eyyübiye",
+    "Halfeti",
+    "Haliliye",
+    "Harran",
+    "Hilvan",
+    "Karaköprü",
+    "Siverek",
+    "Suruç",
+    "Viranşehir"
+   ]
+  },
+  {
+   "plate": "64",
+   "name": "Uşak",
+   "wikidata": "Q483078",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Banaz",
+    "Eşme",
+    "Karahallı",
+    "Sivaslı",
+    "Ulubey"
+   ]
+  },
+  {
+   "plate": "65",
+   "name": "Van",
+   "wikidata": "Q80550",
+   "metro": true,
+   "districts": [
+    "Bahçesaray",
+    "Başkale",
+    "Çaldıran",
+    "Çatak",
+    "Edremit",
+    "Erciş",
+    "Gevaş",
+    "Gürpınar",
+    "İpekyolu",
+    "Muradiye",
+    "Özalp",
+    "Saray",
+    "Tuşba"
+   ]
+  },
+  {
+   "plate": "66",
+   "name": "Yozgat",
+   "wikidata": "Q75445",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Akdağmadeni",
+    "Aydıncık",
+    "Boğazlıyan",
+    "Çandır",
+    "Çayıralan",
+    "Çekerek",
+    "Kadışehri",
+    "Saraykent",
+    "Sarıkaya",
+    "Sorgun",
+    "Şefaatli",
+    "Yenifakılı",
+    "Yerköy"
+   ]
+  },
+  {
+   "plate": "67",
+   "name": "Zonguldak",
+   "wikidata": "Q219956",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Alaplı",
+    "Çaycuma",
+    "Devrek",
+    "Ereğli",
+    "Gökçebey",
+    "Kilimli",
+    "Kozlu"
+   ]
+  },
+  {
+   "plate": "68",
+   "name": "Aksaray",
+   "wikidata": "Q83073",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Ağaçören",
+    "Eskil",
+    "Gülağaç",
+    "Güzelyurt",
+    "Ortaköy",
+    "Sarıyahşi",
+    "Sultanhanı"
+   ]
+  },
+  {
+   "plate": "69",
+   "name": "Bayburt",
+   "wikidata": "Q483063",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Aydıntepe",
+    "Demirözü"
+   ]
+  },
+  {
+   "plate": "70",
+   "name": "Karaman",
+   "wikidata": "Q482975",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Ayrancı",
+    "Başyayla",
+    "Ermenek",
+    "Kazımkarabekir",
+    "Sarıveliler"
+   ]
+  },
+  {
+   "plate": "71",
+   "name": "Kırıkkale",
+   "wikidata": "Q484392",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Bahşılı",
+    "Balışeyh",
+    "Çelebi",
+    "Delice",
+    "Karakeçili",
+    "Keskin",
+    "Sulakyurt",
+    "Yahşihan"
+   ]
+  },
+  {
+   "plate": "72",
+   "name": "Batman",
+   "wikidata": "Q80370",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Beşiri",
+    "Gercüş",
+    "Hasankeyf",
+    "Kozluk",
+    "Sason"
+   ]
+  },
+  {
+   "plate": "73",
+   "name": "Şırnak",
+   "wikidata": "Q647378",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Beytüşşebap",
+    "Cizre",
+    "Güçlükonak",
+    "İdil",
+    "Silopi",
+    "Uludere"
+   ]
+  },
+  {
+   "plate": "74",
+   "name": "Bartın",
+   "wikidata": "Q83342",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Amasra",
+    "Kurucaşile",
+    "Ulus"
+   ]
+  },
+  {
+   "plate": "75",
+   "name": "Ardahan",
+   "wikidata": "Q79840",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Çıldır",
+    "Damal",
+    "Göle",
+    "Hanak",
+    "Posof"
+   ]
+  },
+  {
+   "plate": "76",
+   "name": "Iğdır",
+   "wikidata": "Q125506",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Aralık",
+    "Karakoyunlu",
+    "Tuzluca"
+   ]
+  },
+  {
+   "plate": "77",
+   "name": "Yalova",
+   "wikidata": "Q483083",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Altınova",
+    "Armutlu",
+    "Çiftlikköy",
+    "Çınarcık",
+    "Termal"
+   ]
+  },
+  {
+   "plate": "78",
+   "name": "Karabük",
+   "wikidata": "Q483168",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Eflani",
+    "Eskipazar",
+    "Ovacık",
+    "Safranbolu",
+    "Yenice"
+   ]
+  },
+  {
+   "plate": "79",
+   "name": "Kilis",
+   "wikidata": "Q128978",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Elbeyli",
+    "Musabeyli",
+    "Polateli"
+   ]
+  },
+  {
+   "plate": "80",
+   "name": "Osmaniye",
+   "wikidata": "Q281206",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Bahçe",
+    "Düziçi",
+    "Hasanbeyli",
+    "Kadirli",
+    "Sumbas",
+    "Toprakkale"
+   ]
+  },
+  {
+   "plate": "81",
+   "name": "Düzce",
+   "wikidata": "Q432391",
+   "metro": false,
+   "districts": [
+    "Merkez",
+    "Akçakoca",
+    "Cumayeri",
+    "Çilimli",
+    "Gölyaka",
+    "Gümüşova",
+    "Kaynaşlı",
+    "Yığılca"
+   ]
+  }
+ ]
+}
